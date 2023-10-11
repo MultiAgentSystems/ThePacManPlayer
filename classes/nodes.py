@@ -14,6 +14,7 @@ class Node:
         self.siblingOrder = siblingOrder
         self.children = children
         self.logger = Logger()
+        self.tick = False
 
     def isRootNode(self) -> bool:
         return self.parent is None
@@ -60,3 +61,15 @@ class ActionNode(Node):
 
     def getAction(self) -> Callable:
         return self.actionFunction
+
+class SelectorNode(Node):
+    '''
+        SelectorNode class.
+        Iterates over all the children 
+        model nodes and returns the first
+        node that returns True.
+    '''
+    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] ) -> None:
+        super().__init__(parent, siblingOrder, children)
+
+    def  
