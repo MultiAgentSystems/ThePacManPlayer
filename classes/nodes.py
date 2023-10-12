@@ -23,9 +23,8 @@ class Node:
         self.parent = parent
         self.siblingOrder = siblingOrder
         self.children = children
-        self.logger = Logger()
         self.tick = False
-        self.state = 'Initialized' # Can only be 'Initialized', 'Running', 'Success' or 'Failure'
+        self.state = 'Initialized' # Can only be 'Initialized', 'Error', 'Running', 'Success' or 'Failure'
 
     def isRootNode(self) -> bool:
         return self.parent is None
@@ -33,6 +32,9 @@ class Node:
     def isLeafNode(self) -> bool:
         return len(self.children) == 0
     
+    def setParent(self, parent) -> None:
+        self.parent = parent
+
     def getParent(self):
         return self.parent
     
@@ -47,6 +49,20 @@ class Node:
 
     def getState(self) -> str:
         return self.state
+    
+    def addChild(self, child) -> int:
+        self.children.append(child)
+        return len(self.children)
+
+    def getChildren(self) -> list:
+        return self.children
+
+    def removeChild(self, child) -> int:
+        if ( child in self.children ):
+            self.children.remove(child)
+        else :
+            return -1
+        return len(self.children)
 
     def __str__(self) -> str:
         printableString = ""
@@ -59,13 +75,22 @@ class ActionNode(Node):
     '''
         ActionNode class.
     '''
-    def __init__(self, actionFunction : Callable, parent = None, siblingOrder : int = 0, children : list = [] ) -> None:
+    def __init__(self, actionFunction : Callable , parent = None, siblingOrder : int = 0, children : list = [], description = "" , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
         self.actionFunction = actionFunction
+        if ( logger is None ):
+            logger = Logger()
+        self.logger = logger
+        if description == "" :
+            description = str(actionFunction)
+        self.actionDescription = description
 
-    def setAction(self, actionFunction : Callable) -> int:
+    def setAction(self, actionFunction : Callable, description = "") -> int:
         try :
             self.actionFunction = actionFunction
+            if description == "" :
+                description = str(actionFunction)
+            self.actionDescription = description
             self.logger.logInfo(message=f"Set action function. to {str(self.actionFunction)}")
             return 0
         except Exception :
@@ -75,14 +100,16 @@ class ActionNode(Node):
     def performAction(self, *args) -> dict:
         try :
             if ( self.getTick() is False ):
-                self.logger.logWarning(message="Could not perform action. Tick is False.")
+                self.logger.logWarning(message="Tick is FALSE whilst executing.")
 
             if ( self.actionFunction is None ):
                 self.logger.logError(message="Could not perform action. Action Function is None.")
                 return {}
 
             result = self.actionFunction(*args)
-
+            
+            self.logger.logInfo(message=f"Action function description : {str(self.actionDescription)}")
+            self.logger.logInfo(message=f"Action function returned {str(result)}")
             self.setTick(False)
 
             return {'result': result}
@@ -97,13 +124,22 @@ class ConditionNode(Node):
     '''
         ConditionNode class.
     '''
-    def __init__(self, conditionFunction : Callable, parent = None, siblingOrder : int = 0, children : list = [] ) -> None:
+    def __init__(self, conditionFunction : Callable, parent = None, siblingOrder : int = 0, children : list = [], description = "", logger = None ) -> None:
         super().__init__(parent, siblingOrder, children)
         self.conditionFunction = conditionFunction
+        if description == "" :
+            description = str(conditionFunction)
+        self.conditionDescription = description
+        if ( logger is None ):
+            logger = Logger()
+        self.logger = logger
 
-    def setCondition(self, conditionFunction : Callable) -> int:
+    def setCondition(self, conditionFunction : Callable, description = "") -> int:
         try :
             self.conditionFunction = conditionFunction
+            if description == "" :
+                description = str(conditionFunction)
+            self.conditionDescription = description
             self.logger.logInfo(message=f"Set condition function. to {str(self.conditionFunction)}")
             return 0
         except Exception :
@@ -119,7 +155,9 @@ class ConditionNode(Node):
                 self.logger.logError(message="Could not check condition. Condition Function is None.")
                 return {}
             
+            self.logger.logInfo(message=f"Condition function : Description : {str(self.conditionDescription)}")
             result = self.conditionFunction(*args)
+            self.logger.logInfo(message=f"Condition function returned {str(result)}")
             
             if ( result is True ):
                 self.setState('Success')
@@ -150,55 +188,50 @@ class SelectorNode(Node): # '?'
         Returns False only if all the 
         nodes return False
     '''
-    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] ) -> None:
+    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
+        if ( logger is None ):
+            logger = Logger()
+        self.logger = logger
 
     def iterateOverChildren(self) -> str:
         self.logger.logInfo(message="Iterating over children.")
 
         for child in self.children:
-            if child is ConditionNode:
-                child.setTick(True)
-
-                self.setTick(False)
-                childResponse = child.checkCondition()
-                self.setTick(True)
-
-                if ( childResponse is 'Running' or childResponse is 'Success' ):
-                    self.setState(child.getState())
-                    self.setTick(False)
-                    return self.getState() 
-                   
-            elif child is ActionNode:
-                child.setTick(True)
-                
-                self.setTick(False)
-                childResponse = child.performAction()
-                self.setTick(True)
-
-                if ( childResponse is 'Running' or childResponse is 'Success' ):
-                    self.setState(child.getState())
-                    self.setTick(False)
-                    return self.getState()
+            child.setTick(True)
+            self.setTick(False)
             
+            childResponse = None
+
+            if ( child is ConditionNode ):
+                childResponse = child.checkCondition()
+                self.logger.logInfo(message=f"ConditionNode returned {str(childResponse)}")
+            elif child is ActionNode:
+                childResponse = child.performAction()
+                self.logger.logInfo(message=f"ActionNode returned {str(childResponse)}")
             elif child is SequenceNode:
-                child.setTick(True)
-                
-                self.setTick(False)
                 childResponse = child.iterateOverChildren()
-                self.setTick(True)
-
-                if ( childResponse is 'Running' or childResponse is 'Success' ):
-                    self.setState(child.getState())
-                    self.setTick(False)
-                    return self.getState()
-        # Code reaching here means that all the children returned False.
-        self.state = 'Failure'
+                self.logger.logInfo(message=f"SequenceNode returned {str(childResponse)}")
+            elif child is SelectorNode:
+                child.setTick(False)
+                self.logger.logError(message="SelectorNode cannot be a child of SelectorNode.")
+                childResponse = 'Error'
+            
+            self.logger.logInfo(message=f"Obtained Child Response : {str(childResponse)}")
+            self.setTick(True)
+            if ( childResponse == 'Running' or childResponse == 'Success' or childResponse == 'Error' ):
+                self.setState(child.getState())
+                self.setTick(False)
+                return self.getState()
+        
+        # Code reaching here means that all the children returned Failure.
+        self.logger.logInfo(message="All children returned Failure.")
+        self.setState('Failure')
         self.setTick(False)
-        return 'Failure'
+        return self.getState()
 
 
-class SequenceNode(Node): # '+'
+class SequenceNode(Node): # '->'
     '''
         SequenceNode class.
 
@@ -209,44 +242,44 @@ class SequenceNode(Node): # '+'
         Returns False only if all the 
         nodes return True
     '''
-    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] ) -> None:
+    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
+        if ( logger is None ):
+            logger = Logger()
+        self.logger = logger
 
     def iterateOverChildren(self) -> str:
+        self.logger.logInfo(message="Iterating over children.")
+
         for child in self.children:
+            child.setTick(True)
+            self.setTick(False)
             
-            if child is ConditionNode:
-                child.setTick(True)
+            childResponse = None
 
-                self.setTick(False)
+            if ( child is ConditionNode ):
                 childResponse = child.checkCondition()
-                self.setTick(True)
-
-                if ( childResponse is 'Running' or childResponse is 'Failure' ):
-                    self.state = child.getState()
-                    self.setTick(False)
-                    return child.getState()
-
+                self.logger.logInfo(message=f"ConditionNode returned {str(childResponse)}")
             elif child is ActionNode:
-                child.setTick(True)
-                
-                self.setTick(False)
                 childResponse = child.performAction()
-                self.setTick(True)
-
-                if ( childResponse['result'] is False ):
-                    self.state = child.getState()
-                    self.setTick(False)
-                    return child.getState()
-
-            elif child is SequenceNode:
-                child.setTick(True)
-                
-                self.setTick(False)
+                self.logger.logInfo(message=f"ActionNode returned {str(childResponse)}")
+            elif child is SelectorNode:
                 childResponse = child.iterateOverChildren()
-                self.setTick(True)
-
-                if ( childResponse is 'Running' or childResponse is 'Failure' ):
-                    self.state = child.getState()
-                    self.setTick(False)
-                    return child.getState()
+                self.logger.logInfo(message=f"SelectorNode returned {str(childResponse)}")
+            elif child is SequenceNode:
+                child.setTick(False)
+                self.logger.logError(message="SequenceNode cannot be a child of SequenceNode.")
+                childResponse = 'Error'
+            
+            self.logger.logInfo(message=f"Obtained Child Response : {str(childResponse)}")
+            self.setTick(True)
+            if ( childResponse == 'Running' or childResponse == 'Failure' or childResponse == 'Error' ):
+                self.setState(child.getState())
+                self.setTick(False)
+                return self.getState()
+        
+        # Code reaching here means that all the children returned Success.
+        self.logger.logInfo(message="All children returned Success.")
+        self.setState('Success')
+        self.setTick(False)
+        return self.getState()

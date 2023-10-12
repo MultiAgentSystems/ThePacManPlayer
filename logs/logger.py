@@ -14,9 +14,9 @@ class Colors:
     CRITICAL = EXCEPTION + UNDERLINE
 
 class Logger:
-    def __init__(self, fileName = './logs.txt', 
+    def __init__(self, fileName = './.logs.txt', 
                  fileformat = '%(asctime)s - %(levelname)s - %(message)s',
-                 stereamformat = '%(name)s - %(levelname)s - %(message)s',
+                 streamformat = '%(name)s - %(levelname)s - %(message)s',
                  fileLevel = logging.INFO, streamLevel = logging.DEBUG):
         try :
             self.fileName = fileName
@@ -30,7 +30,7 @@ class Logger:
 
             self.streamHandler = logging.StreamHandler()
             self.streamHandler.setLevel(streamLevel)
-            self.streamHandler.setFormatter(logging.Formatter(stereamformat))
+            self.streamHandler.setFormatter(logging.Formatter(streamformat))
 
             self.logger.addHandler(self.streamHandler)
             self.logger.addHandler(self.fileHandler)
