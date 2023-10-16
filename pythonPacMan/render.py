@@ -84,7 +84,7 @@ class game():
         self.imLogo = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "logo.gif")).convert()
 
     def StartNewGame(self):
-        self.levelNum = 2
+        self.levelNum = 12
         self.score = 0
         # self.lives = 3 #important
         self.lives = 0
@@ -94,6 +94,7 @@ class game():
         thisLevel.LoadLevel(thisGame.GetLevelNum())
         self.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
+        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
     def AddToScore(self, amount):
 
@@ -141,6 +142,7 @@ class game():
 
         self.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
+        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
         player.velX = 0
         player.velY = 0
@@ -263,6 +265,8 @@ class level():
                         for i in range(0, 4, 1):
                             if ghosts[i].state == 1:
                                 ghosts[i].state = 2
+                                ghosts[i].speed /= 2
+                                ghosts[i].currentPath = ""
 
                     elif result == tileID['door-h']:
                         # ran into a horizontal door
@@ -720,6 +724,8 @@ thisPopulation = -1
 thisGeneration = 0
 allFitness = np.zeros((n_generations, population_size))
 
+thisGame.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
+thisGame.screenSize = (thisGame.screenTileSize[1] * 16, thisGame.screenTileSize[0] * 16)
 # print (thisGame.screenSize)
 window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
@@ -750,9 +756,9 @@ while True:
         # print(d_ghosts,distance)
         for i in range(0, 4, 1):
             ghosts[i].Move()
-            d_ghosts[i] = ghosts[i].currentPath[-1]
+            d_ghosts[i] = ghosts[i].direction
             # print(d_ghosts)
-            ghostDistance[i] = len(ghosts[i].currentPath)
+            ghostDistance[i] = 5
         ghostDirections = (ghostDirection[d_ghosts[0]], ghostDirection[d_ghosts[1]], ghostDirection[d_ghosts[2]],
                            ghostDirection[d_ghosts[3]])
 
@@ -846,7 +852,11 @@ while True:
             thisGame.SetNextLevel()
             window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
-    screen.blit(img_Background, (0, 0))
+    bgsize = img_Background.get_size()
+
+    for i in range(0, thisGame.screenSize[0], bgsize[0]):
+        for j in range(0, thisGame.screenSize[1], bgsize[1]):
+            screen.blit(img_Background, (i, j))
 
     if not thisGame.mode == 8:
         thisLevel.DrawMap()

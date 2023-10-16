@@ -94,28 +94,28 @@ class ghost():
         if self.state == 1:
             # draw regular ghost (this one)
             screen.blit(self.anim[self.animFrame],
-                        (self.x - self.thisGame.screenPixelPos[0], self.y - self.thisGame.screenPixelPos[1]))
+                        (self.x, self.y))
         elif self.state == 2:
             # draw vulnerable ghost
 
             if self.thisGame.ghostTimer > 100:
                 # blue
                 screen.blit(self.ghosts[4].anim[self.animFrame],
-                            (self.x - self.thisGame.screenPixelPos[0], self.y - self.thisGame.screenPixelPos[1]))
+                            (self.x, self.y))
             else:
                 # blue/white flashing
                 tempTimerI = int(self.thisGame.ghostTimer / 10)
                 if tempTimerI == 1 or tempTimerI == 3 or tempTimerI == 5 or tempTimerI == 7 or tempTimerI == 9:
                     screen.blit(self.ghosts[5].anim[self.animFrame],
-                                (self.x - self.thisGame.screenPixelPos[0], self.y - self.thisGame.screenPixelPos[1]))
+                                (self.x, self.y))
                 else:
                     screen.blit(self.ghosts[4].anim[self.animFrame],
-                                (self.x - self.thisGame.screenPixelPos[0], self.y - self.thisGame.screenPixelPos[1]))
+                                (self.x, self.y))
 
         elif self.state == 3:
             # draw glasses
             screen.blit(tileIDImage[tileID['glasses']],
-                        (self.x - self.thisGame.screenPixelPos[0], self.y - self.thisGame.screenPixelPos[1]))
+                        (self.x, self.y))
 
         if self.thisGame.mode == 6 or self.thisGame.mode == 7:
             # don't animate ghost if the level is complete
@@ -144,17 +144,35 @@ class ghost():
             # meaning, it's time to go to the next path item
 
             if (self.currentPath):
-                self.currentPath = self.currentPath[1:]
                 self.FollowNextPathWay()
 
             else:
                 self.x = self.nearestCol * 16
                 self.y = self.nearestRow * 16
 
-                # chase pac-man
-                self.currentPath = path.FindPath((self.nearestRow, self.nearestCol),
-                                                 (self.player.nearestRow, self.player.nearestCol))
-                self.FollowNextPathWay()
+                randNum = random.random()
+
+                if self.state == 1 and randNum < 0.9:
+                    # chase pac-man
+                    self.currentPath = path.FindPath((self.nearestRow, self.nearestCol),
+                                                     (self.player.nearestRow, self.player.nearestCol))
+                    self.FollowNextPathWay()
+
+                else:
+                    # glasses found way back to ghost box
+                    if self.state == 3:
+                        self.state = 1
+                        self.speed = self.speed / 4
+
+                    # give ghost a path to a random spot (containing a pellet)
+                    (randRow, randCol) = (0, 0)
+
+                    while not self.thisLevel.GetMapTile((randRow, randCol)) == tileID['pellet'] or (randRow, randCol) == (0, 0):
+                        randRow = random.randint(1, self.thisLevel.lvlHeight - 2)
+                        randCol = random.randint(1, self.thisLevel.lvlWidth - 2)
+
+                    self.currentPath = path.FindPath((self.nearestRow, self.nearestCol), (randRow, randCol))
+                    self.FollowNextPathWay()
 
     def FollowNextPathWay(self):
 
@@ -166,34 +184,14 @@ class ghost():
             if len(self.currentPath) > 0:
                 if self.currentPath[0] == "L":
                     (self.velX, self.velY) = (-self.speed, 0)
+                    self.direction = "L"
                 elif self.currentPath[0] == "R":
                     (self.velX, self.velY) = (self.speed, 0)
+                    self.direction = "R"
                 elif self.currentPath[0] == "U":
                     (self.velX, self.velY) = (0, -self.speed)
+                    self.direction = "U"
                 elif self.currentPath[0] == "D":
                     (self.velX, self.velY) = (0, self.speed)
-
-            else:
-                # this ghost has reached his destination!!
-
-                if not self.state == 3:
-                    # chase pac-man
-                    self.currentPath = path.FindPath((self.nearestRow, self.nearestCol),
-                                                     (self.player.nearestRow, self.player.nearestCol))
-                    self.FollowNextPathWay()
-
-                else:
-                    # glasses found way back to ghost box
-                    self.state = 1
-                    self.speed = self.speed / 4
-
-                    # give ghost a path to a random spot (containing a pellet)
-                    (randRow, randCol) = (0, 0)
-
-                    while not self.thisLevel.GetMapTile((randRow, randCol)) == tileID['pellet'] or (randRow, randCol) == (
-                    0, 0):
-                        randRow = random.randint(1, self.thisLevel.lvlHeight - 2)
-                        randCol = random.randint(1, self.thisLevel.lvlWidth - 2)
-
-                    self.currentPath = path.FindPath((self.nearestRow, self.nearestCol), (randRow, randCol))
-                    self.FollowNextPathWay()
+                    self.direction = "D"
+                self.currentPath = self.currentPath[1:]
