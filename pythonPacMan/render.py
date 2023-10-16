@@ -739,9 +739,11 @@ if pygame.joystick.get_count() > 0:
 else:
     js = None
 
-while True:
+rand = 0
+while True: 
+    events = pygame.event.get()
 
-    CheckIfCloseButton(pygame.event.get())
+    CheckIfCloseButton(events)
 
     if thisGame.mode == 1:
         # normal gameplay mode
@@ -763,12 +765,24 @@ while True:
                            ghostDirection[d_ghosts[3]])
 
 
-        input_ga = GAInput(ghostDistance, ghostDirections)
+        # input_ga = GAInput(ghostDistance, ghostDirections)
 
         # print(f"i am input {input_ga}")
         # print(f"current population {thisPopulation}")
-        rand = ga.neural_net(thisPopulation, input_ga)
+        # rand = ga.neural_net(thisPopulation, input_ga)
         # print(f"i am rand: {rand}")
+        for event in events:
+            print(event.type)
+            if event.type == pygame.KEYDOWN:
+                print(event.key)
+                if event.key == pygame.K_RIGHT:
+                    rand = 0
+                if event.key == pygame.K_LEFT:
+                    rand = 1
+                if event.key == pygame.K_UP:
+                    rand = 2
+                if event.key == pygame.K_DOWN:
+                    rand = 3
 
         CheckInputs(rand, mode_game=1)
 
