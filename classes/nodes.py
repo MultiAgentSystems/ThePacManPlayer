@@ -19,12 +19,13 @@ class Node:
     '''
         Node class.
     '''
-    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] ) -> None:
+    def __init__(self, parent = None, siblingOrder : int = -1, children : list = [] ) -> None:
         self.parent = parent
         self.siblingOrder = siblingOrder
         self.children = children
         self.tick = False
         self.state = 'Initialized' # Can only be 'Initialized', 'Error', 'Running', 'Success' or 'Failure'
+        self._name = 'Node'
 
     def isRootNode(self) -> bool:
         return self.parent is None
@@ -50,7 +51,11 @@ class Node:
     def getState(self) -> str:
         return self.state
     
-    def addChild(self, child) -> int:
+    def addChild(self, child, position = None) -> int:
+        if ( position is None or position >= len(self.children) ):
+            self.children.append(child)
+        elif ( position < len(self.children) ):
+            self.children.insert(position, child)
         self.children.append(child)
         return len(self.children)
 
@@ -63,13 +68,26 @@ class Node:
         else :
             return -1
         return len(self.children)
+    
+    def setSiblingOrder(self, siblingOrder : int) -> None:
+        self.siblingOrder = siblingOrder
+
+    def getSiblingOrder(self) -> int:
+        return self.siblingOrder
+    
+    def getYoungestChild(self):
+        if ( len(self.getChildren()) == 0 ):
+            return None
+        else :
+            return self.getChildren()[-1]
 
     def __str__(self) -> str:
+
         printableString = ""
         attributeList = [a for a in dir(self) if not a.startswith('__') and not callable(getattr(self, a))]
         for attribute in attributeList:
             printableString += f"{attribute} : {getattr(self, attribute)}\n"
-        return printableString
+        return "*"*20 + "\n" + printableString + "*"*20
 
 class ActionNode(Node):
     '''
@@ -77,6 +95,7 @@ class ActionNode(Node):
     '''
     def __init__(self, actionFunction : Callable , parent = None, siblingOrder : int = 0, children : list = [], description = "" , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
+        self._name = 'ActionNode'
         self.actionFunction = actionFunction
         if ( logger is None ):
             logger = Logger()
@@ -126,6 +145,7 @@ class ConditionNode(Node):
     '''
     def __init__(self, conditionFunction : Callable, parent = None, siblingOrder : int = 0, children : list = [], description = "", logger = None ) -> None:
         super().__init__(parent, siblingOrder, children)
+        self._name = 'ConditionNode'
         self.conditionFunction = conditionFunction
         if description == "" :
             description = str(conditionFunction)
@@ -190,6 +210,7 @@ class SelectorNode(Node): # '?'
     '''
     def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
+        self._name = 'SelectorNode'
         if ( logger is None ):
             logger = Logger()
         self.logger = logger
@@ -244,6 +265,7 @@ class SequenceNode(Node): # '->'
     '''
     def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
+        self._name = 'SequenceNode'
         if ( logger is None ):
             logger = Logger()
         self.logger = logger

@@ -25,5 +25,11 @@ def testConditionNode():
     conditionNode.checkCondition(5,6)
     print(conditionNode.getTick())
 
+def testSequenceNode():
+    global universalLogger
+    sequenceNode = SequenceNode(logger=universalLogger)
+    print(sequenceNode)
+
 testConditionNode()
 testActionNode()
+testSequenceNode()

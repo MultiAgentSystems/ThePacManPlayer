@@ -77,3 +77,23 @@
 2023-10-13 01:49:40,949 - WARNING - Tick is FALSE whilst executing.
 2023-10-13 01:49:40,949 - INFO - Action function description : <function dummyAction at 0x7f14db721240>
 2023-10-13 01:49:40,949 - INFO - Action function returned True
+2023-10-16 15:44:50,574 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-16 15:44:50,575 - INFO - Condition function returned False
+2023-10-16 15:44:50,575 - WARNING - Tick is FALSE whilst executing.
+2023-10-16 15:44:50,576 - INFO - Action function description : <function dummyAction at 0x7f1066381360>
+2023-10-16 15:44:50,576 - INFO - Action function returned True
+2023-10-16 15:47:47,981 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-16 15:47:47,981 - INFO - Condition function returned False
+2023-10-16 15:47:47,982 - WARNING - Tick is FALSE whilst executing.
+2023-10-16 15:47:47,982 - INFO - Action function description : <function dummyAction at 0x7efd2eef1240>
+2023-10-16 15:47:47,982 - INFO - Action function returned True
+2023-10-16 15:48:04,903 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-16 15:48:04,903 - INFO - Condition function returned False
+2023-10-16 15:48:04,903 - WARNING - Tick is FALSE whilst executing.
+2023-10-16 15:48:04,903 - INFO - Action function description : <function dummyAction at 0x7fca96c71240>
+2023-10-16 15:48:04,903 - INFO - Action function returned True
+2023-10-16 15:49:37,157 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-16 15:49:37,157 - INFO - Condition function returned False
+2023-10-16 15:49:37,157 - WARNING - Tick is FALSE whilst executing.
+2023-10-16 15:49:37,157 - INFO - Action function description : <function dummyAction at 0x7fa0c7f4d240>
+2023-10-16 15:49:37,157 - INFO - Action function returned True
