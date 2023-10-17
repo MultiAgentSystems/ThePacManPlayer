@@ -121,7 +121,7 @@ class pacman():
             self.anim_pacmanCurrent = self.anim_pacmanU
 
         screen.blit(self.anim_pacmanCurrent[self.animFrame],
-                    (self.x - self.thisGame.screenPixelPos[0], self.y - self.thisGame.screenPixelPos[1]))
+                    (self.x, self.y))
 
         if self.thisGame.mode == 1:
             if not self.velX == 0 or not self.velY == 0:

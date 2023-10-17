@@ -639,9 +639,9 @@ while True:
         # print(d_ghosts,distance)
         for i in range(0, 4, 1):
             ghosts[i].Move()
-            d_ghosts[i] = ghosts[i].currentPath[-1]
+            d_ghosts[i] = ghosts[i].direction
             # print(d_ghosts)
-            ghostDistance[i] = len(ghosts[i].currentPath)
+            ghostDistance[i] = 5
         ghostDirections = (ghostDirection[d_ghosts[0]], ghostDirection[d_ghosts[1]], ghostDirection[d_ghosts[2]],
                            ghostDirection[d_ghosts[3]])
 

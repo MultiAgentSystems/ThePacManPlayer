@@ -66,11 +66,6 @@ class game():
 
         self.SetMode(3)
 
-        # camera variables
-        self.screenPixelPos = (0, 0)  # absolute x,y position of the screen from the upper-left corner of the level
-        self.screenNearestTilePos = (0, 0)  # nearest-tile position of the screen from the UL corner
-        self.screenPixelOffset = (0, 0)  # offset in pixels of the screen from its nearest-tile position
-
         self.screenTileSize = (23, 21)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
 
@@ -127,9 +122,6 @@ class game():
         for i in range(0, len(strNumber), 1):
             iDigit = int(strNumber[i])
             screen.blit(self.digit[iDigit], (x + i * 9, y))
-
-    def GetScreenPos(self):
-        return self.screenPixelPos
 
     def GetLevelNum(self):
         return self.levelNum
@@ -356,8 +348,8 @@ class level():
             for col in range(-1, thisGame.screenTileSize[1] + 1, 1):
 
                 # row containing tile that actually goes here
-                actualRow = thisGame.screenNearestTilePos[0] + row
-                actualCol = thisGame.screenNearestTilePos[1] + col
+                actualRow = row
+                actualCol = col
 
                 useTile = self.GetMapTile((actualRow, actualCol))
                 if not useTile == 0 and not useTile == tileID['door-h'] and not useTile == tileID['door-v']:
@@ -366,15 +358,15 @@ class level():
                     if useTile == tileID['pellet-power']:
                         if self.powerPelletBlinkTimer < 30:
                             screen.blit(tileIDImage[useTile], (
-                            col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                            col * 16, row * 16))
 
                     elif useTile == tileID['showlogo']:
                         screen.blit(thisGame.imLogo, (
-                        col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                        col * 16, row * 16))
 
                     else:
                         screen.blit(tileIDImage[useTile], (
-                        col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                        col * 16, row * 16))
 
     def LoadLevel(self, levelNum):
 
@@ -564,8 +556,8 @@ def GetClosestPellets():
     allEnergizers = []
     for row in range(-1, thisGame.screenTileSize[0] + 1, 1):
         for col in range(-1, thisGame.screenTileSize[1] + 1, 1):
-            actualRow = thisGame.screenNearestTilePos[0] + row
-            actualCol = thisGame.screenNearestTilePos[1] + col
+            actualRow = row
+            actualCol = col
 
             useTile = thisLevel.GetMapTile((actualRow, actualCol))
             if not useTile == 0 and not useTile == tileID['door-h'] and not useTile == tileID['door-v']:
@@ -879,7 +871,7 @@ while True:
 
     if thisGame.mode == 5:
         thisGame.DrawNumber(thisGame.ghostValue / 2,
-                            (player.x - thisGame.screenPixelPos[0] - 4, player.y - thisGame.screenPixelPos[1] + 6))
+                            (player.x - 4, player.y + 6))
 
     thisGame.DrawScore()
 
