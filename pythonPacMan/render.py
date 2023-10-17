@@ -66,11 +66,6 @@ class game():
 
         self.SetMode(3)
 
-        # camera variables
-        self.screenPixelPos = (0, 0)  # absolute x,y position of the screen from the upper-left corner of the level
-        self.screenNearestTilePos = (0, 0)  # nearest-tile position of the screen from the UL corner
-        self.screenPixelOffset = (0, 0)  # offset in pixels of the screen from its nearest-tile position
-
         self.screenTileSize = (23, 21)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
 
@@ -84,7 +79,7 @@ class game():
         self.imLogo = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "logo.gif")).convert()
 
     def StartNewGame(self):
-        self.levelNum = 2
+        self.levelNum = 12
         self.score = 0
         # self.lives = 3 #important
         self.lives = 0
@@ -94,6 +89,7 @@ class game():
         thisLevel.LoadLevel(thisGame.GetLevelNum())
         self.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
+        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
     def AddToScore(self, amount):
 
@@ -127,9 +123,6 @@ class game():
             iDigit = int(strNumber[i])
             screen.blit(self.digit[iDigit], (x + i * 9, y))
 
-    def GetScreenPos(self):
-        return self.screenPixelPos
-
     def GetLevelNum(self):
         return self.levelNum
 
@@ -141,6 +134,7 @@ class game():
 
         self.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
+        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
         player.velX = 0
         player.velY = 0
@@ -263,6 +257,8 @@ class level():
                         for i in range(0, 4, 1):
                             if ghosts[i].state == 1:
                                 ghosts[i].state = 2
+                                ghosts[i].speed /= 2
+                                ghosts[i].currentPath = ""
 
                     elif result == tileID['door-h']:
                         # ran into a horizontal door
@@ -352,8 +348,8 @@ class level():
             for col in range(-1, thisGame.screenTileSize[1] + 1, 1):
 
                 # row containing tile that actually goes here
-                actualRow = thisGame.screenNearestTilePos[0] + row
-                actualCol = thisGame.screenNearestTilePos[1] + col
+                actualRow = row
+                actualCol = col
 
                 useTile = self.GetMapTile((actualRow, actualCol))
                 if not useTile == 0 and not useTile == tileID['door-h'] and not useTile == tileID['door-v']:
@@ -362,15 +358,15 @@ class level():
                     if useTile == tileID['pellet-power']:
                         if self.powerPelletBlinkTimer < 30:
                             screen.blit(tileIDImage[useTile], (
-                            col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                            col * 16, row * 16))
 
                     elif useTile == tileID['showlogo']:
                         screen.blit(thisGame.imLogo, (
-                        col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                        col * 16, row * 16))
 
                     else:
                         screen.blit(tileIDImage[useTile], (
-                        col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                        col * 16, row * 16))
 
     def LoadLevel(self, levelNum):
 
@@ -560,8 +556,8 @@ def GetClosestPellets():
     allEnergizers = []
     for row in range(-1, thisGame.screenTileSize[0] + 1, 1):
         for col in range(-1, thisGame.screenTileSize[1] + 1, 1):
-            actualRow = thisGame.screenNearestTilePos[0] + row
-            actualCol = thisGame.screenNearestTilePos[1] + col
+            actualRow = row
+            actualCol = col
 
             useTile = thisLevel.GetMapTile((actualRow, actualCol))
             if not useTile == 0 and not useTile == tileID['door-h'] and not useTile == tileID['door-v']:
@@ -720,6 +716,8 @@ thisPopulation = -1
 thisGeneration = 0
 allFitness = np.zeros((n_generations, population_size))
 
+thisGame.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
+thisGame.screenSize = (thisGame.screenTileSize[1] * 16, thisGame.screenTileSize[0] * 16)
 # print (thisGame.screenSize)
 window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
@@ -733,9 +731,11 @@ if pygame.joystick.get_count() > 0:
 else:
     js = None
 
-while True:
+rand = 0
+while True: 
+    events = pygame.event.get()
 
-    CheckIfCloseButton(pygame.event.get())
+    CheckIfCloseButton(events)
 
     if thisGame.mode == 1:
         # normal gameplay mode
@@ -750,19 +750,29 @@ while True:
         # print(d_ghosts,distance)
         for i in range(0, 4, 1):
             ghosts[i].Move()
-            d_ghosts[i] = ghosts[i].currentPath[-1]
+            d_ghosts[i] = ghosts[i].direction
             # print(d_ghosts)
-            ghostDistance[i] = len(ghosts[i].currentPath)
+            ghostDistance[i] = 5
         ghostDirections = (ghostDirection[d_ghosts[0]], ghostDirection[d_ghosts[1]], ghostDirection[d_ghosts[2]],
                            ghostDirection[d_ghosts[3]])
 
 
-        input_ga = GAInput(ghostDistance, ghostDirections)
+        # input_ga = GAInput(ghostDistance, ghostDirections)
 
         # print(f"i am input {input_ga}")
         # print(f"current population {thisPopulation}")
-        rand = ga.neural_net(thisPopulation, input_ga)
+        # rand = ga.neural_net(thisPopulation, input_ga)
         # print(f"i am rand: {rand}")
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    rand = 0
+                if event.key == pygame.K_LEFT:
+                    rand = 1
+                if event.key == pygame.K_UP:
+                    rand = 2
+                if event.key == pygame.K_DOWN:
+                    rand = 3
 
         CheckInputs(rand, mode_game=1)
 
@@ -846,7 +856,11 @@ while True:
             thisGame.SetNextLevel()
             window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
-    screen.blit(img_Background, (0, 0))
+    bgsize = img_Background.get_size()
+
+    for i in range(0, thisGame.screenSize[0], bgsize[0]):
+        for j in range(0, thisGame.screenSize[1], bgsize[1]):
+            screen.blit(img_Background, (i, j))
 
     if not thisGame.mode == 8:
         thisLevel.DrawMap()
@@ -857,7 +871,7 @@ while True:
 
     if thisGame.mode == 5:
         thisGame.DrawNumber(thisGame.ghostValue / 2,
-                            (player.x - thisGame.screenPixelPos[0] - 4, player.y - thisGame.screenPixelPos[1] + 6))
+                            (player.x - 4, player.y + 6))
 
     thisGame.DrawScore()
 

@@ -82,7 +82,16 @@ class path_finder():
                 self.AddToClosedList(self.current)
 
                 for offset in self.neighborSet:
-                    thisNeighbor = (self.current[0] + offset[0], self.current[1] + offset[1])
+                    thisNeighbor = [self.current[0] + offset[0], self.current[1] + offset[1]]
+                    if thisNeighbor[0] < 0:
+                        thisNeighbor[0] += self.size[0]
+                    if thisNeighbor[1] < 0:
+                        thisNeighbor[1] += self.size[1]
+                    if thisNeighbor[0] > self.size[0] - 1:
+                        thisNeighbor[0] -= self.size[0]
+                    if thisNeighbor[1] > self.size[1] - 1:
+                        thisNeighbor[1] -= self.size[1]
+                    thisNeighbor = tuple(thisNeighbor)
 
                     if not thisNeighbor[0] < 0 and not thisNeighbor[1] < 0 and not thisNeighbor[0] > self.size[
                         0] - 1 and not thisNeighbor[1] > self.size[1] - 1 and not self.GetType(thisNeighbor) == 1:

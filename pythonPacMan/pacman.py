@@ -11,7 +11,7 @@ class pacman():
         self.y = 0
         self.velX = 0
         self.velY = 0
-        self.speed = 2
+        self.speed = 1
 
         self.nearestRow = 0
         self.nearestCol = 0
@@ -78,7 +78,7 @@ class pacman():
                         # snd_eatgh.play()
 
                         self.ghosts[i].state = 3
-                        self.ghosts[i].speed = self.ghosts[i].speed * 4
+                        self.ghosts[i].speed *= 8
                         # and send them to the ghost box
                         self.ghosts[i].x = self.ghosts[i].nearestCol * 16
                         self.ghosts[i].y = self.ghosts[i].nearestRow * 16
@@ -102,6 +102,7 @@ class pacman():
                 for i in range(0, 4, 1):
                     if self.ghosts[i].state == 2:
                         self.ghosts[i].state = 1
+                        self.ghosts[i].speed *= 2
                 self.ghostValue = 0
 
     def Draw(self, screen):
@@ -120,7 +121,7 @@ class pacman():
             self.anim_pacmanCurrent = self.anim_pacmanU
 
         screen.blit(self.anim_pacmanCurrent[self.animFrame],
-                    (self.x - self.thisGame.screenPixelPos[0], self.y - self.thisGame.screenPixelPos[1]))
+                    (self.x, self.y))
 
         if self.thisGame.mode == 1:
             if not self.velX == 0 or not self.velY == 0:
