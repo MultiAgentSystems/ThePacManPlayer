@@ -223,3 +223,173 @@ TypeError: Node.setSiblingOrder() missing 1 required positional argument: 'sibli
 2023-10-17 23:08:00,442 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
 2023-10-17 23:08:00,442 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
 2023-10-17 23:08:00,442 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-17 23:12:34,697 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-17 23:12:34,697 - INFO - Condition function returned False
+2023-10-17 23:12:34,697 - WARNING - Tick is FALSE whilst executing.
+2023-10-17 23:12:34,698 - INFO - Action function description : <function dummyAction at 0x7ff66c829480>
+2023-10-17 23:12:34,698 - INFO - Action function returned True
+2023-10-17 23:12:34,698 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
+2023-10-17 23:12:34,698 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-17 23:12:34,698 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-17 23:13:58,184 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-17 23:13:58,184 - INFO - Condition function returned False
+2023-10-17 23:13:58,184 - WARNING - Tick is FALSE whilst executing.
+2023-10-17 23:13:58,184 - INFO - Action function description : <function dummyAction at 0x7f4c2cd55360>
+2023-10-17 23:13:58,184 - INFO - Action function returned True
+2023-10-17 23:13:58,184 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
+2023-10-17 23:13:58,184 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-17 23:15:57,667 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-17 23:15:57,668 - INFO - Condition function returned False
+2023-10-17 23:15:57,668 - WARNING - Tick is FALSE whilst executing.
+2023-10-17 23:15:57,668 - INFO - Action function description : <function dummyAction at 0x7f103ec35360>
+2023-10-17 23:15:57,668 - INFO - Action function returned True
+2023-10-17 23:15:57,668 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
+2023-10-17 23:15:57,669 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-17 23:16:18,648 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-17 23:16:18,648 - INFO - Condition function returned False
+2023-10-17 23:16:18,649 - WARNING - Tick is FALSE whilst executing.
+2023-10-17 23:16:18,649 - INFO - Action function description : <function dummyAction at 0x7f9514fd5360>
+2023-10-17 23:16:18,649 - INFO - Action function returned True
+2023-10-17 23:16:18,649 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
+2023-10-17 23:16:18,649 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-17 23:23:53,361 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-17 23:23:53,361 - INFO - Condition function returned False
+2023-10-17 23:23:53,361 - WARNING - Tick is FALSE whilst executing.
+2023-10-17 23:23:53,362 - INFO - Action function description : <function dummyAction at 0x7f7a7f261360>
+2023-10-17 23:23:53,362 - INFO - Action function returned True
+2023-10-17 23:23:53,362 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
+2023-10-17 23:23:53,362 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-17 23:24:53,977 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-17 23:24:53,977 - INFO - Condition function returned False
+2023-10-17 23:24:53,978 - WARNING - Tick is FALSE whilst executing.
+2023-10-17 23:24:53,978 - INFO - Action function description : <function dummyAction at 0x7f2a90831360>
+2023-10-17 23:24:53,978 - INFO - Action function returned True
+2023-10-17 23:24:53,978 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
+2023-10-18 00:22:18,632 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:22:18,632 - INFO - Condition function returned False
+2023-10-18 00:22:18,632 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:22:18,632 - INFO - Action function description : <function dummyAction at 0x7ff452275360>
+2023-10-18 00:22:18,632 - INFO - Action function returned True
+2023-10-18 00:22:18,632 - INFO - Added the node ConditionNode to the parent SelectorNode at position 0.
+2023-10-18 00:27:33,713 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:27:33,713 - INFO - Condition function returned False
+2023-10-18 00:27:33,713 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:27:33,713 - INFO - Action function description : <function dummyAction at 0x7fd0064468c0>
+2023-10-18 00:27:33,713 - INFO - Action function returned True
+2023-10-18 00:27:33,713 - INFO - Added the node ConditionNode to the parent SelectorNode at position 2.
+2023-10-18 00:29:39,164 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:29:39,164 - INFO - Condition function returned False
+2023-10-18 00:29:39,164 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:29:39,164 - INFO - Action function description : <function dummyAction at 0x7f650b099360>
+2023-10-18 00:29:39,164 - INFO - Action function returned True
+2023-10-18 00:30:25,849 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:30:25,850 - INFO - Condition function returned False
+2023-10-18 00:30:25,850 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:30:25,850 - INFO - Action function description : <function dummyAction at 0x7f39339b1360>
+2023-10-18 00:30:25,850 - INFO - Action function returned True
+2023-10-18 00:30:47,222 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:30:47,222 - INFO - Condition function returned False
+2023-10-18 00:30:47,222 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:30:47,222 - INFO - Action function description : <function dummyAction at 0x7fc1489f1360>
+2023-10-18 00:30:47,222 - INFO - Action function returned True
+2023-10-18 00:30:47,222 - INFO - Added the node ConditionNode to the parent SelectorNode at position 2.
+2023-10-18 00:31:22,832 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:31:22,832 - INFO - Condition function returned False
+2023-10-18 00:31:22,832 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:31:22,832 - INFO - Action function description : <function dummyAction at 0x7fc566ee5480>
+2023-10-18 00:31:22,832 - INFO - Action function returned True
+2023-10-18 00:31:22,832 - INFO - Added the node ConditionNode to the parent SelectorNode at position 2.
+2023-10-18 00:31:52,580 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:31:52,580 - INFO - Condition function returned False
+2023-10-18 00:31:52,580 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:31:52,580 - INFO - Action function description : <function dummyAction at 0x7fd2180e9480>
+2023-10-18 00:31:52,580 - INFO - Action function returned True
+2023-10-18 00:31:52,580 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:33:25,119 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:33:25,119 - INFO - Condition function returned False
+2023-10-18 00:33:25,119 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:33:25,120 - INFO - Action function description : <function dummyAction at 0x7f2c58f41480>
+2023-10-18 00:33:25,120 - INFO - Action function returned True
+2023-10-18 00:33:25,120 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:34:38,942 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:34:38,942 - INFO - Condition function returned False
+2023-10-18 00:34:38,943 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:34:38,943 - INFO - Action function description : <function dummyAction at 0x7f8d9eea1480>
+2023-10-18 00:34:38,943 - INFO - Action function returned True
+2023-10-18 00:34:38,943 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:36:13,133 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:36:13,133 - INFO - Condition function returned False
+2023-10-18 00:36:13,133 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:36:13,133 - INFO - Action function description : <function dummyAction at 0x7f2bcdf3d480>
+2023-10-18 00:36:13,133 - INFO - Action function returned True
+2023-10-18 00:36:13,133 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:36:36,071 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:36:36,071 - INFO - Condition function returned False
+2023-10-18 00:36:36,071 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:36:36,071 - INFO - Action function description : <function dummyAction at 0x7f9c031ad360>
+2023-10-18 00:36:36,071 - INFO - Action function returned True
+2023-10-18 00:36:36,071 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:36:36,071 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:36:51,809 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:36:51,809 - INFO - Condition function returned False
+2023-10-18 00:36:51,809 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:36:51,809 - INFO - Action function description : <function dummyAction at 0x7f25e1105360>
+2023-10-18 00:36:51,809 - INFO - Action function returned True
+2023-10-18 00:36:51,809 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:36:51,809 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:39:22,376 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:39:22,376 - INFO - Condition function returned False
+2023-10-18 00:39:22,376 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:39:22,376 - INFO - Action function description : <function dummyAction at 0x7fcb0fd21360>
+2023-10-18 00:39:22,376 - INFO - Action function returned True
+2023-10-18 00:39:22,376 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:39:22,377 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:40:11,930 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:40:11,930 - INFO - Condition function returned False
+2023-10-18 00:40:11,930 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:40:11,930 - INFO - Action function description : <function dummyAction at 0x7f59b2d7d360>
+2023-10-18 00:40:11,930 - INFO - Action function returned True
+2023-10-18 00:40:11,930 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:40:11,930 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:41:33,213 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:41:33,213 - INFO - Condition function returned False
+2023-10-18 00:41:33,213 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:41:33,214 - INFO - Action function description : <function dummyAction at 0x7fd5a64e5360>
+2023-10-18 00:41:33,214 - INFO - Action function returned True
+2023-10-18 00:41:33,214 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:41:33,214 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:43:19,204 - INFO - Condition function : Description : Checks whether a > 2b + 1.
+2023-10-18 00:43:19,204 - INFO - Condition function returned False
+2023-10-18 00:43:19,205 - WARNING - Tick is FALSE whilst executing.
+2023-10-18 00:43:19,205 - INFO - Action function description : <function dummyAction at 0x7fe7acb65360>
+2023-10-18 00:43:19,205 - INFO - Action function returned True
+2023-10-18 00:43:42,656 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:43:42,657 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:43:54,718 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:43:54,718 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:44:58,083 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:44:58,083 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:45:16,286 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:45:16,286 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:45:55,238 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:45:55,238 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:47:10,425 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:47:10,425 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:47:20,239 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:47:20,239 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:47:59,577 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:47:59,577 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:48:28,000 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:48:28,000 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:56:45,485 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:56:45,485 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:58:09,269 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:58:09,269 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:58:32,875 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:58:32,875 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:58:48,626 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:58:48,626 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:59:29,787 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:59:29,787 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-18 00:59:48,622 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-18 00:59:48,622 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.

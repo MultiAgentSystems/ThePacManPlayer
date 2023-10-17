@@ -59,7 +59,6 @@ class Tree:
                 self.logger.logInfo(f"Added the node {node._name} to the parent {parentNode._name} at the start.")
                 for i in range ( 0, len(parentNode.getChildren()) ):
                     parentNode.getChildren()[i].setSiblingOrder(i)
-
             else :
                 # Add the new node after the elderBrother.
                 parentNode.addChild(child = node, position = elderBrother.getSiblingOrder() + 1)

@@ -19,10 +19,10 @@ class Node:
     '''
         Node class.
     '''
-    def __init__(self, parent = None, siblingOrder : int = -1, children : list = [] ) -> None:
+    def __init__(self, parent = None, siblingOrder : int = -1, children = None ) -> None:
         self.parent = parent
         self.siblingOrder = siblingOrder
-        self.children = children
+        self.children = children if children is not None else []
         self.tick = False
         self.state = 'Initialized' # Can only be 'Initialized', 'Error', 'Running', 'Success' or 'Failure'
         self._name = 'Node'
@@ -66,6 +66,9 @@ class Node:
             self.children.append(child)
         elif ( position < len(self.children) ):
             self.children.insert(position, child)
+
+        for order, child in enumerate(self.children):
+            child.setSiblingOrder(order)
         return len(self.children)
 
     def getChildren(self) -> list:
@@ -74,6 +77,8 @@ class Node:
     def removeChild(self, child) -> int:
         if ( child in self.children ):
             self.children.remove(child)
+            for order, child in enumerate(self.children):
+                child.setSiblingOrder(order)
         else :
             return -1
         return len(self.children)
@@ -102,14 +107,14 @@ class ActionNode(Node):
     '''
         ActionNode class.
     '''
-    def __init__(self, actionFunction : Callable , parent = None, siblingOrder : int = 0, children : list = [], description = "" , logger = None) -> None:
+    def __init__(self, actionFunction : Callable , parent = None, siblingOrder : int = 0, children = None, description = None , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'ActionNode'
         self.actionFunction = actionFunction
         if ( logger is None ):
             logger = Logger()
         self.logger = logger
-        if description == "" :
+        if description is None :
             description = str(actionFunction)
         self.actionDescription = description
 
@@ -152,11 +157,11 @@ class ConditionNode(Node):
     '''
         ConditionNode class.
     '''
-    def __init__(self, conditionFunction : Callable, parent = None, siblingOrder : int = 0, children : list = [], description = "", logger = None ) -> None:
+    def __init__(self, conditionFunction : Callable, parent = None, siblingOrder : int = 0, children = None, description = None, logger = None ) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'ConditionNode'
         self.conditionFunction = conditionFunction
-        if description == "" :
+        if description is None :
             description = str(conditionFunction)
         self.conditionDescription = description
         if ( logger is None ):
@@ -217,7 +222,7 @@ class SelectorNode(Node): # '?'
         Returns False only if all the 
         nodes return False
     '''
-    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] , logger = None) -> None:
+    def __init__(self, parent = None, siblingOrder : int = 0, children = None , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'SelectorNode'
         if ( logger is None ):
@@ -272,7 +277,7 @@ class SequenceNode(Node): # '->'
         Returns False only if all the 
         nodes return True
     '''
-    def __init__(self, parent = None, siblingOrder : int = 0, children : list = [] , logger = None) -> None:
+    def __init__(self, parent = None, siblingOrder : int = 0, children = None , logger = None) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'SequenceNode'
         if ( logger is None ):

@@ -31,9 +31,9 @@ def testSequenceNode():
     sequenceNode = SequenceNode(logger=universalLogger)
     print(sequenceNode)
 
-testConditionNode()
-testActionNode()
-testSequenceNode()
+# testConditionNode()
+# testActionNode()
+# testSequenceNode()
 
 
 def testTreeExectionOrder():
@@ -51,31 +51,46 @@ def testTreeExectionOrder():
     thisTree = Tree(root=sequenceNode, logger=universalLogger)
 
     thisTree.updateExecutionOrder(backtrack=True)
-    
+
+    expected = ['SequenceNode', 'SelectorNode', 'ActionNode', 'SelectorNode', 'ActionNode', 'SelectorNode', 'SequenceNode', 'ConditionNode', 'SequenceNode', 'ConditionNode', 'SequenceNode', 'ConditionNode', 'SequenceNode']
+    recieved = []
     for node in thisTree.getExecutionOrder():
-        print(node._name)
+        recieved.append(node._name)
+
+    if ( expected == recieved ):
+        print("Test Passed")
+    else :
+        print("Test For Execution Order Failed")
+
 
 def testTreeAddNode():
     global universalLogger
 
-    sequenceNode = SequenceNode(logger=universalLogger)
-    sequenceNode.addChild(SelectorNode(logger=universalLogger))
+    newSequenceNode = SequenceNode(logger=universalLogger)
+    newSequenceNode.addChild(SelectorNode(logger=universalLogger))
 
     for _ in range(3):
-        sequenceNode.addChild(ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.", logger=universalLogger))
+        newSequenceNode.addChild(ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.", logger=universalLogger))
 
     for _ in range(2):
-        sequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, logger=universalLogger))
+        newSequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, logger=universalLogger))
 
-    thisTree = Tree(root=sequenceNode, logger=universalLogger)
+    newTree = Tree(root=newSequenceNode, logger=universalLogger)
+    
+    newTree.addNode(node=ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.", logger=universalLogger), parentNode=newSequenceNode.getChildren()[0], elderBrother=newSequenceNode.getChildren()[0].getChildren()[0] )
+    newTree.addNode(node=ConditionNode(conditionFunction=dummyCondition, description="Checks Something.", logger=universalLogger ), parentNode=newSequenceNode)
 
-    thisTree.addNode(node=ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.", logger=universalLogger), parentNode=sequenceNode.getChildren()[0], elderBrother=sequenceNode.getChildren()[0].getChildren()[1])
-    thisTree.addNode(node=ConditionNode(conditionFunction=dummyCondition, description="Checks Something." ), parentNode=sequenceNode)
-
-    thisTree.updateExecutionOrder()
-
-    for node in thisTree.getExecutionOrder():
-        print(node._name)
+    newTree.updateExecutionOrder()
+    
+    expected = ['SequenceNode', 'ConditionNode', 'SelectorNode', 'ActionNode', 'ConditionNode', 'ActionNode', 'ConditionNode', 'ConditionNode', 'ConditionNode']
+    recieved = []
+    for node in newTree.getExecutionOrder():
+        recieved.append(node._name)
+    
+    if ( expected == recieved ):
+        print("Test Passed")
+    else :
+        print("Test For Add Node Failed")
 
 
 testTreeExectionOrder()
