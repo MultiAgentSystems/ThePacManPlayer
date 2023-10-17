@@ -1,11 +1,19 @@
-from nodes import *
+from .nodes import *
 import copy
 
 class Tree:
-    def __init__(self, root = None ) -> None:
+    def __init__(self, root = None, logger = None ) -> None:
+        if (root is None ):
+            root = SelectorNode()    
+        
         self.root = root
         self.size = 0
-        self.logger = Logger()
+        
+        self.executionOrder = []
+
+        if ( logger is None ):
+            logger = Logger()
+        self.logger = logger
 
     def setRoot(self, root : Node) -> None:
         if ( root is None ):
@@ -19,8 +27,17 @@ class Tree:
     def getSize(self) :
         return self.size
 
-    def getOperationOrder(self):
-        pass
+    def getExecutionOrder(self):
+        if ( len(self.executionOrder) == 0 ):
+            self.logger.logWarning(message=f"Execution Order is empty.")
+        return self.executionOrder
+    
+    def updateExecutionOrder(self, backtrack : bool = False ):
+        try :
+            self.executionOrder = self.root.getExecutionOrder(backtrack=backtrack)
+        except Exception :
+            self.logger.logException(message="Could not update execution order.")
+
 
     def addNode(self, node : Node, parentNode : Node, elderBrother = None) -> None:
         try :
@@ -36,7 +53,7 @@ class Tree:
             
             if ( elderBrother is None ):
                 # Add the new node at the first position.
-                parentNode.addChild(node)
+                parentNode.addChild(node, position=0)
                 node.setParent(parentNode)
 
                 self.logger.logInfo(f"Added the node {node._name} to the parent {parentNode._name} at the start.")
@@ -49,21 +66,38 @@ class Tree:
                 node.setParent(parentNode)
 
                 self.logger.logInfo(f"Added the node {node._name} to the parent {parentNode._name} at position {node.getSiblingOrder()}.")
-                for i in range ( elderBrother.setSiblingOrder() + 1, len(parentNode.getChildren()) ):
+                for i in range ( elderBrother.getSiblingOrder() + 1, len(parentNode.getChildren()) ):
                     parentNode.getChildren()[i].setSiblingOrder(i)
             
+            self.updateExecutionOrder()
             self.size += 1
         except Exception :
             self.logger.logException(message="Could not add node.")
             print(Exception)
 
     def getSubTree(self, node : Node, copying = True):
-        # Return a subtree using the current node as 
+        # Return a subtree using the passed node as 
         # the root.
-        if ( copying is False):
-            return Tree(root=node)
-        else :
-            return Tree(root=copy.deepcopy(node))
+        try :
+            if ( node is None ):
+                self.logger.logError(message=f"Node is None")
+                raise Exception
+            elif ( node.isLeafNode() ):
+                self.logger.logWarning(message=f"Subtree of a leaf node is just the node itself.")
+
+            if ( copying is False):
+                self.logger.logInfo(f"Creating a copy of the node {node._name}.")
+                return Tree(root=copy.copy(node))
+            else :
+                self.logger.logInfo(f"Creating a deepcopy of the node {node._name}.")
+                return Tree(root=copy.deepcopy(node))
+        except Exception as E:
+            self.logger.logException(message=str(E))
+
+    # def __str__(self) :
+        #Printing a tree in a nice way
+        # treeAsString = f"Tree with root {self.root._name}"
+        # return treeAsString
 
 class BehaviourTree(Tree):
     def __init__(self, root = None ) -> None:

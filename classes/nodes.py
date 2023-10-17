@@ -51,12 +51,21 @@ class Node:
     def getState(self) -> str:
         return self.state
     
+    def getExecutionOrder(self, backtrack : bool = False) -> list:
+        executionOrder = [self]
+
+        for child in self.children:
+            executionOrder += child.getExecutionOrder(backtrack = backtrack)
+            if ( backtrack is True ):
+                executionOrder += [self]
+
+        return executionOrder
+
     def addChild(self, child, position = None) -> int:
         if ( position is None or position >= len(self.children) ):
             self.children.append(child)
         elif ( position < len(self.children) ):
             self.children.insert(position, child)
-        self.children.append(child)
         return len(self.children)
 
     def getChildren(self) -> list:

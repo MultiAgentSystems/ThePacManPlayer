@@ -1,4 +1,5 @@
 from classes.nodes import *
+from classes.tree import *
 
 universalLogger = Logger()
 
@@ -33,3 +34,49 @@ def testSequenceNode():
 testConditionNode()
 testActionNode()
 testSequenceNode()
+
+
+def testTreeExectionOrder():
+    global universalLogger
+    
+    sequenceNode = SequenceNode(logger=universalLogger)
+    sequenceNode.addChild(SelectorNode(logger=universalLogger))
+    
+    for _ in range(3):
+        sequenceNode.addChild(ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.", logger=universalLogger))
+    
+    for _ in range(2):
+        sequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, logger=universalLogger))
+    
+    thisTree = Tree(root=sequenceNode, logger=universalLogger)
+
+    thisTree.updateExecutionOrder(backtrack=True)
+    
+    for node in thisTree.getExecutionOrder():
+        print(node._name)
+
+def testTreeAddNode():
+    global universalLogger
+
+    sequenceNode = SequenceNode(logger=universalLogger)
+    sequenceNode.addChild(SelectorNode(logger=universalLogger))
+
+    for _ in range(3):
+        sequenceNode.addChild(ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.", logger=universalLogger))
+
+    for _ in range(2):
+        sequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, logger=universalLogger))
+
+    thisTree = Tree(root=sequenceNode, logger=universalLogger)
+
+    thisTree.addNode(node=ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.", logger=universalLogger), parentNode=sequenceNode.getChildren()[0], elderBrother=sequenceNode.getChildren()[0].getChildren()[1])
+    thisTree.addNode(node=ConditionNode(conditionFunction=dummyCondition, description="Checks Something." ), parentNode=sequenceNode)
+
+    thisTree.updateExecutionOrder()
+
+    for node in thisTree.getExecutionOrder():
+        print(node._name)
+
+
+testTreeExectionOrder()
+testTreeAddNode()
