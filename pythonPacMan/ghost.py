@@ -139,6 +139,37 @@ class ghost():
         self.nearestRow = int(((self.y + 8) / 16))
         self.nearestCol = int(((self.x + 8) / 16))
 
+        for iRow in range(self.nearestRow - 1, self.nearestRow + 2, 1):
+            for iCol in range(self.nearestCol - 1, self.nearestCol + 2, 1):
+                if (self.x - (iCol * 16) < 16) and (self.x - (iCol * 16) > -16) and (self.y - (iRow * 16) < 16) and (
+                        self.y - (iRow * 16) > -16):
+                    
+                    result = self.thisLevel.GetMapTile((iRow, iCol))
+
+                    if result == tileID['door-h']:
+                        # ran into a horizontal door
+                        for i in range(0, self.thisLevel.lvlWidth, 1):
+                            if not i == iCol:
+                                if self.thisLevel.GetMapTile((iRow, i)) == tileID['door-h']:
+                                    self.x = i * 16
+
+                                    if self.velX > 0:
+                                        self.x += 16
+                                    else:
+                                        self.x -= 16
+
+                    elif result == tileID['door-v']:
+                        # ran into a vertical door
+                        for i in range(0, self.thisLevel.lvlHeight, 1):
+                            if not i == iRow:
+                                if self.thisLevel.GetMapTile((i, iCol)) == tileID['door-v']:
+                                    self.y = i * 16
+
+                                    if self.velY > 0:
+                                        self.y += 16
+                                    else:
+                                        self.y -= 16
+
         if (self.x % 16) == 0 and (self.y % 16) == 0:
             # if the ghost is lined up with the grid again
             # meaning, it's time to go to the next path item
@@ -156,6 +187,7 @@ class ghost():
                     # chase pac-man
                     self.currentPath = path.FindPath((self.nearestRow, self.nearestCol),
                                                      (self.player.nearestRow, self.player.nearestCol))
+                    # print(self.currentPath)
                     self.FollowNextPathWay()
 
                 else:
@@ -176,7 +208,7 @@ class ghost():
 
     def FollowNextPathWay(self):
 
-        # print "Ghost " + str(self.id) + " rem: " + self.currentPath
+        # print("Ghost " + str(self.id) + " rem: " + self.currentPath)
 
         # only follow this pathway if there is a possible path found!
         if not self.currentPath == False:

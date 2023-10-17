@@ -772,9 +772,7 @@ while True:
         # rand = ga.neural_net(thisPopulation, input_ga)
         # print(f"i am rand: {rand}")
         for event in events:
-            print(event.type)
             if event.type == pygame.KEYDOWN:
-                print(event.key)
                 if event.key == pygame.K_RIGHT:
                     rand = 0
                 if event.key == pygame.K_LEFT:
