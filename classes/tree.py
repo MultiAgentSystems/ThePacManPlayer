@@ -15,11 +15,15 @@ class Tree:
             logger = Logger()
         self.logger = logger
 
-    def setRoot(self, root : Node) -> None:
+    def setRoot(self, root : Node, prune : bool = False) -> None:
         if ( root is None ):
             self.logger.logWarning(message=f"Root is None")
         self.root = root
         self.logger.logInfo(f"Set root node as {str(self.root)}")
+        if prune :
+            self.executionOrder = self.root.getExecutionOrder()
+            self.size = len(self.root.getExecutionOrder(backtrack=False))
+            self.logger.logInfo(f"Previous Tree Pruned.")
     
     def getRoot(self) :
         return self.root
@@ -50,7 +54,6 @@ class Tree:
                 raise Exception
 
             # Now, we can safely add the node as a child to parentNode
-            
             if ( elderBrother is None ):
                 # Add the new node at the first position.
                 parentNode.addChild(node, position=0)
@@ -93,12 +96,20 @@ class Tree:
         except Exception as E:
             self.logger.logException(message=str(E))
 
-    # def __str__(self) :
-        #Printing a tree in a nice way
-        # treeAsString = f"Tree with root {self.root._name}"
-        # return treeAsString
+    def __str__(self) :
+        # Printing a tree in a nice way
+        treeAsString = f"Tree with root {self.getRoot()._name}"
+        return treeAsString
 
 class BehaviourTree(Tree):
     def __init__(self, root = None ) -> None:
         super().__init__(root)
     
+    def checkForStaticConstraints(self) -> None:
+        pass
+
+    def checkForDynamicConstraints(self) -> None:
+        pass
+
+    def checkForHybridConstraints(self) -> None:
+        pass

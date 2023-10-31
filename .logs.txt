@@ -393,3 +393,5 @@ TypeError: Node.setSiblingOrder() missing 1 required positional argument: 'sibli
 2023-10-18 00:59:29,787 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
 2023-10-18 00:59:48,622 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
 2023-10-18 00:59:48,622 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
+2023-10-27 21:16:25,365 - INFO - Added the node ConditionNode to the parent SelectorNode at position 1.
+2023-10-27 21:16:25,366 - INFO - Added the node ConditionNode to the parent SequenceNode at the start.
