@@ -8,8 +8,8 @@ The nodes are numbered in their preorder traversal order, from 0 to n-1.
 
 class NormalisedTree:
     def __init__(self, parents, labels) -> None:
-        self.parents = parents
-        self.labels = labels
+        self.parents = parents.copy()
+        self.labels = labels.copy()
         self.sz = len(parents)
         self.children = [[] for _ in range(self.sz)]
         for i in range(self.sz):
@@ -32,6 +32,8 @@ class NormalisedTree:
 
     def getNextSibling(self, node):
         parent = self.parents[node]
+        if parent == -1:
+            return -1
         for i in range(len(self.children[parent])):
             if self.children[parent][i] == node:
                 if i == len(self.children[parent]) - 1:
@@ -48,13 +50,18 @@ class NormalisedTree:
         check = None
         for x in rmos:
             if up == 0:
+                if len(self.children[x]) == 0:
+                    continue
                 y = self.children[x][0]
             else:
                 y = self.getKthParent(x, up - 1)
+                assert y != -1
                 if self.parents[y] == check:
                     # All RMOs that can be found in this sibling line have already been explored
                     continue
                 y = self.getNextSibling(y)
+                if y == -1:
+                    continue
                 check = self.parents[y]
 
             while y != -1:
@@ -72,31 +79,52 @@ class NormalisedTree:
         expanded_pats = {}
 
         for pat, rmos in pat_rmos.items():
-            curr_extender = self.sz - 1
+            curr_extender = pat.getSize() - 1
             for p in range(self.sz):
                 for new_label in possible_labels:
                     new_rmos = self.updateRMOs(rmos, p, new_label)
                     if len(new_rmos) == 0:
                         continue
 
-                    new_parents = self.parents.copy()
-                    new_labels = self.labels.copy()
+                    new_parents = pat.getParentArray().copy()
+                    new_labels = pat.getLabelArray().copy()
                     new_parents.append(curr_extender)
                     new_labels.append(new_label)
                     new_pat = NormalisedTree(new_parents, new_labels)
                     assert (new_pat not in expanded_pats)
                     expanded_pats[new_pat] = new_rmos
 
-                curr_extender = self.parents[curr_extender]
+                curr_extender = pat.getKthParent(curr_extender, 1)
+                if curr_extender == -1:
+                    break
+
+        return expanded_pats
+
+    def getTerminals(self):
+        is_leaf = [True] * len(self.parents)
+        for parent in self.parents[1:]:
+            is_leaf[parent] = False
+        terminals = []
+        for i in range(len(is_leaf)):
+            if is_leaf[i]:
+                terminals.append(i)
+        return terminals
 
     def countTerminals(self):
-        is_leaf = [True] * len(self.parents)
-        for parent in self.parents:
-            is_leaf[parent] = False
-        return sum(is_leaf)
+        return len(self.getTerminals())
+
+    def invalidTerminalsExist(self):
+        terminals = self.getTerminals()
+        for terminal in terminals:
+            if self.labels[terminal] in ["SelectorNode", "SequenceNode"]:
+                return True
+        return False
+
+    def getNormalisedTree(self):
+        return self
 
     def __hash__(self):
-        return hash((self.parents, self.labels))
+        return hash((tuple(self.parents), tuple(self.labels)))
 
     def __eq__(self, other):
         return (self.parents, self.labels) == (other.parents, other.labels)
