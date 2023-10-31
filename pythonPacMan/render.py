@@ -16,18 +16,13 @@ from path_finder import path
 from pacman import pacman
 from ghost import ghost
 from tile import *
+from level import level
+from game import game
 
 SCRIPT_PATH = sys.path[0]
 # SCRIPT_PATH = "Pac-AI-master"
 print(SCRIPT_PATH)
 
-# Joystick defaults - maybe add a Preferences dialog in the future?
-JS_DEVNUM = 0  # device 0 (pygame joysticks always start at 0). if JS_DEVNUM is not a valid device, will use 0
-JS_XAXIS = 0  # axis 0 for left/right (default for most joysticks)
-JS_YAXIS = 1  # axis 1 for up/down (default for most joysticks)
-JS_STARTBUTTON = 0  # button number to start the game. this is a matter of personal preference, and will vary from device to device
-
-JS_STARTBUTTON = 0  # button number to start the game. this is a matter of personal preference, and will vary from device to device
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -38,501 +33,6 @@ pygame.display.set_caption("Pacman")
 screen = pygame.display.get_surface()
 
 img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "1.gif")).convert()
-
-
-#      ___________________
-# ___/  class definitions  \_______________________________________________
-
-class game():
-
-    def __init__(self):
-        self.levelNum = 0
-        self.score = 0
-        # self.lives = 3 # ! IMPORTANT
-        self.lives = 0
-
-        # game "mode" variable
-        # 1 = normal
-        # 2 = hit ghost
-        # 3 = game over
-        # 4 = wait to start
-        # 5 = wait after eating ghost
-        # 6 = wait after finishing level
-        self.mode = 0
-        self.elapsedTime = 0  # New!
-        self.modeTimer = 0
-        self.ghostTimer = 0
-        self.ghostValue = 0
-
-        self.SetMode(3)
-
-        self.screenTileSize = (23, 21)
-        self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
-
-        # numerical display digits
-        self.digit = {}
-        for i in range(0, 10, 1):
-            self.digit[i] = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", str(i) + ".gif")).convert()
-        self.imLife = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "life.gif")).convert()
-        self.imGameOver = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "gameover.gif")).convert()
-        self.imReady = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "ready.gif")).convert()
-        self.imLogo = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "logo.gif")).convert()
-
-    def StartNewGame(self):
-        self.levelNum = 12
-        self.score = 0
-        # self.lives = 3 #important
-        self.lives = 0
-        self.elapsedTime = 0
-
-        self.SetMode(4)
-        thisLevel.LoadLevel(thisGame.GetLevelNum())
-        self.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
-        self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
-        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
-
-    def AddToScore(self, amount):
-
-        extraLifeSet = [25000, 50000, 100000, 150000]
-
-        for specialScore in extraLifeSet:
-            if self.score < specialScore and self.score + amount >= specialScore:
-                thisGame.lives += 1
-
-        self.score += amount
-
-    def DrawScore(self):
-        self.DrawNumber(self.score, (24 + 16, self.screenSize[1] - 24))
-
-        for i in range(0, self.lives, 1):
-            screen.blit(self.imLife, (24 + i * 10 + 16, self.screenSize[1] - 12))
-
-        if self.mode == 3:
-            screen.blit(self.imGameOver, (self.screenSize[0] / 2 - 32, self.screenSize[1] / 2 - 10))
-        elif self.mode == 4:
-            screen.blit(self.imReady, (self.screenSize[0] / 2 - 20, self.screenSize[1] / 2 + 12))
-
-        self.DrawNumber(self.levelNum, (0, self.screenSize[1] - 12))
-
-    def DrawNumber(self, number, x_y):
-        x, y = x_y
-        number = int(number)
-        strNumber = str(number)
-
-        for i in range(0, len(strNumber), 1):
-            iDigit = int(strNumber[i])
-            screen.blit(self.digit[iDigit], (x + i * 9, y))
-
-    def GetLevelNum(self):
-        return self.levelNum
-
-    def SetNextLevel(self):
-        self.levelNum += 1
-
-        self.SetMode(4)
-        thisLevel.LoadLevel(thisGame.GetLevelNum())
-
-        self.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
-        self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
-        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
-
-        player.velX = 0
-        player.velY = 0
-        player.anim_pacmanCurrent = player.anim_pacmanS
-
-    def SetMode(self, newMode):
-        self.mode = newMode
-        self.modeTimer = 0
-        # print " ***** GAME MODE IS NOW ***** " + str(newMode)
-
-
-class level():
-
-    def __init__(self):
-        self.lvlWidth = 0
-        self.lvlHeight = 0
-        self.edgeLightColor = (255, 255, 0, 255)
-        self.edgeShadowColor = (255, 150, 0, 255)
-        self.fillColor = (0, 255, 255, 255)
-        self.pelletColor = (255, 255, 255, 255)
-
-        self.map = {}
-
-        self.pellets = 0
-        self.powerPelletBlinkTimer = 0
-
-    def SetMapTile(self, row_col, newValue):
-        row, col = row_col
-        self.map[(row * self.lvlWidth) + col] = newValue
-
-    def GetMapTile(self, row_col):
-        row, col = row_col
-        if row >= 0 and row < self.lvlHeight and col >= 0 and col < self.lvlWidth:
-            return self.map[(row * self.lvlWidth) + col]
-        else:
-            return 0
-
-    def IsWall(self, row_col):
-        row, col = row_col
-        if row > thisLevel.lvlHeight - 1 or row < 0:
-            return True
-
-        if col > thisLevel.lvlWidth - 1 or col < 0:
-            return True
-
-        # check the offending tile ID
-        result = thisLevel.GetMapTile((row, col))
-
-        # if the tile was a wall
-        if result >= 100 and result <= 199:
-            return True
-        else:
-            return False
-
-    def CheckIfHitWall(self, possiblePlayerX_possiblePlayerY, row_col):
-        row, col = row_col
-        possiblePlayerX, possiblePlayerY = possiblePlayerX_possiblePlayerY
-        numCollisions = 0
-
-        # check each of the 9 surrounding tiles for a collision
-        for iRow in range(row - 1, row + 2, 1):
-            for iCol in range(col - 1, col + 2, 1):
-
-                if (possiblePlayerX - (iCol * 16) < 16) and (possiblePlayerX - (iCol * 16) > -16) and (
-                        possiblePlayerY - (iRow * 16) < 16) and (possiblePlayerY - (iRow * 16) > -16):
-
-                    if self.IsWall((iRow, iCol)):
-                        numCollisions += 1
-
-        if numCollisions > 0:
-            return True
-        else:
-            return False
-
-    def CheckIfHit(self, playerX_playerY, x_y, cushion):
-        x, y = x_y
-        playerX, playerY = playerX_playerY
-        if (playerX - x < cushion) and (playerX - x > -cushion) and (playerY - y < cushion) and (
-                playerY - y > -cushion):
-            return True
-        else:
-            return False
-
-    def CheckIfHitSomething(self, playerX_playerY, row_col):
-        playerX, playerY = playerX_playerY
-        row, col = row_col
-        for iRow in range(row - 1, row + 2, 1):
-            for iCol in range(col - 1, col + 2, 1):
-
-                if (playerX - (iCol * 16) < 16) and (playerX - (iCol * 16) > -16) and (playerY - (iRow * 16) < 16) and (
-                        playerY - (iRow * 16) > -16):
-                    # check the offending tile ID
-                    result = thisLevel.GetMapTile((iRow, iCol))
-
-                    if result == tileID['pellet']:
-                        # got a pellet
-                        thisLevel.SetMapTile((iRow, iCol), 0)
-                        # snd_pellet[player.pelletSndNum].play()
-                        # player.pelletSndNum = 1 - player.pelletSndNum
-
-                        thisLevel.pellets -= 1
-
-                        thisGame.AddToScore(10)
-
-                        if thisLevel.pellets == 0:
-                            # no more pellets left!
-                            # WON THE LEVEL
-                            thisGame.SetMode(6)
-
-
-                    elif result == tileID['pellet-power']:
-                        # got a power pellet
-                        thisLevel.SetMapTile((iRow, iCol), 0)
-                        # snd_powerpellet.play()
-
-                        thisGame.AddToScore(100)
-                        thisGame.ghostValue = 200
-
-                        thisGame.ghostTimer = 360
-                        for i in range(0, 4, 1):
-                            if ghosts[i].state == 1:
-                                ghosts[i].state = 2
-                                ghosts[i].speed /= 2
-                                ghosts[i].currentPath = ""
-
-                    elif result == tileID['door-h']:
-                        # ran into a horizontal door
-                        for i in range(0, thisLevel.lvlWidth, 1):
-                            if not i == iCol:
-                                if thisLevel.GetMapTile((iRow, i)) == tileID['door-h']:
-                                    player.x = i * 16
-
-                                    if player.velX > 0:
-                                        player.x += 16
-                                    else:
-                                        player.x -= 16
-
-                    elif result == tileID['door-v']:
-                        # ran into a vertical door
-                        for i in range(0, thisLevel.lvlHeight, 1):
-                            if not i == iRow:
-                                if thisLevel.GetMapTile((i, iCol)) == tileID['door-v']:
-                                    player.y = i * 16
-
-                                    if player.velY > 0:
-                                        player.y += 16
-                                    else:
-                                        player.y -= 16
-
-    def GetGhostBoxPos(self):
-
-        for row in range(0, self.lvlHeight, 1):
-            for col in range(0, self.lvlWidth, 1):
-                if self.GetMapTile((row, col)) == tileID['ghost-door']:
-                    return (row, col)
-
-        return False
-
-    def GetPathwayPairPos(self):
-
-        doorArray = []
-
-        for row in range(0, self.lvlHeight, 1):
-            for col in range(0, self.lvlWidth, 1):
-                if self.GetMapTile((row, col)) == tileID['door-h']:
-                    # found a horizontal door
-                    doorArray.append((row, col))
-                elif self.GetMapTile((row, col)) == tileID['door-v']:
-                    # found a vertical door
-                    doorArray.append((row, col))
-
-        if len(doorArray) == 0:
-            return False
-
-        chosenDoor = random.randint(0, len(doorArray) - 1)
-
-        if self.GetMapTile(doorArray[chosenDoor]) == tileID['door-h']:
-            # horizontal door was chosen
-            # look for the opposite one
-            for i in range(0, thisLevel.lvlWidth, 1):
-                if not i == doorArray[chosenDoor][1]:
-                    if thisLevel.GetMapTile((doorArray[chosenDoor][0], i)) == tileID['door-h']:
-                        return doorArray[chosenDoor], (doorArray[chosenDoor][0], i)
-        else:
-            # vertical door was chosen
-            # look for the opposite one
-            for i in range(0, thisLevel.lvlHeight, 1):
-                if not i == doorArray[chosenDoor][0]:
-                    if thisLevel.GetMapTile((i, doorArray[chosenDoor][1])) == tileID['door-v']:
-                        return doorArray[chosenDoor], (i, doorArray[chosenDoor][1])
-
-        return False
-
-    def PrintMap(self):
-
-        for row in range(0, self.lvlHeight, 1):
-            outputLine = ""
-            for col in range(0, self.lvlWidth, 1):
-                outputLine += str(self.GetMapTile((row, col))) + ", "
-
-            # print outputLine
-
-    def DrawMap(self):
-
-        self.powerPelletBlinkTimer += 1
-        if self.powerPelletBlinkTimer == 60:
-            self.powerPelletBlinkTimer = 0
-
-        for row in range(-1, thisGame.screenTileSize[0] + 1, 1):
-            outputLine = ""
-            for col in range(-1, thisGame.screenTileSize[1] + 1, 1):
-
-                # row containing tile that actually goes here
-                actualRow = row
-                actualCol = col
-
-                useTile = self.GetMapTile((actualRow, actualCol))
-                if not useTile == 0 and not useTile == tileID['door-h'] and not useTile == tileID['door-v']:
-                    # if this isn't a blank tile
-
-                    if useTile == tileID['pellet-power']:
-                        if self.powerPelletBlinkTimer < 30:
-                            screen.blit(tileIDImage[useTile], (
-                            col * 16, row * 16))
-
-                    elif useTile == tileID['showlogo']:
-                        screen.blit(thisGame.imLogo, (
-                        col * 16, row * 16))
-
-                    else:
-                        screen.blit(tileIDImage[useTile], (
-                        col * 16, row * 16))
-
-    def LoadLevel(self, levelNum):
-
-        self.map = {}
-
-        self.pellets = 0
-
-        f = open(os.path.join(SCRIPT_PATH, "images", "levels", str(levelNum) + ".txt"), 'r')
-        # ANDY -- edit this
-        # fileOutput = f.read()
-        # str_splitByLine = fileOutput.split('\n')
-        lineNum = -1
-        rowNum = 0
-        useLine = False
-        isReadingLevelData = False
-
-        for line in f:
-
-            lineNum += 1
-
-            # print " ------- Level Line " + str(lineNum) + " -------- "
-            while len(line) > 0 and (line[-1] == "\n" or line[-1] == "\r"): line = line[:-1]
-            while len(line) > 0 and (line[0] == "\n" or line[0] == "\r"): line = line[1:]
-            str_splitBySpace = line.split(' ')
-
-            j = str_splitBySpace[0]
-
-            if (j == "'" or j == ""):
-                # comment / whitespace line
-                # print " ignoring comment line.. "
-                useLine = False
-            elif j == "#":
-                # special divider / attribute line
-                useLine = False
-
-                firstWord = str_splitBySpace[1]
-
-                if firstWord == "lvlwidth":
-                    self.lvlWidth = int(str_splitBySpace[2])
-                    # print "Width is " + str( self.lvlWidth )
-
-                elif firstWord == "lvlheight":
-                    self.lvlHeight = int(str_splitBySpace[2])
-                    # print "Height is " + str( self.lvlHeight )
-
-                elif firstWord == "edgecolor":
-                    # edge color keyword for backwards compatibility (single edge color) mazes
-                    red = int(str_splitBySpace[2])
-                    green = int(str_splitBySpace[3])
-                    blue = int(str_splitBySpace[4])
-                    self.edgeLightColor = (red, green, blue, 255)
-                    self.edgeShadowColor = (red, green, blue, 255)
-
-                elif firstWord == "edgelightcolor":
-                    red = int(str_splitBySpace[2])
-                    green = int(str_splitBySpace[3])
-                    blue = int(str_splitBySpace[4])
-                    self.edgeLightColor = (red, green, blue, 255)
-
-                elif firstWord == "edgeshadowcolor":
-                    red = int(str_splitBySpace[2])
-                    green = int(str_splitBySpace[3])
-                    blue = int(str_splitBySpace[4])
-                    self.edgeShadowColor = (red, green, blue, 255)
-
-                elif firstWord == "fillcolor":
-                    red = int(str_splitBySpace[2])
-                    green = int(str_splitBySpace[3])
-                    blue = int(str_splitBySpace[4])
-                    self.fillColor = (red, green, blue, 255)
-
-                elif firstWord == "pelletcolor":
-                    red = int(str_splitBySpace[2])
-                    green = int(str_splitBySpace[3])
-                    blue = int(str_splitBySpace[4])
-                    self.pelletColor = (red, green, blue, 255)
-
-                elif firstWord == "startleveldata":
-                    isReadingLevelData = True
-                    #  "Level data has begun"
-                    rowNum = 0
-
-                elif firstWord == "endleveldata":
-                    isReadingLevelData = False
-                    #  "Level data has ended"
-
-            else:
-                useLine = True
-
-            # this is a map data line
-            if useLine == True:
-
-                if isReadingLevelData == True:
-
-                    for k in range(0, self.lvlWidth, 1):
-                        self.SetMapTile((rowNum, k), int(str_splitBySpace[k]))
-
-                        thisID = int(str_splitBySpace[k])
-                        if thisID == 4:
-                            # starting position for pac-man
-
-                            player.homeX = k * 16
-                            player.homeY = rowNum * 16
-                            self.SetMapTile((rowNum, k), 0)
-
-                        elif thisID >= 10 and thisID <= 13:
-                            # one of the ghosts
-
-                            ghosts[thisID - 10].homeX = k * 16
-                            ghosts[thisID - 10].homeY = rowNum * 16
-                            self.SetMapTile((rowNum, k), 0)
-
-                        elif thisID == 2:
-                            # pellet
-
-                            self.pellets += 1
-
-                    rowNum += 1
-
-        # reload all tiles and set appropriate colors
-        GetCrossRef(thisLevel)
-
-        # load map into the pathfinder object
-        path.ResizeMap((self.lvlHeight, self.lvlWidth))
-
-        for row in range(0, path.size[0], 1):
-            for col in range(0, path.size[1], 1):
-                if self.IsWall((row, col)):
-                    path.SetType((row, col), 1)
-                else:
-                    path.SetType((row, col), 0)
-
-        # do all the level-starting stuff
-        self.Restart()
-
-    def Restart(self):
-
-        for i in range(0, 4, 1):
-            # move ghosts back to home
-
-            ghosts[i].x = ghosts[i].homeX
-            ghosts[i].y = ghosts[i].homeY
-            ghosts[i].velX = 0
-            ghosts[i].velY = 0
-            ghosts[i].state = 1
-            ghosts[i].speed = 1
-            ghosts[i].Move()
-
-            # give each ghost a path to a random spot (containing a pellet)
-            (randRow, randCol) = (0, 0)
-
-            while not self.GetMapTile((randRow, randCol)) == tileID['pellet'] or (randRow, randCol) == (0, 0):
-                randRow = random.randint(1, self.lvlHeight - 2)
-                randCol = random.randint(1, self.lvlWidth - 2)
-
-            ghosts[i].currentPath = path.FindPath((ghosts[i].nearestRow, ghosts[i].nearestCol), (randRow, randCol))
-            ghosts[i].FollowNextPathWay()
-
-        player.x = player.homeX
-        player.y = player.homeY
-        player.velX = 0
-        player.velY = 0
-
-        player.anim_pacmanCurrent = player.anim_pacmanS
-        player.animFrame = 3
-
 
 def CheckIfCloseButton(events):
     for event in events:
@@ -691,6 +191,24 @@ def CheckInputs(direction, mode_game):
 #      __________________
 # ___/  main code block  \_____________________________________________________
 
+def runGame(BT, numRuns, display=False):
+    player = pacman(display=display)
+    ghosts = {}
+    for i in range(0, 6, 1):
+        ghosts[i] = ghost(i, display=display)
+    thisGame = game()
+    thisLevel = level(player, ghosts, thisGame, screen)
+    player.set(thisGame, thisLevel, ghosts)
+    for i in range(0, 6, 1):
+        ghosts[i].set(thisGame, thisLevel, ghosts, player)
+    thisGame.set(thisLevel, player, ghosts)
+    thisLevel.LoadLevel(thisGame.GetLevelNum())
+    thisGame.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
+    thisGame.screenSize = (thisGame.screenTileSize[1] * 16, thisGame.screenTileSize[0] * 16)
+    if display :
+        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
+
+
 # create the pacman
 player = pacman()
 
@@ -706,11 +224,12 @@ for i in range(0, 6, 1):
 population_size = ga.population_size
 n_generations = ga.n_generations
 
-thisGame = game()
-thisLevel = level()
+thisGame = game(screen)
+thisLevel = level(player, ghosts, thisGame, screen)
 player.set(thisGame, thisLevel, ghosts)
 for i in range(0, 6, 1):
     ghosts[i].set(thisGame, thisLevel, ghosts, player)
+thisGame.set(thisLevel, player, ghosts)
 thisLevel.LoadLevel(thisGame.GetLevelNum())
 thisPopulation = -1
 thisGeneration = 0
@@ -720,16 +239,6 @@ thisGame.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
 thisGame.screenSize = (thisGame.screenTileSize[1] * 16, thisGame.screenTileSize[0] * 16)
 # print (thisGame.screenSize)
 window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
-
-# initialise the joystick
-if pygame.joystick.get_count() > 0:
-    if JS_DEVNUM < pygame.joystick.get_count():
-        js = pygame.joystick.Joystick(JS_DEVNUM)
-    else:
-        js = pygame.joystick.Joystick(0)
-    js.init()
-else:
-    js = None
 
 rand = 0
 while True: 
