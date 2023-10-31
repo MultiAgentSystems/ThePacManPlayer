@@ -6,11 +6,12 @@ SCRIPT_PATH = sys.path[0]
 
 class level():
 
-    def __init__(self, player, ghosts, thisGame, screen):
+    def __init__(self, player, ghosts, thisGame, screen, display):
         self.player = player
         self.ghosts = ghosts
         self.thisGame = thisGame
         self.screen = screen
+        self.display = display
         self.lvlWidth = 0
         self.lvlHeight = 0
         self.edgeLightColor = (255, 255, 0, 255)
@@ -349,7 +350,7 @@ class level():
                     rowNum += 1
 
         # reload all tiles and set appropriate colors
-        GetCrossRef(self)
+        GetCrossRef(self, self.display)
 
         # load map into the pathfinder object
         path.ResizeMap((self.lvlHeight, self.lvlWidth))
@@ -392,5 +393,6 @@ class level():
         self.player.velX = 0
         self.player.velY = 0
 
-        self.player.anim_pacmanCurrent = self.player.anim_pacmanS
-        self.player.animFrame = 3
+        if self.display:
+            self.player.anim_pacmanCurrent = self.player.anim_pacmanS
+            self.player.animFrame = 3

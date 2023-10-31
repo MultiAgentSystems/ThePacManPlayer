@@ -4,7 +4,7 @@ SCRIPT_PATH = sys.path[0]
 
 class game():
 
-    def __init__(self, screen):
+    def __init__(self, screen, display):
         self.screen = screen
         self.levelNum = 0
         self.score = 0
@@ -29,14 +29,15 @@ class game():
         self.screenTileSize = (23, 21)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
 
-        # numerical display digits
-        self.digit = {}
-        for i in range(0, 10, 1):
-            self.digit[i] = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", str(i) + ".gif")).convert()
-        self.imLife = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "life.gif")).convert()
-        self.imGameOver = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "gameover.gif")).convert()
-        self.imReady = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "ready.gif")).convert()
-        self.imLogo = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "logo.gif")).convert()
+        if display:
+            # numerical display digits
+            self.digit = {}
+            for i in range(0, 10, 1):
+                self.digit[i] = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", str(i) + ".gif")).convert()
+            self.imLife = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "life.gif")).convert()
+            self.imGameOver = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "gameover.gif")).convert()
+            self.imReady = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "ready.gif")).convert()
+            self.imLogo = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "text", "logo.gif")).convert()
 
     def set(self, thisLevel, player, ghosts):
         self.thisLevel = thisLevel
@@ -46,8 +47,7 @@ class game():
     def StartNewGame(self):
         self.levelNum = 1
         self.score = 0
-        # self.lives = 3 #important
-        self.lives = 0
+        self.lives = 3 #important
         self.elapsedTime = 0
 
         self.SetMode(4)
