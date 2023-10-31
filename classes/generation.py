@@ -52,7 +52,7 @@ class Generation:
                 if self.isValidPattern(pat):
                     final_pats.append(pat)
 
-        max_bt_size = max([len(pars) for pars in bt_parents])
+        max_bt_size = max([bt.getSize() for bt in bts])
         for k in range(2, max_bt_size + 1):
             new_k_pats = {}
             old_pats_per_bt = [{} for _ in range(self.topCount)]
