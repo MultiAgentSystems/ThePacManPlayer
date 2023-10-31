@@ -5,7 +5,6 @@ The labels for Action/Condition nodes are the name of the node followed by the d
 The nodes are numbered in their preorder traversal order, from 0 to n-1.
 """
 
-
 class NormalisedTree:
     def __init__(self, parents, labels) -> None:
         self.parents = parents.copy()
