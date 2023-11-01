@@ -173,6 +173,19 @@ class ghost():
             # if the ghost is lined up with the grid again
             # meaning, it's time to go to the next path item
 
+            if (self.velX != 0):
+                tileUp = self.level.GetMapTile((self.nearestRow + 1, self.nearestCol))
+                tileDown = self.level.GetMapTile((self.nearestRow - 1, self.nearestCol))
+                if (tileUp < 100 or tileUp > 140) or (tileDown < 100 or tileDown > 140):
+                    # if we're not in a "horizontal" tunnel
+                    self.currentPath = ""
+            if (self.velY != 0):
+                tileLeft = self.level.GetMapTile((self.nearestRow, self.nearestCol - 1))
+                tileRight = self.level.GetMapTile((self.nearestRow, self.nearestCol + 1))
+                if (tileLeft < 100 or tileLeft > 140) or (tileRight < 100 or tileRight > 140):
+                    # if we're not in a "vertical" tunnel
+                    self.currentPath = ""
+
             if (self.currentPath):
                 self.FollowNextPathWay()
 
