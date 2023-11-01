@@ -156,6 +156,6 @@ def createSampleTree():
 
 def runTheGame():
     behaviourTree = createSampleTree()
-    runGame(behaviourTree, display=False)
+    runGame(behaviourTree, display=True)
 
 runTheGame()
