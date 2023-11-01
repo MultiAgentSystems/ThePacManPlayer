@@ -1,6 +1,5 @@
-import pygame, os, sys
-
-SCRIPT_PATH = sys.path[0]
+import pygame, os
+from scriptPath import SCRIPT_PATH
 
 NO_GIF_TILES = [23]
 
@@ -12,7 +11,7 @@ tileIDImage = {}  # gives tile image (when the ID# is known)
 # ___/  function: Get ID-Tilename Cross References  \______________________________________
 
 
-def GetCrossRef(thisLevel, display=True):
+def GetCrossRef(thisLevel, display):
     f = open(os.path.join(SCRIPT_PATH, "images", "crossref.txt"), 'r')
     # ANDY -- edit
     # fileOutput = f.read()
