@@ -24,13 +24,13 @@ def CheckInputs(direction, mode_game, thisLevel, player):
     '''
     # r l u d
     result = [None] * 4
-    if direction == 0:
+    if direction == "R":
         result[0] = 1
-    if direction == 1:
+    if direction == "L":
         result[1] = 1
-    if direction == 2:
+    if direction == "U":
         result[2] = 1
-    if direction == 3:
+    if direction == "D":
         result[3] = 1
 
     if mode_game == 1:
@@ -133,7 +133,6 @@ def runGame(BT, numRuns=1, display=False):
                     thisLevel.Restart()
 
                     thisGame.lives -= 1
-                    print(thisGame.score)
                     if thisGame.lives == 0:
                         thisGame.SetMode(3)
                     else:

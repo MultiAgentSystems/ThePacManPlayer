@@ -9,12 +9,12 @@
 from pythonPacMan.path_finder import path as Path
 
 def isInedibleGhostClose(game, low, high):
-    path = ""
     for i in range(0, 4, 1):
         if game.ghosts[i].state == 1:
             path = Path.FindPath(game.level, (game.player.nearestRow, game.player.nearestCol),
                                  (game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
             if len(path) >= low and len(path) <= high:
+                game.target = i
                 return True
     return False
 
@@ -39,12 +39,12 @@ def isInedibleGhostCloseLong(game):
 #######################################
 
 def isEdibleGhostClose(game, low, high):
-    path = ""
     for i in range(0, 4, 1):
         if game.ghosts[i].state == 2:
             path = Path.FindPath(game.level, (game.player.nearestRow, game.player.nearestCol),
                                  (game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
             if len(path) >= low and len(path) <= high:
+                game.target = i
                 return True
     return False
 
@@ -68,17 +68,17 @@ def isEdibleGhostCloseLong(game):
 
 #######################################
 
-def isTargetGhostEdibleTime(value, threshold):
-    return value >= threshold    
+def isTargetGhostEdibleTime(game, threshold):
+    return game.ghostTimer >= threshold if game.ghosts[game.target].state == 2 else False
 
 def isTargetGhostEdibleTimeLow(game):
-    return isTargetGhostEdibleTime(game.ghostTimer, 90)
+    return isTargetGhostEdibleTime(game, 90)
 
 def isTargetGhostEdibleTimeMedium(game):
-    return isTargetGhostEdibleTime(game.ghostTimer, 180)
+    return isTargetGhostEdibleTime(game, 180)
 
 def isTargetGhostEdibleTimeHigh(game):
-    return isTargetGhostEdibleTime(game.ghostTimer, 270)
+    return isTargetGhostEdibleTime(game, 270)
 
 #######################################
 

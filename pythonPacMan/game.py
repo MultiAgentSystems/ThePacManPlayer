@@ -11,6 +11,8 @@ class game():
         # self.lives = 3 # ! IMPORTANT
         self.lives = 0
 
+        self.target = 0
+
         # game "mode" variable
         # 1 = normal
         # 2 = hit ghost
@@ -49,6 +51,8 @@ class game():
         self.score = 0
         self.lives = 3 #important
         self.elapsedTime = 0
+
+        self.target = 0
 
         self.SetMode(4)
         self.thisLevel.LoadLevel(self.GetLevelNum())
@@ -93,6 +97,8 @@ class game():
 
     def SetNextLevel(self):
         self.levelNum += 1
+
+        self.target = 0
 
         self.SetMode(4)
         self.thisLevel.LoadLevel(self.GetLevelNum())
