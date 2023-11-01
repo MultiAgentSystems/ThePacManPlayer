@@ -7,7 +7,7 @@ from tile import *
 from level import level
 from game import game
 from scriptPath import SCRIPT_PATH
-from classes.parser import DecisionSimulator
+from classes.play.parser import DecisionSimulator
 
 print(SCRIPT_PATH)
 
@@ -113,7 +113,7 @@ def runGame(BT, numRuns=1, display=False):
                 for i in range(0, 4, 1):
                     ghosts[i].Move()
 
-                move = DecisionSimulator(BT, player)
+                move = DecisionSimulator(BT, thisGame)
 
                 CheckInputs(move, 1, thisLevel, player)
 

@@ -6,74 +6,90 @@
     4. isGhostScore()
 '''
 
-def isInedibleGhostClose():
-    pass
+from pythonPacMan.path_finder import path as Path
 
-def isInedibleGhostCloseVeryLow():
-    pass
+def isInedibleGhostClose(game, low, high):
+    path = ""
+    for i in range(0, 4, 1):
+        if game.ghosts[i].state == 1:
+            path = Path.FindPath(game.level, (game.player.nearestRow, game.player.nearestCol),
+                                 (game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
+            if len(path) >= low and len(path) <= high:
+                return True
+    return False
 
-def isInedibleGhostCloseLow():
-    pass
+def isInedibleGhostCloseVeryLow(game):
+    return isInedibleGhostClose(game, 0, 5)
 
-def isInedibleGhostCloseMedium():
-    pass
+def isInedibleGhostCloseLow(game):
+    return isInedibleGhostClose(game, 6, 10)
 
-def isInedibleGhostCloseHigh():
-    pass
+def isInedibleGhostCloseMedium(game):
+    return isEdibleGhostClose(game, 11, 15)
 
-def isInedibleGhostCloseVeryHigh():
-    pass
+def isInedibleGhostCloseHigh(game):
+    return isEdibleGhostClose(game, 16, 20)
 
-def isInedibleGhostCloseLong():
-    pass
+def isInedibleGhostCloseVeryHigh(game):
+    return isEdibleGhostClose(game, 21, 25)
 
-#######################################
-
-def isEdibleGhostClose():
-    pass
-
-def isEdibleGhostCloseVeryLow():
-    pass
-
-def isEdibleGhostCloseLow():
-    pass
-
-def isEdibleGhostCloseMedium():
-    pass
-
-def isEdibleGhostCloseHigh():
-    pass
-
-def isEdibleGhostCloseVeryHigh():
-    pass
-
-def isEdibleGhostCloseLong():
-    pass
+def isInedibleGhostCloseLong(game):
+    return isEdibleGhostClose(game, 26, 30)
 
 #######################################
 
-def isTargetGhostEdibleTime():
-    pass
+def isEdibleGhostClose(game, low, high):
+    path = ""
+    for i in range(0, 4, 1):
+        if game.ghosts[i].state == 2:
+            path = Path.FindPath(game.level, (game.player.nearestRow, game.player.nearestCol),
+                                 (game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
+            if len(path) >= low and len(path) <= high:
+                return True
+    return False
 
-def isTargetGhostEdibleTimeLow():
-    pass
+def isEdibleGhostCloseVeryLow(game):
+    return isEdibleGhostClose(game, 0, 5)
 
-def isTargetGhostEdibleTimeMedium():
-    pass
+def isEdibleGhostCloseLow(game):
+    return isEdibleGhostClose(game, 6, 10)
 
-def isTargetGhostEdibleTimeHigh():
-    pass
+def isEdibleGhostCloseMedium(game):
+    return isEdibleGhostClose(game, 11, 15)
+
+def isEdibleGhostCloseHigh(game):
+    return isEdibleGhostClose(game, 16, 20)
+
+def isEdibleGhostCloseVeryHigh(game):
+    return isEdibleGhostClose(game, 21, 25)
+
+def isEdibleGhostCloseLong(game):
+    return isEdibleGhostClose(game, 26, 30)
 
 #######################################
 
-def isGhostScore():
-    pass
+def isTargetGhostEdibleTime(value, threshold):
+    return value >= threshold    
 
-def isGhostScoreHigh():
-    pass
+def isTargetGhostEdibleTimeLow(game):
+    return isTargetGhostEdibleTime(game.ghostTimer, 90)
 
-def isGhostScoreVeryHigh():
-    pass
+def isTargetGhostEdibleTimeMedium(game):
+    return isTargetGhostEdibleTime(game.ghostTimer, 180)
 
-def isGhostScoreMax():
-    pass
+def isTargetGhostEdibleTimeHigh(game):
+    return isTargetGhostEdibleTime(game.ghostTimer, 270)
+
+#######################################
+
+def isGhostScore(value, threshold):
+    return value == threshold
+
+def isGhostScoreHigh(game):
+    return isGhostScore(game.ghostValue, 400)
+
+def isGhostScoreVeryHigh(game):
+    return isGhostScore(game.ghostValue, 800)
+
+def isGhostScoreMax(game):
+    return isGhostScore(game.ghostValue, 1600)
