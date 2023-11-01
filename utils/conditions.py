@@ -14,9 +14,12 @@ def isInedibleGhostClose(game, low, high):
             path = Path.FindPath((game.player.nearestRow, game.player.nearestCol),(game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
             if ( path is None or path is False or path == "" ):
                 continue
-
+            
+            print(f"Low : {low}, Path length : {len(path)}, High : {high}")
             if len(path) >= low and len(path) <= high:
                 game.target = i
+                if ( low == 6 and high == 10 ):
+                    print("Reached Here")
                 return True
     return False
 

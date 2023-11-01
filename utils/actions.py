@@ -48,21 +48,20 @@ def moveToEatPill( game, normalPill : bool , powerPill : bool ) -> str:
     #             if ( pathLength < pathLengthForNearestPill or pathLengthForNearestPill == -1 ):
     #                 pathLengthForNearestPill = pathLength
     #                 pathStepForNearestPill = firstStep
-    
-    # Implementing a BFS over the graph.
-    toVisit = set()
-    visited = set()
 
-    toVisit.add( (game.player.nearestRow, game.player.nearestCol) )
+    # Implementing a BFS over the graph.
+    toVisit = []
+    visited = []
+
+    toVisit.append( (game.player.nearestRow, game.player.nearestCol) )
     target = tuple()
-    print(f"Pacman position : {game.player.nearestRow}, {game.player.nearestCol}")
+    # print(f"Pacman position : {game.player.nearestRow}, {game.player.nearestCol}")
 
     while ( len(toVisit) > 0 ):
-        (row, col) = toVisit.pop()
-        visited.add( (row, col) )
+        (row, col) = toVisit.pop(0)
+        visited.append( (row, col) )
         
         code = game.thisLevel.GetMapTile((row, col))
-        print(row,col)
 
         if ( isDesiredPill(normalPill, powerPill, code) ): # Found the nearest pill.
             target = (row, col)
@@ -74,12 +73,12 @@ def moveToEatPill( game, normalPill : bool , powerPill : bool ) -> str:
                         continue
                     code = game.thisLevel.GetMapTile( (row + i, col + j) )
                     if ( (row + i, col + j) not in visited and (row + i, col + j) not in toVisit and notAnObstacle(code)):
-                        toVisit.add( (row + i, col + j) )
+                        toVisit.append( (row + i, col + j) )
 
     if ( target == tuple() ):
         return 'E'
 
-
+    # print(f"Target : {target}")
     #Just find the path from the current node to the target.
     path = PathFinder.FindPath( (game.player.nearestRow, game.player.nearestCol), target )
     
@@ -125,7 +124,11 @@ def moveAwayFromGhost( game ):
             if ( code >= 100 and code <= 140 ):
                 continue
             else :
+                print(f"After all tries : {step}")
                 return step
+    else :
+        print(f"Exact Opposite : {possibleStep}")
+        return possibleStep
 
     return 'E'
 

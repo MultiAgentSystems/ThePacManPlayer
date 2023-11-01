@@ -10,7 +10,7 @@ def DecisionSimulator( behaviourTree, player) -> str:
 
         response = treeRoot.makeDescision(player)
 
-        # print(response['action'])
+        print(f" ActionToPerform : {response['action']}")
         return response['action']
     except Exception:
         return 'E'
