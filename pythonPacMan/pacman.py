@@ -1,6 +1,6 @@
 import pygame, os
-from path_finder import path
-from scriptPath import SCRIPT_PATH
+from .path_finder import path
+from .scriptPath import SCRIPT_PATH
 
 class pacman():
 

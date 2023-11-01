@@ -1,7 +1,7 @@
 import pygame, os, random
-from path_finder import path
-from tile import tileID, tileIDImage
-from scriptPath import SCRIPT_PATH
+from .path_finder import path
+from .tile import tileID, tileIDImage
+from .scriptPath import SCRIPT_PATH
 
 ghostcolor = {}
 ghostcolor[0] = (255, 0, 0, 255)

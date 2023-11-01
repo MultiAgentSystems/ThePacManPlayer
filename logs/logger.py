@@ -17,7 +17,7 @@ class Logger:
     def __init__(self, fileName = './.logs.txt', 
                  fileformat = '%(asctime)s - %(levelname)s - %(message)s',
                  streamformat = '%(name)s - %(levelname)s - %(message)s',
-                 fileLevel = logging.INFO, streamLevel = logging.DEBUG):
+                 fileLevel = logging.INFO, streamLevel = logging.WARNING):
         try :
             self.fileName = fileName
             self.format = format
@@ -27,10 +27,12 @@ class Logger:
             self.fileHandler = logging.FileHandler(self.fileName)
             self.fileHandler.setLevel(fileLevel)
             self.fileHandler.setFormatter(logging.Formatter(fileformat))
+            self.filLevel = fileLevel
 
             self.streamHandler = logging.StreamHandler()
             self.streamHandler.setLevel(streamLevel)
             self.streamHandler.setFormatter(logging.Formatter(streamformat))
+            self.streamLevel = streamLevel
 
             self.logger.addHandler(self.streamHandler)
             self.logger.addHandler(self.fileHandler)
@@ -40,9 +42,11 @@ class Logger:
 
     def logInfo(self, message = ""):
         try :
-            print(Colors.INFO)
+            if ( self.streamLevel == logging.INFO ):
+                print(Colors.INFO)
             self.logger.info(message)
-            print(Colors.ENDC)
+            if ( self.streamLevel == logging.INFO ):
+                print(Colors.ENDC)
 
         except Exception as E :
             print(E)

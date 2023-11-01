@@ -1,13 +1,15 @@
 import pygame, os, sys
+
 from pygame.locals import *
 
-from pacman import pacman
-from ghost import ghost
-from tile import *
-from level import level
-from game import game
-from scriptPath import SCRIPT_PATH
-from classes.parser import DecisionSimulator
+from classes.play.parser import DecisionSimulator
+
+from .pacman import pacman
+from .ghost import ghost
+from .tile import *
+from .level import level
+from .game import game
+from .scriptPath import SCRIPT_PATH
 
 print(SCRIPT_PATH)
 
@@ -23,14 +25,14 @@ def CheckInputs(direction, mode_game, thisLevel, player):
     If it's end game - we want to return the score and time and generate a fitness value then run on a new set of weights.
     '''
     # r l u d
-    result = [None] * 4
-    if direction == 0:
+    result = [0] * 4
+    if direction == "R":
         result[0] = 1
-    if direction == 1:
+    if direction == "L":
         result[1] = 1
-    if direction == 2:
+    if direction == "U":
         result[2] = 1
-    if direction == 3:
+    if direction == "D":
         result[3] = 1
 
     if mode_game == 1:
@@ -98,7 +100,9 @@ def runGame(BT, numRuns=1, display=False):
 
         thisGame.StartNewGame()
 
-        move = 0
+        previousMove = 'R'
+        move = 'L'
+
         while True:
             if display:
                 events = pygame.event.get()
@@ -112,8 +116,10 @@ def runGame(BT, numRuns=1, display=False):
             
                 for i in range(0, 4, 1):
                     ghosts[i].Move()
-
-                move = DecisionSimulator(BT, player)
+                
+                move = DecisionSimulator(BT, thisGame)
+                move = move if move != 'E' else previousMove
+                previousMove = move
 
                 CheckInputs(move, 1, thisLevel, player)
 
@@ -133,7 +139,6 @@ def runGame(BT, numRuns=1, display=False):
                     thisLevel.Restart()
 
                     thisGame.lives -= 1
-                    print(thisGame.score)
                     if thisGame.lives == 0:
                         thisGame.SetMode(3)
                     else:

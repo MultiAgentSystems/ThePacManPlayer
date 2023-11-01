@@ -1,5 +1,5 @@
 import pygame, os
-from scriptPath import SCRIPT_PATH
+from .scriptPath import SCRIPT_PATH
 
 NO_GIF_TILES = [23]
 

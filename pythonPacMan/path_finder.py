@@ -55,6 +55,20 @@ class path_finder():
         self.current = (-1, -1)
         self.openList = []
         self.closedList = []
+    
+    # def FindNearestEntity(self, entity, playerPosition ):
+    #     self.CleanUpTemp()
+    #     # Given an entity, this function finds the shortest distance to 
+    #     # the entity from the player. This is done using a BFS Algorithm.
+    #     
+    #     self.start = playerPosition
+    #
+    #     self.AddToOpenList(self.start)
+    #     
+    #     currentAbstractPosition = self.start
+    #
+    #     if ( currentAbstractPosition )
+           
 
     def FindPath(self, startPos, endPos):
 
@@ -71,6 +85,8 @@ class path_finder():
         self.SetF(self.start, 0)
 
         doContinue = True
+        
+        thisLowestFNode = False
 
         while (doContinue == True):
 
