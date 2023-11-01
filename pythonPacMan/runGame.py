@@ -1,13 +1,15 @@
 import pygame, os, sys
+
 from pygame.locals import *
 
-from pacman import pacman
-from ghost import ghost
-from tile import *
-from level import level
-from game import game
-from scriptPath import SCRIPT_PATH
 from classes.play.parser import DecisionSimulator
+
+from .pacman import pacman
+from .ghost import ghost
+from .tile import *
+from .level import level
+from .game import game
+from .scriptPath import SCRIPT_PATH
 
 print(SCRIPT_PATH)
 
@@ -23,7 +25,7 @@ def CheckInputs(direction, mode_game, thisLevel, player):
     If it's end game - we want to return the score and time and generate a fitness value then run on a new set of weights.
     '''
     # r l u d
-    result = [None] * 4
+    result = [0] * 4
     if direction == "R":
         result[0] = 1
     if direction == "L":
@@ -98,7 +100,9 @@ def runGame(BT, numRuns=1, display=False):
 
         thisGame.StartNewGame()
 
-        move = 0
+        previousMove = 'R'
+        move = 'L'
+
         while True:
             if display:
                 events = pygame.event.get()
@@ -112,8 +116,10 @@ def runGame(BT, numRuns=1, display=False):
             
                 for i in range(0, 4, 1):
                     ghosts[i].Move()
-
+                
                 move = DecisionSimulator(BT, thisGame)
+                move = move if move != 'E' else previousMove
+                previousMove = move
 
                 CheckInputs(move, 1, thisLevel, player)
 

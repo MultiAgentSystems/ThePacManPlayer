@@ -1,7 +1,7 @@
 import os, random
-from path_finder import path
-from tile import *
-from scriptPath import SCRIPT_PATH
+from .path_finder import path
+from .tile import *
+from .scriptPath import SCRIPT_PATH
 
 class level():
 

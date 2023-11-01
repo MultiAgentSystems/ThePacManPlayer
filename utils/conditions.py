@@ -11,8 +11,10 @@ from pythonPacMan.path_finder import path as Path
 def isInedibleGhostClose(game, low, high):
     for i in range(0, 4, 1):
         if game.ghosts[i].state == 1:
-            path = Path.FindPath(game.level, (game.player.nearestRow, game.player.nearestCol),
-                                 (game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
+            path = Path.FindPath((game.player.nearestRow, game.player.nearestCol),(game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
+            if ( path is None or path is False or path == "" ):
+                continue
+
             if len(path) >= low and len(path) <= high:
                 game.target = i
                 return True
@@ -41,8 +43,9 @@ def isInedibleGhostCloseLong(game):
 def isEdibleGhostClose(game, low, high):
     for i in range(0, 4, 1):
         if game.ghosts[i].state == 2:
-            path = Path.FindPath(game.level, (game.player.nearestRow, game.player.nearestCol),
-                                 (game.ghosts[i].nearestRow, game.ghosts[i].nearestCol))
+            path = Path.FindPath( (game.player.nearestRow, game.player.nearestCol), (game.ghosts[i].nearestRow, game.ghosts[i].nearestCol) )
+            if ( path is None or path is False or path == "" ):
+                continue
             if len(path) >= low and len(path) <= high:
                 game.target = i
                 return True

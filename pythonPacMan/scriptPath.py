@@ -1,3 +1,3 @@
-import os, sys
+import sys
 
-SCRIPT_PATH = sys.path[0]
+SCRIPT_PATH = sys.path[0] + "/pythonPacMan"

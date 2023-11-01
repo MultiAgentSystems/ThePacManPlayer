@@ -1,6 +1,11 @@
 from classes.nodes import *
 from classes.tree import *
 
+from pythonPacMan.runGame import runGame
+
+from utils.actions import *
+from utils.conditions import *
+
 universalLogger = Logger()
 
 
@@ -113,5 +118,44 @@ def testTreeAddNode():
         print("Test For Add Node Failed")
 
 
-testTreeExectionOrder()
-testTreeAddNode()
+# testTreeExectionOrder()
+# testTreeAddNode()
+
+
+def createSampleTree():
+    global universalLogger
+
+    newSelectorNode = SelectorNode(logger=universalLogger)
+    
+    for _ in range(3):
+        newSelectorNode.addChild(SequenceNode(logger=universalLogger))
+
+    newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="Move to eat any pill", logger=universalLogger))
+
+    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseLow, logger=universalLogger))
+    newSelectorNode.getChildren()[0].addChild(ActionNode(actionFunction=moveAwayFromGhost, logger=universalLogger))
+    
+    newSelectorNode.getChildren()[1].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryHigh, logger=universalLogger))
+    newSelectorNode.getChildren()[1].addChild(ActionNode(actionFunction=moveToEatPowerPill, logger=universalLogger))
+
+    newSelectorNode.getChildren()[2].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseMedium, logger=universalLogger))
+    newSelectorNode.getChildren()[2].addChild(ActionNode(actionFunction=moveToEatPowerPill, logger=universalLogger))
+
+
+    newTree = Tree(root=newSelectorNode, logger=universalLogger)
+    newTree.updateExecutionOrder()
+
+    recieved = []
+    for node in newTree.getExecutionOrder():
+        recieved.append(node._name)
+
+    print(recieved)
+    
+    return newTree
+
+
+def runTheGame():
+    behaviourTree = createSampleTree()
+    runGame(behaviourTree, display=True)
+
+runTheGame()

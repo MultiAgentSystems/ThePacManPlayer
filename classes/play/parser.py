@@ -1,17 +1,16 @@
-
-
-def DecisionSimulator( behaviourTree, player) -> dict:
+def DecisionSimulator( behaviourTree, player) -> str:
     '''
         Should return one of the four predefined actions : 'L', 'R', 'U', 'D', 'E'.
     '''
     try : 
         if behaviourTree is None:
-            return { 'Status' : 'Error', 'Result' : 'E' }
+            return 'E'
         
         treeRoot = behaviourTree.getRoot()
 
-        state, decision = treeRoot.makeDescision(player)
+        response = treeRoot.makeDescision(player)
 
-        return { 'Status' : state, 'Result' : decision }
+        print(response['action'])
+        return response['action']
     except Exception:
-        return { 'Status' : 'Error', 'Result' : 'E' }
+        return 'E'

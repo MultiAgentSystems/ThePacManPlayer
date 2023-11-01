@@ -19,9 +19,9 @@ def moveToEatPill( game, normalPill : bool , powerPill : bool ) -> str:
     ## list. We compute the path to every such possible 
     ## pill and then return the shortest one.
 
-    for row in range(0, game.level.lvlHeight, 1):
-        for col in range(0, game.level.lvlWidth, 1):
-            code = game.level.GetMapTile((row, col))
+    for row in range(0, game.thisLevel.lvlHeight, 1):
+        for col in range(0, game.thisLevel.lvlWidth, 1):
+            code = game.thisLevel.GetMapTile((row, col))
             if ( normalPill and code == Tile['pellet'] ) or ( powerPill and code == Tile['pellet-power'] ):
                 pathToPill = PathFinder.FindPath( (game.player.nearestRow, game.player.nearestCol), (row, col) )
 
@@ -60,7 +60,7 @@ def moveAwayFromGhost( game ):
     
     code = 60
     
-    code = game.level.GetMapTile( (game.player.nearestRow + stepMapRow[possibleStep], game.player.nearestCol + stepMapCol[possibleStep]) )
+    code = game.thisLevel.GetMapTile( (game.player.nearestRow + stepMapRow[possibleStep], game.player.nearestCol + stepMapCol[possibleStep]) )
     
     if (code >= 100 and code <= 140 ):
         # Found an obstacle.
@@ -68,7 +68,7 @@ def moveAwayFromGhost( game ):
             if ( step in firstOppositeStep + possibleStep ):
                 continue
 
-            code = game.level.GetMapTile((game.player.nearestRow + stepMapRow[step], game.player.nearestCol + stepMapCol[step]))
+            code = game.thisLevel.GetMapTile((game.player.nearestRow + stepMapRow[step], game.player.nearestCol + stepMapCol[step]))
             if ( code >= 100 and code <= 140 ):
                 continue
             else :
@@ -81,7 +81,8 @@ def moveTowardsGhost(game):
     firstStep = 'E'
 
     pathToGhost = PathFinder.FindPath((game.player.nearestRow, game.player.nearestCol), 
-                                      (game.ghost[game.target].nearestRow, game.ghosts[game.target].nearestCol))
+                                      (game.ghosts[game.target].nearestRow, game.ghosts[game.target].nearestCol))
+    
 
     if ( pathToGhost is None or pathToGhost is False or pathToGhost == "" ):
         return 'E'
