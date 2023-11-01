@@ -15,11 +15,12 @@ def isInedibleGhostClose(game, low, high):
             if ( path is None or path is False or path == "" ):
                 continue
             
-            print(f"Low : {low}, Path length : {len(path)}, High : {high}")
+            # print(f"Low : {low}, Path length : {len(path)}, High : {high}")
             if len(path) >= low and len(path) <= high:
                 game.target = i
-                if ( low == 6 and high == 10 ):
-                    print("Reached Here")
+                # print(f"Target : {game.target}")
+                # if ( low == 6 and high == 10 ):
+                    # print("Reached Here")
                 return True
     return False
 

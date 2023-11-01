@@ -132,7 +132,7 @@ def createSampleTree():
 
     newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="Move to eat any pill", logger=universalLogger))
 
-    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseLow, logger=universalLogger))
+    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryLow, logger=universalLogger))
     newSelectorNode.getChildren()[0].addChild(ActionNode(actionFunction=moveAwayFromGhost, logger=universalLogger))
     
     newSelectorNode.getChildren()[1].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryHigh, logger=universalLogger))
@@ -156,6 +156,6 @@ def createSampleTree():
 
 def runTheGame():
     behaviourTree = createSampleTree()
-    runGame(behaviourTree, display=True)
+    runGame(behaviourTree, display=False)
 
 runTheGame()

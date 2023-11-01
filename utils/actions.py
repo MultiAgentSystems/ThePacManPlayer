@@ -124,10 +124,10 @@ def moveAwayFromGhost( game ):
             if ( code >= 100 and code <= 140 ):
                 continue
             else :
-                print(f"After all tries : {step}")
+                # print(f"After all tries : {step}")
                 return step
     else :
-        print(f"Exact Opposite : {possibleStep}")
+        # print(f"Exact Opposite : {possibleStep}")
         return possibleStep
 
     return 'E'

@@ -103,6 +103,8 @@ def runGame(BT, numRuns=1, display=False):
         previousMove = 'R'
         move = 'L'
 
+        k = 2
+
         while True:
             if display:
                 events = pygame.event.get()
