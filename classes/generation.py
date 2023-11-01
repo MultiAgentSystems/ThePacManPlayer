@@ -38,18 +38,28 @@ class Generation:
         return self.trees[max(pool, key=lambda x: self.tree_scores[x])]
 
     def performCrossOver(self, tree1, tree2):
-        pass
+        # Pick a random node from tree1, and swap it with a random subtree from tree2
+        # Returns the two new trees
+        return tree1, tree2
 
     def performMutation(self, tree):
-        pass
+        # Replace a random node with another random node of the same type
+        # That is: Sequence can only be replaced by Selection and vice versa,
+        # Action can only be replaced by another action
+        # Condition can only be replaced by another condition
+        # TODO: Implement this
+        return tree
 
     def getNextGeneration(self):
         cross_ct = int(self.cross_prob * self.pop)
         copy_ct = self.pop - cross_ct
         next_gen = self.getTopTrees(copy_ct)
-        for i in range(cross_ct):
+        for i in range(0, cross_ct, 2):
             par1, par2 = self.tournamentSelect(), self.tournamentSelect()
-            next_gen.append(self.performCrossOver(par1, par2))
+            child1, child2 = self.performCrossOver(par1, par2)
+            next_gen.append(child1)
+            if i + 1 < cross_ct:
+                next_gen.append(child2)
 
         for i in range(self.pop):
             if random.random() < self.mutation_prob:
