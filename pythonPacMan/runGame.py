@@ -1,4 +1,4 @@
-import pygame, sys, os
+import pygame, os, sys
 from pygame.locals import *
 
 from pacman import pacman
@@ -6,9 +6,8 @@ from ghost import ghost
 from tile import *
 from level import level
 from game import game
+from scriptPath import SCRIPT_PATH
 
-SCRIPT_PATH = sys.path[0]
-# SCRIPT_PATH = "Pac-AI-master"
 print(SCRIPT_PATH)
 
 def CheckIfCloseButton(events):
@@ -74,6 +73,9 @@ def runGame(BT, numRuns=1, display=False):
         screen = pygame.display.get_surface()
 
         img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "1.gif")).convert()
+    else:
+        pygame.quit()
+        screen = None
 
     score = 0
     for i in range(numRuns):
@@ -226,3 +228,5 @@ def runGame(BT, numRuns=1, display=False):
     
     print(score / numRuns)
     return score / numRuns
+
+runGame(0, 1, False)

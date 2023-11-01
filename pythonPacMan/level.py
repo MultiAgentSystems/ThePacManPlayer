@@ -1,15 +1,14 @@
-import os, sys, random
+import os, random
 from path_finder import path
 from tile import *
-
-SCRIPT_PATH = sys.path[0]
+from scriptPath import SCRIPT_PATH
 
 class level():
 
     def __init__(self, player, ghosts, thisGame, screen, display):
         self.player = player
         self.ghosts = ghosts
-        self.thisGame = thisGame
+        self.game = thisGame
         self.screen = screen
         self.display = display
         self.lvlWidth = 0
@@ -100,12 +99,12 @@ class level():
 
                         self.pellets -= 1
 
-                        self.thisGame.AddToScore(10)
+                        self.game.AddToScore(10)
 
                         if self.pellets == 0:
                             # no more pellets left!
                             # WON THE LEVEL
-                            self.thisGame.SetMode(6)
+                            self.game.SetMode(6)
 
 
                     elif result == tileID['pellet-power']:
@@ -113,10 +112,10 @@ class level():
                         self.SetMapTile((iRow, iCol), 0)
                         # snd_powerpellet.play()
 
-                        self.thisGame.AddToScore(100)
-                        self.thisGame.ghostValue = 200
+                        self.game.AddToScore(100)
+                        self.game.ghostValue = 200
 
-                        self.thisGame.ghostTimer = 360
+                        self.game.ghostTimer = 360
                         for i in range(0, 4, 1):
                             if self.ghosts[i].state == 1:
                                 self.ghosts[i].state = 2
@@ -206,9 +205,9 @@ class level():
         if self.powerPelletBlinkTimer == 60:
             self.powerPelletBlinkTimer = 0
 
-        for row in range(-1, self.thisGame.screenTileSize[0] + 1, 1):
+        for row in range(-1, self.game.screenTileSize[0] + 1, 1):
             outputLine = ""
-            for col in range(-1, self.thisGame.screenTileSize[1] + 1, 1):
+            for col in range(-1, self.game.screenTileSize[1] + 1, 1):
 
                 # row containing tile that actually goes here
                 actualRow = row
@@ -224,7 +223,7 @@ class level():
                             col * 16, row * 16))
 
                     elif useTile == tileID['showlogo']:
-                        self.screen.blit(self.thisGame.imLogo, (
+                        self.screen.blit(self.game.imLogo, (
                         col * 16, row * 16))
 
                     else:
