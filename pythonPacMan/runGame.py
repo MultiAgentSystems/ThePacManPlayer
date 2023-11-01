@@ -7,6 +7,7 @@ from tile import *
 from level import level
 from game import game
 from scriptPath import SCRIPT_PATH
+from classes.parser import DecisionSimulator
 
 print(SCRIPT_PATH)
 
@@ -97,7 +98,7 @@ def runGame(BT, numRuns=1, display=False):
 
         thisGame.StartNewGame()
 
-        rand = 0
+        move = 0
         while True:
             if display:
                 events = pygame.event.get()
@@ -112,18 +113,9 @@ def runGame(BT, numRuns=1, display=False):
                 for i in range(0, 4, 1):
                     ghosts[i].Move()
 
-                # for event in events:
-                #     if event.type == pygame.KEYDOWN:
-                #         if event.key == pygame.K_RIGHT:
-                #             rand = 0
-                #         if event.key == pygame.K_LEFT:
-                #             rand = 1
-                #         if event.key == pygame.K_UP:
-                #             rand = 2
-                #         if event.key == pygame.K_DOWN:
-                #             rand = 3
+                move = DecisionSimulator(BT, player)
 
-                CheckInputs(rand, 1, thisLevel, player)
+                CheckInputs(move, 1, thisLevel, player)
 
                 player.Move()
 
@@ -228,5 +220,3 @@ def runGame(BT, numRuns=1, display=False):
     
     print(score / numRuns)
     return score / numRuns
-
-runGame(0, 1, False)
