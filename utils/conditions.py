@@ -3,7 +3,7 @@
     1. isInedibleGhostClose()
     2. isEdibleGhostClose()
     3. isTargetGhostEdibleTime()
-    4. isGhostScore()
+4. isGhostScore()
 '''
 
 from pythonPacMan.path_finder import path as Path

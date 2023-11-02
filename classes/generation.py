@@ -1,8 +1,12 @@
 from logs.logger import Logger
 from .normalised_tree import NormalisedTree
+from .nodes import ActionNode, ConditionNode
 from math import ceil
 import random
 
+from utils.generateTree import generateNodes
+from utils.conditions import ConditionFunctions
+from utils.actions import ActionFunctions
 
 def score(tree) -> float:
     return 1.0 if tree is not None else 0.0
@@ -96,9 +100,29 @@ class Generation:
         # That is: Sequence can only be replaced by Selection and vice versa,
         # Action can only be replaced by another action
         # Condition can only be replaced by another condition
-        # TODO: Implement this
-        return tree
 
+        currentRoot = tree.getRoot()
+        # After getting the root, we need to recursively iterate 
+        # through the tree and select a particular node for mutation.
+        allTheNodes = currentRoot.getExecutionOrder()
+        
+        mutableNodes = []
+        for index, node in enumerate(allTheNodes):
+            if node._isMutable():
+                mutableNodes.append(index)
+        
+        targetIndex = random.choice(mutableNodes)
+        targetNode = allTheNodes[targetIndex]
+        
+        if ( isinstance(targetNode, ConditionNode) ):
+            allTheNodes[ targetIndex ].setCondition(random.choice(ConditionFunctions))
+        elif ( isinstance(targetNode, ActionNode) ):
+            allTheNodes[ targetIndex ].setAction(random.choice(ActionFunctions))
+        else :
+            print("Kuch to hagga h... Kuch hagg gaya h...")
+
+        return tree
+    
     def performAddition(self, tree):
         return tree
 

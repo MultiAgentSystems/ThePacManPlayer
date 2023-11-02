@@ -42,12 +42,6 @@ def testSequenceNode():
     sequenceNode = SequenceNode(logger=universalLogger)
     print(sequenceNode)
 
-
-# testConditionNode()
-# testActionNode()
-# testSequenceNode()
-
-
 def testTreeExectionOrder():
     global universalLogger
 
