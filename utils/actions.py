@@ -69,11 +69,15 @@ def moveToEatPill( game, normalPill : bool , powerPill : bool ) -> str:
         else : #Found a different point.
             for i in range(-1,2):
                 for j in range(-1,2):
-                    if ( row + i < 0 or row + i >= game.thisLevel.lvlHeight or col + j < 0 or col + j >= game.thisLevel.lvlWidth ):
+                    if ( i == j or i == -j ):
                         continue
-                    code = game.thisLevel.GetMapTile( (row + i, col + j) )
-                    if ( (row + i, col + j) not in visited and (row + i, col + j) not in toVisit and notAnObstacle(code)):
-                        toVisit.append( (row + i, col + j) )
+                    # if ( row + i < 0 or row + i >= game.thisLevel.lvlHeight or col + j < 0 or col + j >= game.thisLevel.lvlWidth ):
+                    #     continue
+                    nRow = (row + i) % game.thisLevel.lvlHeight
+                    nCol = (col + j) % game.thisLevel.lvlWidth
+                    code = game.thisLevel.GetMapTile( (nRow, nCol) )
+                    if ( (nRow, nCol) not in visited and (nRow, nCol) not in toVisit and notAnObstacle(code)):
+                        toVisit.append( (nRow, nCol) )
 
     if ( target == tuple() ):
         return 'E'
