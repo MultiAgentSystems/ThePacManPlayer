@@ -2,21 +2,18 @@ from logs.logger import Logger
 from .normalised_tree import NormalisedTree
 from .nodes import ActionNode, ConditionNode
 from math import ceil
-from pythonPacMan.runGame import runGame
+from utils.fitness import fitness
 import random
 
 from utils.generateTree import generateNodes
 from utils.conditions import ConditionFunctions
 from utils.actions import ActionFunctions
 
-def score(tree) -> float:
-    return runGame(tree)
-
 
 class Generation:
     def __init__(self, trees=None, logger=None) -> None:
         self.trees = trees if trees is not None else [];
-        self.tree_scores = [score(tree) for tree in self.trees]
+        self.tree_scores = [fitness(tree) for tree in self.trees]
         self.logger = logger if logger is not None else Logger()
 
         # GP constants
