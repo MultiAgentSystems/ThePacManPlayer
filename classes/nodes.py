@@ -106,7 +106,68 @@ class Node:
         for attribute in attributeList:
             printableString += f"{attribute} : {getattr(self, attribute)}\n"
         return "*" * 20 + "\n" + printableString + "*" * 20
+    
+    def SequenceSelectorAlternate(self):
+        for child in self.children:
+            if ((isinstance(self, SelectorNode) and isinstance(child, SelectorNode) )
+                or (isinstance(child, SequenceNode) and isinstance(self, SequenceNode) )):
+                return False
+        satisfied = True
 
+        for child in self.children:
+            satisfied = satisfied and child.SequenceSelectorAlternate()
+        
+        return satisfied
+
+    def OnlyChildNodeMeansNoConditonNode(self):
+        if ( len( self.getChildren() ) == 1 ):
+            if isinstance(self.getChildren()[0], ConditionNode):
+                return False
+        satisfied = True
+
+        for child in self.children:
+            satisfied = satisfied and child.OnlyLeafNodeMeansNoConditonNode()
+
+        return satisfied
+
+    def ActionNodesFollowAllConditionNodes(self):
+        foundActionNode = False
+
+        for child in self.children :
+            if isinstance(child, ConditionNode) and foundActionNode:
+                return False
+            elif isinstance(child, ActionNode):
+                foundActionNode = True
+        satisfied = True
+
+        for child in self.children:
+            satisfied = satisfied and child.ActionNodesFollowAllConditionNodes()
+
+        return satisfied
+    
+    def ConditionActionNoChildren(self):
+        satisfied = True
+
+        if ( isinstance(self, ConditionNode) or isinstance(self, ActionNode ) ):
+            if ( len( self.getChildren() ) != 0 ):
+                return False
+        
+        for child in self.children:
+            satisfied = satisfied and child.ConditionActionNoChildren()
+
+        return satisfied
+
+    def SequenceSelectorMustHaveOneChild(self):
+        satisfied = True
+
+        if ( isinstance(self, SequenceNode) or isinstance(self, SelectorNode ) ):
+            if ( len( self.getChildren() ) == 0 ):
+                return False
+
+        for child in self.children:
+            satisfied = satisfied and child.ConditionActionNoChildren()
+
+        return satisfied
 
 class ActionNode(Node):
     """

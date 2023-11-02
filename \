@@ -1,0 +1,19 @@
+'''
+    Make functions that return a boolean
+    corresponding to the constraints.
+'''
+
+
+def SequencePosition():
+    return True
+
+def SelectorPosition():
+    return True
+
+def OnlyNodeMeansActionNode():
+    return True
+
+def ActionNodesFollowAllConditionNodes():
+
+def StaticConstraint():
+    return True
