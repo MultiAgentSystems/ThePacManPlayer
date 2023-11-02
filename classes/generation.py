@@ -19,6 +19,7 @@ class Generation:
         self.cross_prob = 0.8
         self.pop = 100
         self.tourn_size = 5
+        self.gamma = 0.9
 
         # FREQT constants, apart from topCount
         self.freqt_top_tree_ct = ceil(0.5 * len(self.trees))
@@ -27,6 +28,10 @@ class Generation:
         # Right now, we're limiting the number of nodes.
         self.freqt_min_terminals, self.freqt_max_terminals = 2, 15
         self.freqt_min_nodes, self.freqt_max_nodes = 3, 15
+
+        self.freq_patterns = self.getFrequentPatterns()
+        # sort freq_patterns by size
+        self.freq_patterns.sort(key=lambda x: x.getSize(), reverse=True)
 
     def getTopTrees(self, k) -> list:
         # Get the top k trees
@@ -37,10 +42,54 @@ class Generation:
         pool = random.sample(range(len(self.trees)), self.tourn_size)
         return self.trees[max(pool, key=lambda x: self.tree_scores[x])]
 
+    def getNodePartition(self, tree):
+        # Returns partition (protected_nodes, unprotected_nodes) from the tree
+        protected_nodes = set()
+        for pat in self.freq_patterns:
+            pat_exec_order_labels = pat.getExecutionOrderLabels()
+            for node in tree.getExecutionOrder():
+                if node in protected_nodes:
+                    # Its entire subtree would be protected already (I think :P)
+                    continue
+                subtree_exec_order_labels = [i.getLabel() for i in node.getExecutionOrder(backtrack=True)]
+                if subtree_exec_order_labels != pat_exec_order_labels:
+                    continue
+                # We have a match! Protect this subtree, except root
+                subtree_exec_order = node.getExecutionOrder()
+                for node in subtree_exec_order[1:]:
+                    protected_nodes.add(node)
+
+        unprotected_nodes = []
+        for node in tree.getExecutionOrder():
+            if node not in protected_nodes:
+                unprotected_nodes.append(node)
+
+        return list(protected_nodes), unprotected_nodes
+
+    def getNodeForCrossover(self, tree):
+        protected, unprotected = self.getNodePartition(tree)
+        protected_pick_prob = (self.gamma * len(protected)) / (len(protected) + len(unprotected))
+        if random.random() < protected_pick_prob:
+            return random.choice(protected)
+        else:
+            return random.choice(unprotected)
+
     def performCrossOver(self, tree1, tree2):
         # Pick a random node from tree1, and swap it with a random subtree from tree2
         # Returns the two new trees
-        return tree1, tree2
+
+        tree1_node, tree2_node = None, None
+        for tries in range(100):
+            node1, node2 = self.getNodeForCrossover(tree1), self.getNodeForCrossover(tree2)
+            if node1._name == node2._name:
+                tree1_node, tree2_node = node1, node2
+                break
+
+        if tree1_node is None or tree2_node is None:
+            return tree1, tree2
+
+        return (tree1.getCopyAfterReplacing(tree1_node, tree2_node),
+                tree2.getCopyAfterReplacing(tree2_node, tree1_node))
 
     def performMutation(self, tree):
         # Replace a random node with another random node of the same type
@@ -48,6 +97,9 @@ class Generation:
         # Action can only be replaced by another action
         # Condition can only be replaced by another condition
         # TODO: Implement this
+        return tree
+
+    def performAddition(self, tree):
         return tree
 
     def getNextGeneration(self):

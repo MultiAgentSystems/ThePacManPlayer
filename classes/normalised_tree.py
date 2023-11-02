@@ -5,6 +5,7 @@ The labels for Action/Condition nodes are the name of the node followed by the d
 The nodes are numbered in their preorder traversal order, from 0 to n-1.
 """
 
+
 class NormalisedTree:
     def __init__(self, parents, labels) -> None:
         self.parents = parents.copy()
@@ -121,6 +122,19 @@ class NormalisedTree:
 
     def getNormalisedTree(self):
         return self
+
+    def getExecutionOrderLabels(self):
+        # This does with the 'backtrack' thing on by default
+        order = []
+
+        def dfs(node):
+            order.append(self.labels[node])
+            for child in self.children[node]:
+                dfs(child)
+                order.append(self.labels[node])
+
+        dfs(0)
+        return order
 
     def __hash__(self):
         return hash((tuple(self.parents), tuple(self.labels)))
