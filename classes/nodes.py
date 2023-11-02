@@ -100,6 +100,9 @@ class Node:
 
     def getLabel(self) -> str:
         raise NotImplementedError
+    
+    def _isMutable(self):
+        return isinstance(self, ActionNode) or isinstance(self, ConditionNode)
 
     def __str__(self) -> str:
         printableString = ""

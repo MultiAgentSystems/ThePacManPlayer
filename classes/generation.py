@@ -1,8 +1,12 @@
 from logs.logger import Logger
 from .normalised_tree import NormalisedTree
+from .nodes import ActionNode, ConditionNode
 from math import ceil
 import random
 
+from utils.generateTree import generateNodes
+from utils.conditions import ConditionFunctions
+from utils.actions import ActionFunctions
 
 def score(tree) -> float:
     return 1.0 if tree is not None else 0.0
@@ -41,15 +45,36 @@ class Generation:
         # Pick a random node from tree1, and swap it with a random subtree from tree2
         # Returns the two new trees
         return tree1, tree2
-
-    def performMutation(self, tree):
+    
+    def performMutation(self, tree): # Maybe consider not doing this to easily use static constraints easily.
         # Replace a random node with another random node of the same type
         # That is: Sequence can only be replaced by Selection and vice versa,
         # Action can only be replaced by another action
         # Condition can only be replaced by another condition
         # TODO: Implement this
-        return tree
 
+        currentRoot = tree.getRoot()
+        # After getting the root, we need to recursively iterate 
+        # through the tree and select a particular node for mutation.
+        allTheNodes = currentRoot.getExecutionOrder()
+        
+        mutableNodes = []
+        for index, node in enumerate(allTheNodes):
+            if node._isMutable():
+                mutableNodes.append(index)
+        
+        targetIndex = random.choice(mutableNodes)
+        targetNode = allTheNodes[targetIndex]
+        
+        if ( isinstance(targetNode, ConditionNode) ):
+            allTheNodes[ targetIndex ].setCondition(random.choice(ConditionFunctions))
+        elif ( isinstance(targetNode, ActionNode) ):
+            allTheNodes[ targetIndex ].setAction(random.choice(ActionFunctions))
+        else :
+            print("Kuch to hagga h... Kuch hagg gaya h...")
+
+        return tree
+    
     def getNextGeneration(self):
         cross_ct = int(self.cross_prob * self.pop)
         copy_ct = self.pop - cross_ct

@@ -114,7 +114,38 @@ class Tree:
 
         preorderTraversal(self.root, -1)
         return NormalisedTree(parents, labels)
+    
+    def getCopyAfterReplacing( self, nodeToBeSwapped, nodeToBeSwappedWith ):
+        # Returns a copy of the tree after swapping the passed nodes.
+        if (nodeToBeSwapped is None or nodeToBeSwappedWith is None):
+            self.logger.logError(message=f"NodeToBeSwapped or NodeToBeSwappedWith is None.")
+            return None
+        
+        Tree = copy.deepcopy(self)
 
+        ## If the root is passed, just swap the root.
+        if (nodeToBeSwapped == Tree.getRoot()):
+            Tree.logger.logWarning(message=f"Swapping the root node with {nodeToBeSwappedWith._name}.")
+            Tree.setRoot(nodeToBeSwappedWith)
+            Tree.updateExecutionOrder()
+            return Tree
+
+        ## Get the execution Order and find the node.
+        executionOrderCopy = Tree.getExecutionOrder()
+        executionOrder = self.getExecutionOrder()
+
+
+        for nodeIndex, node in enumerate(executionOrder):
+            if (node == nodeToBeSwapped):
+                ## Change the parent.
+                ## Change the node's order in parent.
+
+                nodeToBeSwappedWith.setParent(executionOrderCopy[nodeIndex].getParent())
+                nodeToBeSwappedWith.setSiblingOrder(executionOrderCopy[nodeIndex].getSiblingOrder())
+                executionOrderCopy[nodeIndex].getParent().getChildren()[executionOrderCopy[nodeIndex].getSiblingOrder()] = nodeToBeSwappedWith
+
+        return Tree
+                
     def __str__(self):
         # Printing a tree in a nice way
         treeAsString = f"Tree with root {self.getRoot()._name}"
