@@ -26,6 +26,10 @@ def isInedibleGhostClose(game, low, high):
     if target == -1:
         return False
     path = Path.FindPath((game.player.nearestRow, game.player.nearestCol),(game.ghosts[target].nearestRow, game.ghosts[target].nearestCol))
+
+    if ( path is None or path is False or path == "" ):
+        return False
+
     if len(path) >= low and len(path) <= high:
         game.target = target
         return True
@@ -65,6 +69,10 @@ def isEdibleGhostClose(game, low, high):
     if target == -1:
         return False
     path = Path.FindPath((game.player.nearestRow, game.player.nearestCol),(game.ghosts[target].nearestRow, game.ghosts[target].nearestCol))
+
+    if ( path is None or path is False or path == "" ):
+        return False
+
     if len(path) >= low and len(path) <= high:
         game.target = target
         return True
@@ -115,3 +123,28 @@ def isGhostScoreVeryHigh(game):
 
 def isGhostScoreMax(game):
     return isGhostScore(game.ghostValue, 1600)
+
+
+ConditionFunctions = [
+    isInedibleGhostCloseVeryLow,
+    isInedibleGhostCloseLow,
+    isInedibleGhostCloseMedium,
+    isInedibleGhostCloseHigh,
+    isInedibleGhostCloseVeryHigh,
+    isInedibleGhostCloseLong,
+    
+    isEdibleGhostCloseVeryLow,
+    isEdibleGhostCloseLow,
+    isEdibleGhostCloseMedium,
+    isEdibleGhostCloseHigh,
+    isEdibleGhostCloseVeryHigh,
+    isEdibleGhostCloseLong,
+
+    isTargetGhostEdibleTimeLow,
+    isTargetGhostEdibleTimeMedium,
+    isTargetGhostEdibleTimeHigh,
+
+    isGhostScoreHigh,
+    isGhostScoreVeryHigh,
+    isGhostScoreMax
+]
