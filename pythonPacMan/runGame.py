@@ -103,6 +103,8 @@ def runGame(BT, numRuns=1, display=False):
         previousMove = 'R'
         move = 'L'
 
+        k = 2
+
         while True:
             if display:
                 events = pygame.event.get()
@@ -117,9 +119,10 @@ def runGame(BT, numRuns=1, display=False):
                 for i in range(0, 4, 1):
                     ghosts[i].Move()
                 
-                move = DecisionSimulator(BT, thisGame)
-                move = move if move != 'E' else previousMove
-                previousMove = move
+                if ( player.x%16 == 0 and player.y%16 == 0 ):
+                    move = DecisionSimulator(BT, thisGame)
+                    move = move if move != 'E' else previousMove
+                    previousMove = move
 
                 CheckInputs(move, 1, thisLevel, player)
 

@@ -391,6 +391,7 @@ class level():
         self.player.y = self.player.homeY
         self.player.velX = 0
         self.player.velY = 0
+        self.player.Move()
 
         if self.display:
             self.player.anim_pacmanCurrent = self.player.anim_pacmanS

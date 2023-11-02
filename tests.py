@@ -132,7 +132,7 @@ def createSampleTree():
 
     newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="Move to eat any pill", logger=universalLogger))
 
-    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseLow, logger=universalLogger))
+    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryLow, logger=universalLogger))
     newSelectorNode.getChildren()[0].addChild(ActionNode(actionFunction=moveAwayFromGhost, logger=universalLogger))
     
     newSelectorNode.getChildren()[1].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryHigh, logger=universalLogger))
@@ -153,9 +153,50 @@ def createSampleTree():
     
     return newTree
 
+def somewhatSmartTree():
+    global universalLogger
+
+    newSelectorNode = SelectorNode(logger=universalLogger)
+
+    
+    conditions = [isInedibleGhostCloseVeryLow, 
+                isEdibleGhostCloseVeryLow, 
+                isInedibleGhostCloseVeryHigh,
+                isInedibleGhostCloseMedium ]
+    
+    actions = [moveAwayFromGhost,
+               moveTowardsGhost,
+               moveToEatPowerPill,
+               moveToEatAnyPill]
+
+    description = ["moveAwayFromGhost",
+                "moveTowardsGhost",
+                "moveToEatPowerPill",
+                "moveToEatAnyPill"]
+
+
+
+    for _ in range( len(conditions) ):
+        newSelectorNode.addChild(SequenceNode(logger=universalLogger))
+    for _ in range( 1 ):
+        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", logger=universalLogger))
+    
+    for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
+        node.addChild(ConditionNode(conditionFunction=conditionFunction, logger=universalLogger))
+        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, logger=universalLogger))
+
+    newTree = Tree(root=newSelectorNode, logger=universalLogger)
+
+    newTree.updateExecutionOrder()
+    
+    return newTree
 
 def runTheGame():
     behaviourTree = createSampleTree()
     runGame(behaviourTree, display=True)
 
-runTheGame()
+def runTheSmartGame():
+    behaviourTree = somewhatSmartTree()
+    runGame(behaviourTree, display=True)
+
+runTheSmartGame()

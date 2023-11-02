@@ -118,9 +118,11 @@ class ActionNode(Node):
         super().__init__(parent, siblingOrder, children)
         self._name = 'ActionNode'
         self.actionFunction = actionFunction
+        
         if (logger is None):
             logger = Logger()
         self.logger = logger
+        
         if description is None:
             description = str(actionFunction)
         self.actionDescription = description
@@ -144,7 +146,7 @@ class ActionNode(Node):
 
             if (self.actionFunction is None):
                 self.logger.logError(message="Could not perform action. Action Function is None.")
-                return {}
+                return {'result' : 'Failure', 'action' : 'E'}
 
             action = self.actionFunction(*args)
 
@@ -155,6 +157,7 @@ class ActionNode(Node):
             if ( action == 'E' ):
                 return {'result': 'Failure', 'action' : 'E'}
             else :
+                print(self.actionDescription, f"suggestion : {action}")
                 return {'result': 'Success', 'action' : action}
         except Exception:
             self.logger.logException(message="Could not perform action.")
@@ -355,11 +358,14 @@ class SequenceNode(Node):  # '->'
             self.setTick(True)
 
             if ( 'action' in childResponse.keys() ):
-                return { 'result' : self.getState(), 'action' : action}
-            
+                if ( childResponse['action'] != 'E' ):
+                    return { 'result' : 'Success', 'action' : childResponse['action']}
+                else :
+                    return { 'result' : 'Failure', 'action' : 'E'}
             if (childResponse['result'] == 'Running' or childResponse['result'] == 'Failure' or childResponse['result'] == 'Error'):
                 self.setState(child.getState())
                 self.setTick(False)
+                return { 'result' : self.getState(), 'action' : 'E'}
             
         # Code reaching here means that all the children returned Success.
         self.logger.logInfo(message="All children returned Success.")
