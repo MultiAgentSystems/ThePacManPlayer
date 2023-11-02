@@ -71,6 +71,7 @@ class Node:
 
         for order, child in enumerate(self.children):
             child.setSiblingOrder(order)
+            child.setParent(self)
         return len(self.children)
 
     def getChildren(self) -> list:

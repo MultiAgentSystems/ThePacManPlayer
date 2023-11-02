@@ -95,4 +95,3 @@ class Generation:
         pass
 
     def performMutation(self):
-        pass
