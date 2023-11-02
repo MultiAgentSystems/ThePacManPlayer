@@ -157,6 +157,7 @@ class ActionNode(Node):
             if ( action == 'E' ):
                 return {'result': 'Failure', 'action' : 'E'}
             else :
+                print(self.actionDescription, f"suggestion : {action}")
                 return {'result': 'Success', 'action' : action}
         except Exception:
             self.logger.logException(message="Could not perform action.")
