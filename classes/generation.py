@@ -2,6 +2,7 @@ from logs.logger import Logger
 from .normalised_tree import NormalisedTree
 from .nodes import ActionNode, ConditionNode
 from math import ceil
+from pythonPacMan.runGame import runGame
 import random
 
 from utils.generateTree import generateNodes
@@ -9,7 +10,7 @@ from utils.conditions import ConditionFunctions
 from utils.actions import ActionFunctions
 
 def score(tree) -> float:
-    return 1.0 if tree is not None else 0.0
+    return runGame(tree)
 
 
 class Generation:
