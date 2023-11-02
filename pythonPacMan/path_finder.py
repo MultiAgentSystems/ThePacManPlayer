@@ -1,3 +1,6 @@
+def notAnObstacle( code ) -> bool:
+    return ( code < 100 or code > 140 )
+
 class node():
 
     def __init__(self):
@@ -56,18 +59,47 @@ class path_finder():
         self.openList = []
         self.closedList = []
     
-    # def FindNearestEntity(self, entity, playerPosition ):
-    #     self.CleanUpTemp()
-    #     # Given an entity, this function finds the shortest distance to 
-    #     # the entity from the player. This is done using a BFS Algorithm.
-    #     
-    #     self.start = playerPosition
-    #
-    #     self.AddToOpenList(self.start)
-    #     
-    #     currentAbstractPosition = self.start
-    #
-    #     if ( currentAbstractPosition )
+    def FindNearestGhost(self, game, state ):
+        self.CleanUpTemp()
+        # Given an entity, this function finds the shortest distance to 
+        # the entity from the player. This is done using a BFS Algorithm.
+
+        ghostsPositions = [(game.ghosts[i].nearestRow, game.ghosts[i].nearestCol) for i in range(4)]
+        
+        toVisit = []
+        visited = []
+
+        toVisit.append( (game.player.nearestRow, game.player.nearestCol) )
+        targetGhost = -1
+        # print(f"Pacman position : {game.player.nearestRow}, {game.player.nearestCol}")
+
+        while ( len(toVisit) > 0 ):
+            (row, col) = toVisit.pop(0)
+            visited.append( (row, col) )
+            
+            code = game.thisLevel.GetMapTile((row, col))
+
+            if ( (row, col) in ghostsPositions ): # Found the nearest ghost.
+                targetGhost = ghostsPositions.index( (row, col) )
+                if game.ghosts[targetGhost].state == state:
+                    break;
+                else:
+                    targetGhost = -1
+                    continue
+            else : #Found a different point.
+                for i in range(-1,2):
+                    for j in range(-1,2):
+                        if ( i == j or i == -j ):
+                            continue
+                        # if ( row + i < 0 or row + i >= game.thisLevel.lvlHeight or col + j < 0 or col + j >= game.thisLevel.lvlWidth ):
+                        #     continue
+                        nRow = (row + i) % game.thisLevel.lvlHeight
+                        nCol = (col + j) % game.thisLevel.lvlWidth
+                        code = game.thisLevel.GetMapTile( (nRow, nCol) )
+                        if ( (nRow, nCol) not in visited and (nRow, nCol) not in toVisit and notAnObstacle(code)):
+                            toVisit.append( (nRow, nCol) )
+
+        return targetGhost
            
 
     def FindPath(self, startPos, endPos):

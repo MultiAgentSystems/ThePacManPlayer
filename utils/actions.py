@@ -9,13 +9,11 @@
 import random
 from pythonPacMan.tile import tileID as Tile
 from pythonPacMan.path_finder import path as PathFinder
+from pythonPacMan.path_finder import notAnObstacle
 
 
 def isDesiredPill(normalPill : bool , powerPill : bool, code ) -> bool:
-    return  ( normalPill and code == Tile['pellet'] ) or ( powerPill and code == Tile['pellet-power'] )
-
-def notAnObstacle( code ) -> bool:
-    return ( code < 100 or code > 140 ) 
+    return  ( normalPill and code == Tile['pellet'] ) or ( powerPill and code == Tile['pellet-power'] ) 
 
 def moveToEatPill( game, normalPill : bool , powerPill : bool ) -> str:
     pathStepForNearestPill = 'E'

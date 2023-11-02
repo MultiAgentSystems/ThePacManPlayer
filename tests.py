@@ -179,7 +179,7 @@ def somewhatSmartTree():
     for _ in range( len(conditions) ):
         newSelectorNode.addChild(SequenceNode(logger=universalLogger))
     for _ in range( 1 ):
-        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatPowerPill, description="moveToEatPowerPill", logger=universalLogger))
+        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", logger=universalLogger))
     
     for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
         node.addChild(ConditionNode(conditionFunction=conditionFunction, logger=universalLogger))
