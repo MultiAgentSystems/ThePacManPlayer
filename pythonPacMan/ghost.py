@@ -1,8 +1,7 @@
-import pygame, os, sys, random
-from path_finder import path
-from tile import tileID, tileIDImage
-
-SCRIPT_PATH = sys.path[0]
+import pygame, os, random
+from .path_finder import path
+from .tile import tileID, tileIDImage
+from .scriptPath import SCRIPT_PATH
 
 ghostcolor = {}
 ghostcolor[0] = (255, 0, 0, 255)
@@ -54,14 +53,14 @@ class ghost():
             self.animDelay = 0
 
     def set(self, thisGame, thisLevel, ghosts, player):
-        self.thisGame = thisGame
-        self.thisLevel = thisLevel
+        self.game = thisGame
+        self.level = thisLevel
         self.ghosts = ghosts
         self.player = player
 
     def Draw(self, screen):
 
-        if self.thisGame.mode == 3:
+        if self.game.mode == 3:
             return False
 
         # ghost eyes --
@@ -98,13 +97,13 @@ class ghost():
         elif self.state == 2:
             # draw vulnerable ghost
 
-            if self.thisGame.ghostTimer > 100:
+            if self.game.ghostTimer > 100:
                 # blue
                 screen.blit(self.ghosts[4].anim[self.animFrame],
                             (self.x, self.y))
             else:
                 # blue/white flashing
-                tempTimerI = int(self.thisGame.ghostTimer / 10)
+                tempTimerI = int(self.game.ghostTimer / 10)
                 if tempTimerI == 1 or tempTimerI == 3 or tempTimerI == 5 or tempTimerI == 7 or tempTimerI == 9:
                     screen.blit(self.ghosts[5].anim[self.animFrame],
                                 (self.x, self.y))
@@ -117,7 +116,7 @@ class ghost():
             screen.blit(tileIDImage[tileID['glasses']],
                         (self.x, self.y))
 
-        if self.thisGame.mode == 6 or self.thisGame.mode == 7:
+        if self.game.mode == 6 or self.game.mode == 7:
             # don't animate ghost if the level is complete
             return False
 
@@ -144,13 +143,13 @@ class ghost():
                 if (self.x - (iCol * 16) < 16) and (self.x - (iCol * 16) > -16) and (self.y - (iRow * 16) < 16) and (
                         self.y - (iRow * 16) > -16):
                     
-                    result = self.thisLevel.GetMapTile((iRow, iCol))
+                    result = self.level.GetMapTile((iRow, iCol))
 
                     if result == tileID['door-h']:
                         # ran into a horizontal door
-                        for i in range(0, self.thisLevel.lvlWidth, 1):
+                        for i in range(0, self.level.lvlWidth, 1):
                             if not i == iCol:
-                                if self.thisLevel.GetMapTile((iRow, i)) == tileID['door-h']:
+                                if self.level.GetMapTile((iRow, i)) == tileID['door-h']:
                                     self.x = i * 16
 
                                     if self.velX > 0:
@@ -160,9 +159,9 @@ class ghost():
 
                     elif result == tileID['door-v']:
                         # ran into a vertical door
-                        for i in range(0, self.thisLevel.lvlHeight, 1):
+                        for i in range(0, self.level.lvlHeight, 1):
                             if not i == iRow:
-                                if self.thisLevel.GetMapTile((i, iCol)) == tileID['door-v']:
+                                if self.level.GetMapTile((i, iCol)) == tileID['door-v']:
                                     self.y = i * 16
 
                                     if self.velY > 0:
@@ -173,6 +172,20 @@ class ghost():
         if (self.x % 16) == 0 and (self.y % 16) == 0:
             # if the ghost is lined up with the grid again
             # meaning, it's time to go to the next path item
+            
+            if ( self.state != 3 ):
+                if (self.velX != 0):
+                    tileUp = self.level.GetMapTile((self.nearestRow + 1, self.nearestCol))
+                    tileDown = self.level.GetMapTile((self.nearestRow - 1, self.nearestCol))
+                    if (tileUp < 100 or tileUp > 140) or (tileDown < 100 or tileDown > 140):
+                        # if we're not in a "horizontal" tunnel
+                        self.currentPath = ""
+                if (self.velY != 0):
+                    tileLeft = self.level.GetMapTile((self.nearestRow, self.nearestCol - 1))
+                    tileRight = self.level.GetMapTile((self.nearestRow, self.nearestCol + 1))
+                    if (tileLeft < 100 or tileLeft > 140) or (tileRight < 100 or tileRight > 140):
+                        # if we're not in a "vertical" tunnel
+                        self.currentPath = ""
 
             if (self.currentPath):
                 self.FollowNextPathWay()
@@ -183,7 +196,7 @@ class ghost():
 
                 randNum = random.random()
 
-                if self.state == 1 and randNum < 0.9:
+                if self.state == 1 and randNum < 0.6:
                     # chase pac-man
                     self.currentPath = path.FindPath((self.nearestRow, self.nearestCol),
                                                      (self.player.nearestRow, self.player.nearestCol))
@@ -199,9 +212,9 @@ class ghost():
                     # give ghost a path to a random spot (containing a pellet)
                     (randRow, randCol) = (0, 0)
 
-                    while not self.thisLevel.GetMapTile((randRow, randCol)) == tileID['pellet'] or (randRow, randCol) == (0, 0):
-                        randRow = random.randint(1, self.thisLevel.lvlHeight - 2)
-                        randCol = random.randint(1, self.thisLevel.lvlWidth - 2)
+                    while not self.level.GetMapTile((randRow, randCol)) == tileID['pellet'] or (randRow, randCol) == (0, 0):
+                        randRow = random.randint(1, self.level.lvlHeight - 2)
+                        randCol = random.randint(1, self.level.lvlWidth - 2)
 
                     self.currentPath = path.FindPath((self.nearestRow, self.nearestCol), (randRow, randCol))
                     self.FollowNextPathWay()

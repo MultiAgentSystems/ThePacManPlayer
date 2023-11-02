@@ -1,6 +1,6 @@
 """
 Represents a normalised tree, which is represented using a parent array and a label array.
-The labels for Selection and Condition nodes are the same as the name of the node.
+The labels for Selection and Sequence nodes are the same as the name of the node.
 The labels for Action/Condition nodes are the name of the node followed by the description of the action/condition.
 The nodes are numbered in their preorder traversal order, from 0 to n-1.
 """

@@ -1,7 +1,6 @@
-import pygame, os, sys
-from path_finder import path
-
-SCRIPT_PATH = sys.path[0]
+import pygame, os
+from .path_finder import path
+from .scriptPath import SCRIPT_PATH
 
 class pacman():
 
@@ -42,8 +41,8 @@ class pacman():
         # self.pelletSndNum = 0
 
     def set(self, thisGame, thisLevel, ghosts):
-        self.thisGame = thisGame
-        self.thisLevel = thisLevel
+        self.game = thisGame
+        self.level = thisLevel
         self.ghosts = ghosts
 
     def Move(self):
@@ -52,29 +51,29 @@ class pacman():
         self.nearestCol = int(((self.x + 8) / 16))
 
         # make sure the current velocity will not cause a collision before moving
-        if not self.thisLevel.CheckIfHitWall((self.x + self.velX, self.y + self.velY), (self.nearestRow, self.nearestCol)):
+        if not self.level.CheckIfHitWall((self.x + self.velX, self.y + self.velY), (self.nearestRow, self.nearestCol)):
             # it's ok to Move
             self.x += self.velX
             self.y += self.velY
 
             # check for collisions with other tiles (pellets, etc)
-            self.thisLevel.CheckIfHitSomething((self.x, self.y), (self.nearestRow, self.nearestCol))
+            self.level.CheckIfHitSomething((self.x, self.y), (self.nearestRow, self.nearestCol))
 
             # check for collisions with the ghosts
             for i in range(0, 4, 1):
-                if self.thisLevel.CheckIfHit((self.x, self.y), (self.ghosts[i].x, self.ghosts[i].y), 8):
+                if self.level.CheckIfHit((self.x, self.y), (self.ghosts[i].x, self.ghosts[i].y), 8):
                     # hit a ghost
 
                     if self.ghosts[i].state == 1:
                         # ghost is normal
-                        self.thisGame.SetMode(2)
+                        self.game.SetMode(2)
 
                     elif self.ghosts[i].state == 2:
                         # ghost is vulnerable
                         # give them glasses
                         # make them run
-                        self.thisGame.AddToScore(self.thisGame.ghostValue)
-                        self.thisGame.ghostValue = self.thisGame.ghostValue * 2
+                        self.game.AddToScore(self.game.ghostValue)
+                        self.game.ghostValue = self.game.ghostValue * 2
                         # snd_eatgh.play()
 
                         self.ghosts[i].state = 3
@@ -83,11 +82,11 @@ class pacman():
                         self.ghosts[i].x = self.ghosts[i].nearestCol * 16
                         self.ghosts[i].y = self.ghosts[i].nearestRow * 16
                         self.ghosts[i].currentPath = path.FindPath((self.ghosts[i].nearestRow, self.ghosts[i].nearestCol), (
-                        self.thisLevel.GetGhostBoxPos()[0] + 1, self.thisLevel.GetGhostBoxPos()[1]))
+                        self.level.GetGhostBoxPos()[0] + 1, self.level.GetGhostBoxPos()[1]))
                         self.ghosts[i].FollowNextPathWay()
 
                         # set game mode to brief pause after eating
-                        self.thisGame.SetMode(5)
+                        self.game.SetMode(5)
 
         else:
             # we're going to hit a wall -- stop moving
@@ -95,10 +94,10 @@ class pacman():
             self.velY = 0
 
         # deal with power-pellet ghost timer
-        if self.thisGame.ghostTimer > 0:
-            self.thisGame.ghostTimer -= 1
+        if self.game.ghostTimer > 0:
+            self.game.ghostTimer -= 1
 
-            if self.thisGame.ghostTimer == 0:
+            if self.game.ghostTimer == 0:
                 for i in range(0, 4, 1):
                     if self.ghosts[i].state == 2:
                         self.ghosts[i].state = 1
@@ -107,7 +106,7 @@ class pacman():
 
     def Draw(self, screen):
 
-        if self.thisGame.mode == 3:
+        if self.game.mode == 3:
             return False
 
         # set the current frame array to match the direction pacman is facing
@@ -123,7 +122,7 @@ class pacman():
         screen.blit(self.anim_pacmanCurrent[self.animFrame],
                     (self.x, self.y))
 
-        if self.thisGame.mode == 1:
+        if self.game.mode == 1:
             if not self.velX == 0 or not self.velY == 0:
                 # only Move mouth when pacman is moving
                 self.animFrame += 1
