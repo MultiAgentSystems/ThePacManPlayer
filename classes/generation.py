@@ -3,6 +3,7 @@ from .nodes import ActionNode, ConditionNode, SelectorNode, SequenceNode
 from math import ceil
 from utils.fitness import fitness
 import random
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from utils.generateTree import generateNodes
 from utils.conditions import ConditionFunctions
@@ -12,7 +13,18 @@ from utils.actions import ActionFunctions
 class Generation:
     def __init__(self, trees=None, DC=True, SC=True) -> None:
         self.trees = trees if trees is not None else [];
-        self.tree_scores = [fitness(tree) for tree in self.trees]
+        # self.tree_scores = [fitness(tree) for tree in self.trees]
+        
+        results = [None] * len(self.trees)
+        with ProcessPoolExecutor() as executor:
+            futures = {executor.submit(fitness, tree): tree for tree in self.trees}
+
+            for future in as_completed(futures):
+                tree = futures[future]
+                index = self.trees.index(tree)
+                results[index] = future.result()
+
+        self.tree_scores = results
         
         self.averageTreeScore = sum(self.tree_scores) / len(self.tree_scores)
 

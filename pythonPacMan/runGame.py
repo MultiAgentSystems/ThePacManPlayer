@@ -1,4 +1,5 @@
 import pygame, os, sys
+from concurrent.futures import ProcessPoolExecutor
 
 from pygame.locals import *
 
@@ -63,7 +64,7 @@ def CheckInputs(direction, mode_game, thisLevel, player):
 #      __________________
 # ___/  main code block  \_____________________________________________________
 
-def runGame(BT, numRuns=1, display=False):
+def runSingleGame(BT, display=False):
     screen = None
     if display:
         pygame.init()
@@ -76,156 +77,164 @@ def runGame(BT, numRuns=1, display=False):
         screen = pygame.display.get_surface()
 
         img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "1.gif")).convert()
-    # else:
-        # window = pygame.display.set_mode((1, 1), pygame.NOFRAME)
-        # pygame.quit()
-        # screen = None
 
     score = 0
-    for i in range(numRuns):
-        player = pacman(display=display)
-        ghosts = {}
-        for i in range(0, 6, 1):
-            ghosts[i] = ghost(i, display=display)
-        thisGame = game(screen, display=display)
-        thisLevel = level(player, ghosts, thisGame, screen, display=display)
-        player.set(thisGame, thisLevel, ghosts)
-        for i in range(0, 6, 1):
-            ghosts[i].set(thisGame, thisLevel, ghosts, player)
-        thisGame.set(thisLevel, player, ghosts)
-        thisLevel.LoadLevel(thisGame.GetLevelNum())
-        thisGame.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
-        thisGame.screenSize = (thisGame.screenTileSize[1] * 16, thisGame.screenTileSize[0] * 16)
-        if display :
-            window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
+    player = pacman(display=display)
+    ghosts = {}
+    for i in range(0, 6, 1):
+        ghosts[i] = ghost(i, display=display)
+    thisGame = game(screen, display=display)
+    thisLevel = level(player, ghosts, thisGame, screen, display=display)
+    player.set(thisGame, thisLevel, ghosts)
+    for i in range(0, 6, 1):
+        ghosts[i].set(thisGame, thisLevel, ghosts, player)
+    thisGame.set(thisLevel, player, ghosts)
+    thisLevel.LoadLevel(thisGame.GetLevelNum())
+    thisGame.screenTileSize = (thisLevel.lvlHeight, thisLevel.lvlWidth)
+    thisGame.screenSize = (thisGame.screenTileSize[1] * 16, thisGame.screenTileSize[0] * 16)
+    if display :
+        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
-        thisGame.StartNewGame()
+    thisGame.StartNewGame()
 
-        previousMove = 'R'
-        move = 'L'
+    previousMove = 'R'
+    move = 'L'
 
-        k = 2
+    k = 2
 
-        while True:
-            if display:
-                events = pygame.event.get()
+    while True:
+        if display:
+            events = pygame.event.get()
 
-                CheckIfCloseButton(events)
+            CheckIfCloseButton(events)
 
-            if thisGame.mode == 1:
-                # normal gameplay mode
-                thisGame.modeTimer += 1
-                thisGame.elapsedTime += 1
+        if thisGame.mode == 1:
+            # normal gameplay mode
+            thisGame.modeTimer += 1
+            thisGame.elapsedTime += 1
+        
+            for i in range(0, 4, 1):
+                ghosts[i].Move()
             
+            if ( player.x%16 == 0 and player.y%16 == 0 ):
+                move = DecisionSimulator(BT, thisGame)
+                move = move if move != 'E' else previousMove
+                previousMove = move
+
+            CheckInputs(move, 1, thisLevel, player)
+
+            player.Move()
+
+        if thisGame.mode == 3:
+            # game over
+            score += thisGame.score
+            break
+
+        if thisGame.mode == 2:
+            # waiting after getting hit by a ghost
+            thisGame.modeTimer += 1
+            thisGame.elapsedTime += 1
+
+            if not display or thisGame.modeTimer == 90:
+                thisLevel.Restart()
+
+                thisGame.lives -= 1
+                if thisGame.lives == 0:
+                    thisGame.SetMode(3)
+                else:
+                    thisGame.SetMode(4)
+        
+        elif thisGame.mode == 4:
+            # waiting to start
+            thisGame.modeTimer += 1
+
+            if not display or thisGame.modeTimer == 90:
+                thisGame.SetMode(1)
+                player.velX = player.speed
+
+        elif thisGame.mode == 5:
+            # brief pause after munching a vulnerable ghost
+            thisGame.modeTimer += 1
+
+            if not display or thisGame.modeTimer == 30:
+                thisGame.SetMode(1)
+        
+        elif thisGame.mode == 6:
+            # pause after eating all the pellets
+            thisGame.modeTimer += 1
+
+            if not display or thisGame.modeTimer == 60:
+                thisGame.SetMode(7)
+                oldEdgeLightColor = thisLevel.edgeLightColor
+                oldEdgeShadowColor = thisLevel.edgeShadowColor
+                oldFillColor = thisLevel.fillColor
+
+        elif thisGame.mode == 7:
+            # flashing maze after finishing level
+            thisGame.modeTimer += 1
+
+            whiteSet = [10, 30, 50, 70]
+            normalSet = [20, 40, 60, 80]
+
+            if not whiteSet.count(thisGame.modeTimer) == 0:
+                # member of white set
+                thisLevel.edgeLightColor = (255, 255, 255, 255)
+                thisLevel.edgeShadowColor = (255, 255, 255, 255)
+                thisLevel.fillColor = (0, 0, 0, 255)
+                GetCrossRef(thisLevel, display)
+            elif not normalSet.count(thisGame.modeTimer) == 0:
+                # member of normal set
+                thisLevel.edgeLightColor = oldEdgeLightColor
+                thisLevel.edgeShadowColor = oldEdgeShadowColor
+                thisLevel.fillColor = oldFillColor
+                GetCrossRef(thisLevel, display)
+            elif not display or thisGame.modeTimer == 150:
+                thisGame.SetMode(8)
+
+        elif thisGame.mode == 8:
+            # blank screen before changing levels
+            thisGame.modeTimer += 1
+            if not display or thisGame.modeTimer == 10:
+                thisGame.SetNextLevel()
+                if display:
+                    window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
+
+        if display:
+            bgsize = img_Background.get_size()
+
+            for i in range(0, thisGame.screenSize[0], bgsize[0]):
+                for j in range(0, thisGame.screenSize[1], bgsize[1]):
+                    screen.blit(img_Background, (i, j))
+
+            if not thisGame.mode == 8:
+                thisLevel.DrawMap()
+
                 for i in range(0, 4, 1):
-                    ghosts[i].Move()
-                
-                if ( player.x%16 == 0 and player.y%16 == 0 ):
-                    move = DecisionSimulator(BT, thisGame)
-                    move = move if move != 'E' else previousMove
-                    previousMove = move
+                    ghosts[i].Draw(screen)
+                player.Draw(screen)
 
-                CheckInputs(move, 1, thisLevel, player)
+            if thisGame.mode == 5:
+                thisGame.DrawNumber(thisGame.ghostValue / 2,
+                                    (player.x - 4, player.y + 6))
 
-                player.Move()
+            thisGame.DrawScore()
 
-            if thisGame.mode == 3:
-                # game over
-                score += thisGame.score
-                break
+            pygame.display.flip()
 
-            if thisGame.mode == 2:
-                # waiting after getting hit by a ghost
-                thisGame.modeTimer += 1
-                thisGame.elapsedTime += 1
+            clock.tick(60)
+    pygame.quit()
+    return score
 
-                if not display or thisGame.modeTimer == 90:
-                    thisLevel.Restart()
-
-                    thisGame.lives -= 1
-                    if thisGame.lives == 0:
-                        thisGame.SetMode(3)
-                    else:
-                        thisGame.SetMode(4)
-            
-            elif thisGame.mode == 4:
-                # waiting to start
-                thisGame.modeTimer += 1
-
-                if not display or thisGame.modeTimer == 90:
-                    thisGame.SetMode(1)
-                    player.velX = player.speed
-
-            elif thisGame.mode == 5:
-                # brief pause after munching a vulnerable ghost
-                thisGame.modeTimer += 1
-
-                if not display or thisGame.modeTimer == 30:
-                    thisGame.SetMode(1)
-            
-            elif thisGame.mode == 6:
-                # pause after eating all the pellets
-                thisGame.modeTimer += 1
-
-                if not display or thisGame.modeTimer == 60:
-                    thisGame.SetMode(7)
-                    oldEdgeLightColor = thisLevel.edgeLightColor
-                    oldEdgeShadowColor = thisLevel.edgeShadowColor
-                    oldFillColor = thisLevel.fillColor
-
-            elif thisGame.mode == 7:
-                # flashing maze after finishing level
-                thisGame.modeTimer += 1
-
-                whiteSet = [10, 30, 50, 70]
-                normalSet = [20, 40, 60, 80]
-
-                if not whiteSet.count(thisGame.modeTimer) == 0:
-                    # member of white set
-                    thisLevel.edgeLightColor = (255, 255, 255, 255)
-                    thisLevel.edgeShadowColor = (255, 255, 255, 255)
-                    thisLevel.fillColor = (0, 0, 0, 255)
-                    GetCrossRef(thisLevel, display)
-                elif not normalSet.count(thisGame.modeTimer) == 0:
-                    # member of normal set
-                    thisLevel.edgeLightColor = oldEdgeLightColor
-                    thisLevel.edgeShadowColor = oldEdgeShadowColor
-                    thisLevel.fillColor = oldFillColor
-                    GetCrossRef(thisLevel, display)
-                elif not display or thisGame.modeTimer == 150:
-                    thisGame.SetMode(8)
-
-            elif thisGame.mode == 8:
-                # blank screen before changing levels
-                thisGame.modeTimer += 1
-                if not display or thisGame.modeTimer == 10:
-                    thisGame.SetNextLevel()
-                    if display:
-                        window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
-
-            if display:
-                bgsize = img_Background.get_size()
-
-                for i in range(0, thisGame.screenSize[0], bgsize[0]):
-                    for j in range(0, thisGame.screenSize[1], bgsize[1]):
-                        screen.blit(img_Background, (i, j))
-
-                if not thisGame.mode == 8:
-                    thisLevel.DrawMap()
-
-                    for i in range(0, 4, 1):
-                        ghosts[i].Draw(screen)
-                    player.Draw(screen)
-
-                if thisGame.mode == 5:
-                    thisGame.DrawNumber(thisGame.ghostValue / 2,
-                                        (player.x - 4, player.y + 6))
-
-                thisGame.DrawScore()
-
-                pygame.display.flip()
-
-                clock.tick(60)
+def runGame(BT, numRuns=1, display=False):
+    if numRuns == 1:
+        return runSingleGame(BT, display)
     
-    # print(score / numRuns)
-    return score / numRuns
+    # results = []
+    # for _ in range(numRuns):
+    #     results.append(runSingleGame(BT, display))
+
+    with ProcessPoolExecutor() as executor:
+        futures = [executor.submit(runSingleGame, BT, display) for _ in range(numRuns)]
+        results = [future.result() for future in futures]
+    
+    return sum(results) / numRuns

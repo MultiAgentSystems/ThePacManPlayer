@@ -278,4 +278,6 @@ def testFirstGeneration():
     ## Plotting the Fitness Score
     plot.plot(generationScore, list(range(len(generationScore))), color='lightgreen' )
     print(generationScore)
-testFirstGeneration()
+
+if __name__ == "__main__":
+    testFirstGeneration()
