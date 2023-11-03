@@ -10,7 +10,7 @@ from utils.actions import ActionFunctions
 
 
 class Generation:
-    def __init__(self, trees=None) -> None:
+    def __init__(self, trees=None, DC=True) -> None:
         self.trees = trees if trees is not None else [];
         self.tree_scores = [fitness(tree) for tree in self.trees]
 
@@ -20,6 +20,9 @@ class Generation:
         self.pop = min(100, len(trees))
         self.tourn_size = 2
         self.gamma = 0.9
+
+        # Dynamic Constraint
+        self.DC = DC
 
         # FREQT constants, apart from topCount
         self.freqt_top_tree_ct = ceil(0.5 * len(self.trees))
@@ -70,12 +73,15 @@ class Generation:
         return list(protected_nodes), unprotected_nodes
 
     def getNodeForCrossover(self, tree):
-        protected, unprotected = self.getNodePartition(tree)
-        protected_pick_prob = (self.gamma * len(protected)) / (len(protected) + len(unprotected))
-        if random.random() < protected_pick_prob:
-            return random.choice(protected)
+        if self.DC:
+            protected, unprotected = self.getNodePartition(tree)
+            protected_pick_prob = (self.gamma * len(protected)) / (len(protected) + len(unprotected))
+            if random.random() < protected_pick_prob:
+                return random.choice(protected)
+            else:
+                return random.choice(unprotected)
         else:
-            return random.choice(unprotected)
+            return random.choice(tree.getExecutionOrder())
 
     def performCrossOver(self, tree1, tree2):
         # Pick a random node from tree1, and swap it with a random subtree from tree2
