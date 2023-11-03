@@ -160,7 +160,7 @@ class Generation:
             if random.random() < self.mutation_prob:
                 next_gen[i] = self.performMutation(next_gen[i])
 
-        return Generation(next_gen)
+        return Generation(next_gen, DC=self.DC)
 
     def isValidPattern(self, pat):
         nodes, terminals = len(pat.getParentArray()), pat.countTerminals()

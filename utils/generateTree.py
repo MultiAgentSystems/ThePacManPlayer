@@ -2,6 +2,7 @@
     This module contains code to generate a random tree,
     with some possibly defined constraints.
 '''
+from math import ceil, floor
 import random
 from classes.nodes import ActionNode, ConditionNode, SelectorNode, SequenceNode
 from classes.tree import Tree
@@ -52,7 +53,7 @@ def generateInitialTreeDepth2( treeSize : int = 5 ):
     root = SelectorNode()
     
     numberOfNodes = random.randint(2, treeSize - 1)
-    children = generateNodes( limit = numberOfNodes )
+    children = generateNodes( limit = numberOfNodes, unwanted = [2,3] )
 
     for child in children:
         root.addChild( child )
@@ -70,17 +71,28 @@ def generateInitialTreeDepth3( treeSize : int = 7 ):
     
     remaining = treeSize
 
-    numberOfNodes = random.randint(0, remaining - 1)
-    children = generateNodes( limit = numberOfNodes )
-    children += generateNodes( specific = 3 )
+    numberOfSequenceNodes = random.randint(1, floor(2*treeSize/5) - 1)
+    children = generateNodes( limit = numberOfSequenceNodes , specific = 3 )
 
-    remaining -= numberOfNodes
-    remaining -= 1
+    remaining -= numberOfSequenceNodes
+    children += generateNodes( limit = treeSize - 2*numberOfSequenceNodes, unwanted = [2,3] )
+    
+    remaining -= treeSize - 2*numberOfSequenceNodes
 
     for child in children:
         if ( isinstance(child, SelectorNode) or isinstance(child, SequenceNode) and remaining > 0 ):
-            numGrandChildren = random.randint(0, remaining) 
-            grandChildren = generateNodes( limit = numGrandChildren )
+            numGrandChildren = 0
+            if ( remaining > 1 ):
+                numGrandChildren = random.randint(1, remaining) 
+            else :
+                numGrandChildren = 1
+            
+            grandChildren = []
+            if ( numGrandChildren > 1 ):
+                grandChildren += generateNodes( limit = numGrandChildren - 1 , unwanted = [2,3] )
+            
+            grandChildren += generateNodes( specific = 0 )
+
             for grandChild in grandChildren:
                 child.addChild( grandChild )
             remaining -= numGrandChildren

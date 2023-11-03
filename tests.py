@@ -260,19 +260,19 @@ def generationTest():
 
 
 def testFirstGeneration():
-    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=5, depth3SizeLimit=7)
+    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15)
 
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
             print( "Unfit Tree Generated" )
 
-    firstGeneration = Generation(firstGeneration)
+    firstGeneration = Generation(firstGeneration, DC=False)
     thisGeneration = firstGeneration
     
     generationScore = [thisGeneration.averageTreeScore]
 
     print(f"Fitness Score For Generation 0 : {thisGeneration.averageTreeScore}")
-    for i in range(20):
+    for i in range(100):
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
         print(f"Fitness Score For Generation {i+1} : {thisGeneration.averageTreeScore}")
