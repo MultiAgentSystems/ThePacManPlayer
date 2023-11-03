@@ -254,7 +254,10 @@ def generationTest():
     trees.append(anotherTree())
 
     thisGeneration = Generation(trees)
-    nexGeneration = thisGeneration.getNextGeneration()
+    nextGeneration = thisGeneration.getNextGeneration()
+    
+    return nextGeneration
+
 
 def testFirstGeneration():
     firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=5, depth3SizeLimit=7)
@@ -266,19 +269,22 @@ def testFirstGeneration():
     firstGeneration = Generation(firstGeneration)
     thisGeneration = firstGeneration
     
-    generationScore = []
+    generationScore = [thisGeneration.averageTreeScore]
 
     print(f"Fitness Score For Generation 0 : {thisGeneration.averageTreeScore}")
-    for i in range(10):
+    for i in range(20):
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
         print(f"Fitness Score For Generation {i+1} : {thisGeneration.averageTreeScore}")
         generationScore.append(thisGeneration.averageTreeScore)
     
     ## Plotting the Fitness Score
-    plot.plot( list(range(len(generationScore))), generationScore, color='lightgreen' )
-    print(generationScore)
+    plot.plot( list(range(len(generationScore))), generationScore, color='lightblue', label = "Evolution of Scores With Dyanamic Constraints", marker='o' )
+    plot.legend()
+    plot.xlabel("Generation")
+    plot.ylabel("Average Fitness Score")
     plot.show()
+    print(generationScore)
 
 if __name__ == "__main__":
     testFirstGeneration()
