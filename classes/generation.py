@@ -10,7 +10,7 @@ from utils.actions import ActionFunctions
 
 
 class Generation:
-    def __init__(self, trees=None, DC=True) -> None:
+    def __init__(self, trees=None, DC=True, SC=True) -> None:
         self.trees = trees if trees is not None else [];
         self.tree_scores = [fitness(tree) for tree in self.trees]
         
@@ -23,8 +23,9 @@ class Generation:
         self.tourn_size = 5
         self.gamma = 0.9
 
-        # Dynamic Constraint
+        # Constraints
         self.DC = DC
+        self.SC = SC
 
         # FREQT constants, apart from topCount
         self.freqt_top_tree_ct = ceil(0.5 * len(self.trees))
@@ -55,7 +56,7 @@ class Generation:
         protected_nodes = set()
         for pat in self.freq_patterns:
             pat_exec_order_labels = pat.getExecutionOrderLabels()
-            for node in tree.getExecutionOrder():
+            for node in tree.getExecutionOrder()[1:]:
                 if node in protected_nodes:
                     # Its entire subtree would be protected already (I think :P)
                     continue
@@ -68,7 +69,7 @@ class Generation:
                     protected_nodes.add(node)
 
         unprotected_nodes = []
-        for node in tree.getExecutionOrder():
+        for node in tree.getExecutionOrder()[1:]:
             if node not in protected_nodes:
                 unprotected_nodes.append(node)
 
@@ -83,7 +84,7 @@ class Generation:
             else:
                 return random.choice(unprotected)
         else:
-            return random.choice(tree.getExecutionOrder())
+            return random.choice(tree.getExecutionOrder()[1:])
 
     def performCrossOver(self, tree1, tree2):
         # Pick a random node from tree1, and swap it with a random subtree from tree2
@@ -92,7 +93,7 @@ class Generation:
         tree1_node, tree2_node = None, None
         for tries in range(100):
             node1, node2 = self.getNodeForCrossover(tree1), self.getNodeForCrossover(tree2)
-            if node1._name == node2._name:
+            if (self.SC and node1._name == node2._name) or (not self.SC):
                 tree1_node, tree2_node = node1, node2
                 break
 

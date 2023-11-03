@@ -98,17 +98,17 @@ def isEdibleGhostCloseLong(game):
 
 #######################################
 
-def isTargetGhostEdibleTime(game, threshold):
-    return game.ghostTimer >= threshold if game.ghosts[game.target].state == 2 else False
+def isTargetGhostEdibleTime(game, low, high):
+    return (game.ghostTimer >= low and game.ghostTimer < high) if game.ghosts[game.target].state == 2 else False
 
 def isTargetGhostEdibleTimeLow(game):
-    return isTargetGhostEdibleTime(game, 90)
+    return isTargetGhostEdibleTime(game, 0, 120)
 
 def isTargetGhostEdibleTimeMedium(game):
-    return isTargetGhostEdibleTime(game, 180)
+    return isTargetGhostEdibleTime(game, 120, 240)
 
 def isTargetGhostEdibleTimeHigh(game):
-    return isTargetGhostEdibleTime(game, 270)
+    return isTargetGhostEdibleTime(game, 240, 361)
 
 #######################################
 
