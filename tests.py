@@ -8,6 +8,8 @@ from utils.generateTree import generateInitialTrees
 from utils.actions import *
 from utils.conditions import *
 
+import matplotlib.pyplot as plot
+
 def dummyCondition(a: int, b: int) -> bool:
     print(a, b)
     if (a > 2 * b + 1):
@@ -255,7 +257,7 @@ def generationTest():
     nexGeneration = thisGeneration.getNextGeneration()
 
 def testFirstGeneration():
-    firstGeneration = generateInitialTrees(numTrees=10, depth2SizeLimit=5, depth3SizeLimit=7)
+    firstGeneration = generateInitialTrees(numTrees=18, depth2SizeLimit=5, depth3SizeLimit=7)
 
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
@@ -264,10 +266,16 @@ def testFirstGeneration():
     firstGeneration = Generation(firstGeneration)
     thisGeneration = firstGeneration
     
+    generationScore = []
+
     print(f"Fitness Score For Generation 0 : {thisGeneration.averageTreeScore}")
     for i in range(3):
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
         print(f"Fitness Score For Generation {i+1} : {thisGeneration.averageTreeScore}")
-
+        generationScore.append(thisGeneration.averageTreeScore)
+    
+    ## Plotting the Fitness Score
+    plot.plot(generationScore, list(range(len(generationScore))), color='lightgreen' )
+    print(generationScore)
 testFirstGeneration()

@@ -20,7 +20,7 @@ class Generation:
         self.mutation_prob = 0.1
         self.cross_prob = 0.8
         self.pop = min(100, len(trees))
-        self.tourn_size = 2
+        self.tourn_size = 5
         self.gamma = 0.9
 
         # Dynamic Constraint
