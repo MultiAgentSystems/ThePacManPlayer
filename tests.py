@@ -4,6 +4,7 @@ from classes.generation import *
 
 from pythonPacMan.runGame import runGame
 
+from utils.generateTree import generateInitialTrees
 from utils.actions import *
 from utils.conditions import *
 
@@ -253,4 +254,16 @@ def generationTest():
     thisGeneration = Generation(trees)
     nexGeneration = thisGeneration.getNextGeneration()
 
-generationTest()
+def testFirstGeneration():
+    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=5, depth3SizeLimit=7)
+    
+    # for tree in firstGeneration:
+    #     print(f"New Tree " + "-"*15 )
+    #     nodes = []
+    #     for child in tree.root.getExecutionOrder():
+    #         nodes.append(child._name)
+    #     print(nodes)
+    firstGeneration = Generation(firstGeneration)
+    nexGeneration = firstGeneration.getNextGeneration()
+
+testFirstGeneration()

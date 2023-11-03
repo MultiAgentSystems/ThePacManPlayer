@@ -33,9 +33,11 @@ class Tree:
     def getSize(self):
         return self.size
 
-    def getExecutionOrder(self):
+    def getExecutionOrder(self, update = False):
         # if (len(self.executionOrder) == 0):
             # self.logger.logWarning(message=f"Execution Order is empty.")
+        if update:
+            self.updateExecutionOrder()
         return self.executionOrder
 
     def updateExecutionOrder(self, backtrack: bool = False):
@@ -154,9 +156,50 @@ class Tree:
                 nodeToBeSwappedWith.setParent(executionOrderCopy[nodeIndex].getParent())
                 nodeToBeSwappedWith.setSiblingOrder(executionOrderCopy[nodeIndex].getSiblingOrder())
                 executionOrderCopy[nodeIndex].getParent().getChildren()[executionOrderCopy[nodeIndex].getSiblingOrder()] = nodeToBeSwappedWith
-
+        
+        Tree.updateExecutionOrder()
         return Tree
                 
+    def getCopyWithoutReplacing( self, nodeToBeSwapped, nodeToBeSwappedWith ):
+        # Returns a copy of the tree after swapping the passed nodes.
+        if (nodeToBeSwapped is None or nodeToBeSwappedWith is None):
+            # self.logger.logError(message=f"NodeToBeSwapped or NodeToBeSwappedWith is None.")
+            print("Given string is None")
+            return None
+        
+        # print(nodeToBeSwapped.getParent())
+
+        if ( not self.isTreeFit() ):
+            print("Tree is not fit.")
+            return None
+        else :
+            print("Tree is fit. Proceeding to replace Node")
+
+        ## If the root is passed, just swap the root.
+        if (nodeToBeSwapped == self.getRoot()):
+            # Tree.logger.logWarning(message=f"Swapping the root node with {nodeToBeSwappedWith._name}.")
+            self.setRoot(nodeToBeSwappedWith)
+            self.updateExecutionOrder()
+            return self
+        
+        ## Get the execution Order and find the node.
+        executionOrder = self.getExecutionOrder()
+
+
+        for nodeIndex, node in enumerate(executionOrder):
+            if (node == nodeToBeSwapped):
+                ## Change the parent.
+                ## Change the node's order in parent.
+                # print( executionOrderCopy[nodeIndex].getParent() )
+
+                nodeToBeSwappedWith.setParent(executionOrder[nodeIndex].getParent())
+                nodeToBeSwappedWith.setSiblingOrder(executionOrder[nodeIndex].getSiblingOrder())
+                executionOrder[nodeIndex].getParent().getChildren()[executionOrder[nodeIndex].getSiblingOrder()] = nodeToBeSwappedWith
+        
+        self.updateExecutionOrder()
+        return self
+
+
     def __str__(self):
         # Printing a tree in a nice way
         treeAsString = f"Tree with root {self.getRoot()._name}"

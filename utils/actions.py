@@ -164,3 +164,10 @@ ActionFunctions = [
     moveTowardsGhost,
 ]
 
+ActionFunctionDescription = [
+    "moveToEatAnyPill",
+    "moveToEatPowerPill",
+    "moveToEatNormalPill",
+    "moveAwayFromGhost",
+    "moveTowardsGhost",
+]

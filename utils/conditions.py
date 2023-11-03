@@ -148,3 +148,27 @@ ConditionFunctions = [
     isGhostScoreVeryHigh,
     isGhostScoreMax
 ]
+
+ConditionFunctionDescription = [
+    "isInedibleGhostCloseVeryLow",
+    "isInedibleGhostCloseLow",
+    "isInedibleGhostCloseMedium",
+    "isInedibleGhostCloseHigh",
+    "isInedibleGhostCloseVeryHigh",
+    "isInedibleGhostCloseLong",
+
+    "isEdibleGhostCloseVeryLow",
+    "isEdibleGhostCloseLow",
+    "isEdibleGhostCloseMedium",
+    "isEdibleGhostCloseHigh",
+    "isEdibleGhostCloseVeryHigh",
+    "isEdibleGhostCloseLong",
+    
+    "isTargetGhostEdibleTimeLow",
+    "isTargetGhostEdibleTimeMedium",
+    "isTargetGhostEdibleTimeHigh",
+
+    "isGhostScoreHigh",
+    "isGhostScoreVeryHigh",
+    "isGhostScoreMax"
+]
