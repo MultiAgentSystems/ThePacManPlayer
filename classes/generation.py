@@ -110,7 +110,18 @@ class Generation:
         targetNode = allTheNodes[random.randint(0, len(allTheNodes) - 1)]    
         # Root node is not mutated.
         
-        newNode = generateNodes()[0]
+        newNode = None
+        if self.SC:
+            if targetNode._name == "SelectorNode":
+                newNode = generateNodes(unwanted=[3])[0]
+            if targetNode._name == "SequenceNode":
+                newNode = generateNodes(unwanted=[2])[0]
+            if targetNode._name == "ConditionNode":
+                newNode = generateNodes(specific=1)[0]
+            if targetNode._name == "ActionNode":
+                newNode = generateNodes(specific=0)[0]
+        else:
+            newNode = generateNodes()[0]
         
         return tree.performMutation(targetNode, newNode)
 

@@ -198,6 +198,8 @@ class Tree:
 
                 nodeToBeSwappedWith.setParent(executionOrder[nodeIndex].getParent())
                 nodeToBeSwappedWith.setSiblingOrder(executionOrder[nodeIndex].getSiblingOrder())
+                if nodeToBeSwappedWith._name == "SelectorNode" or nodeToBeSwappedWith._name == "SequenceNode":
+                    nodeToBeSwappedWith.setChildren(executionOrder[nodeIndex].getChildren())
                 executionOrder[nodeIndex].getParent().getChildren()[executionOrder[nodeIndex].getSiblingOrder()] = nodeToBeSwappedWith
         
         self.updateExecutionOrder()

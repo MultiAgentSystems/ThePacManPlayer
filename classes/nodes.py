@@ -74,6 +74,9 @@ class Node:
             child.setParent(self)
 
         return len(self.children)
+    
+    def setChildren(self, children) -> None:
+        self.children = children
 
     def getChildren(self) -> list:
         return self.children

@@ -72,7 +72,7 @@ def generateInitialTreeDepth3( treeSize : int = 7 ):
 
     numberOfNodes = random.randint(0, remaining - 1)
     children = generateNodes( limit = numberOfNodes )
-    children += generateNodes( specific = 4 )
+    children += generateNodes( specific = 3 )
 
     remaining -= numberOfNodes
     remaining -= 1
