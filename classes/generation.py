@@ -17,7 +17,7 @@ class Generation:
         # GP constants
         self.mutation_prob = 0.1
         self.cross_prob = 0.8
-        self.pop = 100
+        self.pop = min(100, len(trees))
         self.tourn_size = 2
         self.gamma = 0.9
 
@@ -39,7 +39,6 @@ class Generation:
         tree_idxes.sort(key=lambda x: self.tree_scores[x])
         selected_trees = [self.trees[x] for x in tree_idxes[:k]]
         return selected_trees
-
 
     def tournamentSelect(self) -> list:
         # pick k random trees, and return the best one
@@ -105,24 +104,24 @@ class Generation:
         # After getting the root, we need to recursively iterate 
         # through the tree and select a particular node for mutation.
         allTheNodes = currentRoot.getExecutionOrder()
-        
+
         mutableNodes = []
         for index, node in enumerate(allTheNodes):
             if node._isMutable():
                 mutableNodes.append(index)
-        
+
         targetIndex = random.choice(mutableNodes)
         targetNode = allTheNodes[targetIndex]
-        
-        if ( isinstance(targetNode, ConditionNode) ):
-            allTheNodes[ targetIndex ].setCondition(random.choice(ConditionFunctions))
-        elif ( isinstance(targetNode, ActionNode) ):
-            allTheNodes[ targetIndex ].setAction(random.choice(ActionFunctions))
-        else :
+
+        if (isinstance(targetNode, ConditionNode)):
+            allTheNodes[targetIndex].setCondition(random.choice(ConditionFunctions))
+        elif (isinstance(targetNode, ActionNode)):
+            allTheNodes[targetIndex].setAction(random.choice(ActionFunctions))
+        else:
             print("Kuch to hagga h... Kuch hagg gaya h...")
 
         return tree
-    
+
     def performAddition(self, tree):
         return tree
 
@@ -130,6 +129,7 @@ class Generation:
         cross_ct = int(self.cross_prob * self.pop)
         copy_ct = self.pop - cross_ct
         next_gen = self.getTopTrees(copy_ct)
+        assert cross_ct + copy_ct == self.pop
         for i in range(0, cross_ct, 2):
             par1, par2 = self.tournamentSelect(), self.tournamentSelect()
             child1, child2 = self.performCrossOver(par1, par2)
