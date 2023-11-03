@@ -7,6 +7,7 @@ from classes.nodes import ActionNode, ConditionNode, SelectorNode, SequenceNode
 from classes.tree import Tree
 from .actions import ActionFunctions, ActionFunctionDescription
 from .conditions import ConditionFunctions, ConditionFunctionDescription
+from .constraints import StaticConstraints
 
 def generateNodes( limit : int = 1, specific : int = -1, unwanted : list = [-1] ) -> list:
     nodes = []
@@ -97,5 +98,25 @@ def generateInitialTrees( numTrees : int = 2, depth2SizeLimit : int = 5, depth3S
             trees.append( generateInitialTreeDepth2(depth2SizeLimit) )
         else:
             trees.append( generateInitialTreeDepth3(depth3SizeLimit) )
+
+    return trees
+
+def firstGenerationWithStaticConstraints( numTrees : int = 2, depth2SizeLimit : int = 5, depth3SizeLimit : int = 7 ) -> list :
+    trees = []
+
+    for _ in range( numTrees ):
+        toss = random.randint(0, 1)
+        if toss == 0:
+            newTree = generateInitialTreeDepth2(depth2SizeLimit)
+            while ( not StaticConstraints(newTree) ):
+                newTree = generateInitialTreeDepth2(depth2SizeLimit)
+
+            trees.append( newTree )
+        else:
+            newTree = generateInitialTreeDepth3(depth3SizeLimit)
+            while ( not StaticConstraints(newTree) ):
+                newTree = generateInitialTreeDepth3(depth3SizeLimit)
+
+            trees.append( newTree )
 
     return trees

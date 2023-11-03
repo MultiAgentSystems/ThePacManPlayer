@@ -256,7 +256,7 @@ def generationTest():
 
 def testFirstGeneration():
     firstGeneration = generateInitialTrees(numTrees=10, depth2SizeLimit=5, depth3SizeLimit=7)
-    
+
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
             print( "Unfit Tree Generated" )

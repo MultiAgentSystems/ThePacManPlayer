@@ -76,10 +76,10 @@ def runGame(BT, numRuns=1, display=False):
         screen = pygame.display.get_surface()
 
         img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "1.gif")).convert()
-    else:
-        window = pygame.display.set_mode((1, 1), pygame.NOFRAME)
-        pygame.quit()
-        screen = None
+    # else:
+        # window = pygame.display.set_mode((1, 1), pygame.NOFRAME)
+        # pygame.quit()
+        # screen = None
 
     score = 0
     for i in range(numRuns):

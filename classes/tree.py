@@ -128,7 +128,8 @@ class Tree:
         # print(nodeToBeSwapped.getParent())
 
         Tree = copy.deepcopy(self)
-        
+        newNode = copy.deepcopy(nodeToBeSwappedWith);
+
         if ( not self.isTreeFit() ):
             print("Tree is not fit.")
             return None #### POTENTIALLY DANGEROUS, THIS SHOULD NOT HAPPEN
@@ -139,8 +140,9 @@ class Tree:
         ## If the root is passed, just swap the root.
         if (nodeToBeSwapped == self.getRoot()):
             # Tree.logger.logWarning(message=f"Swapping the root node with {nodeToBeSwappedWith._name}.")
-            Tree.setRoot(nodeToBeSwappedWith)
-            Tree.getRoot().setParent(None)
+            newNode.setParent(None)
+            newNode.setSiblingOrder(0)
+            Tree.setRoot(newNode)
             Tree.updateExecutionOrder()
             return Tree
         
@@ -155,9 +157,9 @@ class Tree:
                 ## Change the node's order in parent.
                 # print( executionOrderCopy[nodeIndex].getParent() )
 
-                nodeToBeSwappedWith.setParent(executionOrderCopy[nodeIndex].getParent())
-                nodeToBeSwappedWith.setSiblingOrder(executionOrderCopy[nodeIndex].getSiblingOrder())
-                executionOrderCopy[nodeIndex].getParent().getChildren()[executionOrderCopy[nodeIndex].getSiblingOrder()] = nodeToBeSwappedWith
+                newNode.setParent(executionOrderCopy[nodeIndex].getParent())
+                newNode.setSiblingOrder(executionOrderCopy[nodeIndex].getSiblingOrder())
+                executionOrderCopy[nodeIndex].getParent().getChildren()[executionOrderCopy[nodeIndex].getSiblingOrder()] = newNode
         
         Tree.updateExecutionOrder()
         return Tree
@@ -174,8 +176,8 @@ class Tree:
         if ( not self.isTreeFit() ):
             print("Tree is not fit.")
             return None
-        else :
-            print("Tree is fit. Proceeding to replace Node")
+        # else :
+        #     print("Tree is fit. Proceeding to replace Node")
 
         ## If the root is passed, just swap the root.
         if (nodeToBeSwapped == self.getRoot()):
