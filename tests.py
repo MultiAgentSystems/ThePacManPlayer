@@ -260,16 +260,14 @@ def testFirstGeneration():
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
             print( "Unfit Tree Generated" )
-        # print(f"New Tree " + "-"*15 )
-        # nodes = []
-        # for child in tree.root.getExecutionOrder():
-        #     nodes.append(child._name)
-        # print(nodes)
+
     firstGeneration = Generation(firstGeneration)
     thisGeneration = firstGeneration
-
-    for _ in range(3):
+    
+    print(f"Fitness Score For Generation 0 : {thisGeneration.averageTreeScore}")
+    for i in range(3):
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
+        print(f"Fitness Score For Generation {i+1} : {thisGeneration.averageTreeScore}")
 
 testFirstGeneration()

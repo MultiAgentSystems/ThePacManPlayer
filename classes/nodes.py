@@ -131,7 +131,7 @@ class Node:
         satisfied = True
 
         for child in self.children:
-            satisfied = satisfied and child.OnlyLeafNodeMeansNoConditonNode()
+            satisfied = satisfied and child.OnlyChildNodeMeansNoConditonNode()
 
         return satisfied
 
@@ -170,7 +170,7 @@ class Node:
                 return False
 
         for child in self.children:
-            satisfied = satisfied and child.ConditionActionNoChildren()
+            satisfied = satisfied and child.SequenceSelectorMustHaveOneChild()
 
         return satisfied
 

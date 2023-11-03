@@ -13,6 +13,8 @@ class Generation:
     def __init__(self, trees=None, DC=True) -> None:
         self.trees = trees if trees is not None else [];
         self.tree_scores = [fitness(tree) for tree in self.trees]
+        
+        self.averageTreeScore = sum(self.tree_scores) / len(self.tree_scores)
 
         # GP constants
         self.mutation_prob = 0.1
@@ -101,15 +103,13 @@ class Generation:
                 tree2.getCopyAfterReplacing(tree2_node, tree1_node))
 
     def performMutation(self, tree):
-        currentRoot = tree.getRoot()
         # After getting the root, we need to recursively iterate 
         # through the tree and select a particular node for mutation.
-        allTheNodes = currentRoot.getExecutionOrder()
-
-        targetNode = allTheNodes[random.randint(1, len(allTheNodes) - 1)]    
+        allTheNodes = tree.getExecutionOrder(update = True)
+        targetNode = allTheNodes[random.randint(0, len(allTheNodes) - 1)]    
         # Root node is not mutated.
         
-        newNode = generateNodes(limit=1)[0]
+        newNode = generateNodes()[0]
         
         return tree.performMutation(targetNode, newNode)
 

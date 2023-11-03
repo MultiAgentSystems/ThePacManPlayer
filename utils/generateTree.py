@@ -103,7 +103,6 @@ def generateInitialTrees( numTrees : int = 2, depth2SizeLimit : int = 5, depth3S
 
 def firstGenerationWithStaticConstraints( numTrees : int = 2, depth2SizeLimit : int = 5, depth3SizeLimit : int = 7 ) -> list :
     trees = []
-
     for _ in range( numTrees ):
         toss = random.randint(0, 1)
         if toss == 0:
