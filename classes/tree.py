@@ -129,16 +129,18 @@ class Tree:
 
         Tree = copy.deepcopy(self)
         
-        if ( not self.isTreeFit() or not Tree.isTreeFit() ):
+        if ( not self.isTreeFit() ):
             print("Tree is not fit.")
-            return None
-        else :
-            print("Tree is fit. Proceeding to replace Node")
+            return None #### POTENTIALLY DANGEROUS, THIS SHOULD NOT HAPPEN
+        elif ( not Tree.isTreeFit() ):
+            print("Copied Tree is not fit.")
+            return None #### POTENTIALLY DANGEROUS, THIS SHOULD NOT HAPPEN
 
         ## If the root is passed, just swap the root.
         if (nodeToBeSwapped == self.getRoot()):
             # Tree.logger.logWarning(message=f"Swapping the root node with {nodeToBeSwappedWith._name}.")
             Tree.setRoot(nodeToBeSwappedWith)
+            Tree.getRoot().setParent(None)
             Tree.updateExecutionOrder()
             return Tree
         

@@ -255,15 +255,21 @@ def generationTest():
     nexGeneration = thisGeneration.getNextGeneration()
 
 def testFirstGeneration():
-    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=5, depth3SizeLimit=7)
+    firstGeneration = generateInitialTrees(numTrees=10, depth2SizeLimit=5, depth3SizeLimit=7)
     
-    # for tree in firstGeneration:
-    #     print(f"New Tree " + "-"*15 )
-    #     nodes = []
-    #     for child in tree.root.getExecutionOrder():
-    #         nodes.append(child._name)
-    #     print(nodes)
+    for tree in firstGeneration:
+        if not tree.isTreeFit(): 
+            print( "Unfit Tree Generated" )
+        # print(f"New Tree " + "-"*15 )
+        # nodes = []
+        # for child in tree.root.getExecutionOrder():
+        #     nodes.append(child._name)
+        # print(nodes)
     firstGeneration = Generation(firstGeneration)
-    nexGeneration = firstGeneration.getNextGeneration()
+    thisGeneration = firstGeneration
+
+    for _ in range(3):
+        nextGeneration = thisGeneration.getNextGeneration()
+        thisGeneration = nextGeneration
 
 testFirstGeneration()

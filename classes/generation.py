@@ -121,8 +121,10 @@ class Generation:
 
         if (isinstance(targetNode, ConditionNode)):
             allTheNodes[targetIndex].setCondition(random.choice(ConditionFunctions))
+            allTheNodes[targetIndex].getParent().getChildren()[allTheNodes[targetIndex].getSiblingOrder()] = allTheNodes[targetIndex]
         elif (isinstance(targetNode, ActionNode)):
             allTheNodes[targetIndex].setAction(random.choice(ActionFunctions))
+            allTheNodes[targetIndex].getParent().getChildren()[allTheNodes[targetIndex].getSiblingOrder()] = allTheNodes[targetIndex]
         else:
             print("Kuch to hagga h... Kuch hagg gaya h...")
 
