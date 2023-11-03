@@ -29,7 +29,8 @@ class game():
 
         self.screenTileSize = (23, 21)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
-
+        
+        self.display = display
         if display:
             # numerical display digits
             self.digit = {}
@@ -57,7 +58,8 @@ class game():
         self.thisLevel.LoadLevel(self.GetLevelNum())
         self.screenTileSize = (self.thisLevel.lvlHeight, self.thisLevel.lvlWidth)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
-        window = pygame.display.set_mode(self.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
+        if self.display:
+            window = pygame.display.set_mode(self.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
     def AddToScore(self, amount):
 
@@ -104,7 +106,8 @@ class game():
 
         self.screenTileSize = (self.thisLevel.lvlHeight, self.thisLevel.lvlWidth)
         self.screenSize = (self.screenTileSize[1] * 16, self.screenTileSize[0] * 16)
-        window = pygame.display.set_mode(self.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
+        if self.display:
+            window = pygame.display.set_mode(self.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
         self.player.velX = 0
         self.player.velY = 0

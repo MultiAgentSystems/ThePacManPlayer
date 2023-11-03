@@ -15,8 +15,8 @@ class Generation:
         self.trees = trees if trees is not None else [];
         # self.tree_scores = [fitness(tree) for tree in self.trees]
         
-        results = [None] * len(self.trees)
-        with ProcessPoolExecutor() as executor:
+        results = [0] * len(self.trees)
+        with ProcessPoolExecutor(max_workers=4) as executor:
             futures = {executor.submit(fitness, tree): tree for tree in self.trees}
 
             for future in as_completed(futures):
@@ -119,7 +119,11 @@ class Generation:
         # After getting the root, we need to recursively iterate 
         # through the tree and select a particular node for mutation.
         allTheNodes = tree.getExecutionOrder(update = True)
-        targetNode = allTheNodes[random.randint(0, len(allTheNodes) - 1)]    
+        targetNode = None
+        if ( len(allTheNodes) == 2 ):
+            targetNode = allTheNodes[1]
+        else :
+            targetNode = allTheNodes[random.randint(1, len(allTheNodes) - 1)]    
         # Root node is not mutated.
         
         newNode = None

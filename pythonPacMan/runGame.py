@@ -78,6 +78,7 @@ def runSingleGame(BT, display=False):
 
         img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "1.gif")).convert()
 
+    pygame.quit()
     score = 0
     player = pacman(display=display)
     ghosts = {}
@@ -222,14 +223,13 @@ def runSingleGame(BT, display=False):
             pygame.display.flip()
 
             clock.tick(60)
-    pygame.quit()
     return score
 
 def runGame(BT, numRuns=1, display=False):
     if numRuns == 1:
         return runSingleGame(BT, display)
     
-    # results = []
+    results = []
     # for _ in range(numRuns):
     #     results.append(runSingleGame(BT, display))
 

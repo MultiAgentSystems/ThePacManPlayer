@@ -7,5 +7,5 @@ def fitness(tree) -> float:
 
     treeScore = gameScore - parsimonyCoefficient * treeSize
         
-    print(treeScore)
+    # print(treeScore)
     return treeScore

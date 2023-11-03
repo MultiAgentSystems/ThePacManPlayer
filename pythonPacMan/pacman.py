@@ -38,7 +38,7 @@ class pacman():
                 self.anim_pacmanS[i] = pygame.image.load(
                     os.path.join(SCRIPT_PATH, "images", "sprite", "pacman.gif")).convert()
 
-        # self.pelletSndNum = 0
+        self.pelletSndNum = 0
 
     def set(self, thisGame, thisLevel, ghosts):
         self.game = thisGame
