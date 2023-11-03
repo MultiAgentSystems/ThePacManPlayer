@@ -77,6 +77,7 @@ def runGame(BT, numRuns=1, display=False):
 
         img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "1.gif")).convert()
     else:
+        window = pygame.display.set_mode((1, 1), pygame.NOFRAME)
         pygame.quit()
         screen = None
 
@@ -184,13 +185,13 @@ def runGame(BT, numRuns=1, display=False):
                     thisLevel.edgeLightColor = (255, 255, 255, 255)
                     thisLevel.edgeShadowColor = (255, 255, 255, 255)
                     thisLevel.fillColor = (0, 0, 0, 255)
-                    GetCrossRef(thisLevel)
+                    GetCrossRef(thisLevel, display)
                 elif not normalSet.count(thisGame.modeTimer) == 0:
                     # member of normal set
                     thisLevel.edgeLightColor = oldEdgeLightColor
                     thisLevel.edgeShadowColor = oldEdgeShadowColor
                     thisLevel.fillColor = oldFillColor
-                    GetCrossRef(thisLevel)
+                    GetCrossRef(thisLevel, display)
                 elif not display or thisGame.modeTimer == 150:
                     thisGame.SetMode(8)
 
@@ -226,5 +227,5 @@ def runGame(BT, numRuns=1, display=False):
 
                 clock.tick(60)
     
-    print(score / numRuns)
+    # print(score / numRuns)
     return score / numRuns
