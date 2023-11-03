@@ -70,7 +70,7 @@ def runGame(BT, numRuns=1, display=False):
 
         clock = pygame.time.Clock()
 
-        window = pygame.display.set_mode((1, 1))
+        window = pygame.display.set_mode((1, 1), pygame.NOFRAME)
         pygame.display.set_caption("Pacman")
 
         screen = pygame.display.get_surface()

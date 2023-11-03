@@ -72,6 +72,7 @@ class Node:
         for order, child in enumerate(self.children):
             child.setSiblingOrder(order)
             child.setParent(self)
+
         return len(self.children)
 
     def getChildren(self) -> list:
@@ -179,14 +180,10 @@ class ActionNode(Node):
     """
 
     def __init__(self, actionFunction: Callable, parent=None, siblingOrder: int = 0, children=None, description=None,
-                 logger=None) -> None:
+                 ) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'ActionNode'
         self.actionFunction = actionFunction
-        
-        if (logger is None):
-            logger = Logger()
-        self.logger = logger
         
         if description is None:
             description = str(actionFunction)
@@ -198,34 +195,33 @@ class ActionNode(Node):
             if description == "":
                 description = str(actionFunction)
             self.actionDescription = description
-            self.logger.logInfo(message=f"Set action function. to {str(self.actionFunction)}")
+            # self.logger.logInfo(message=f"Set action function. to {str(self.actionFunction)}")
             return 0
         except Exception:
-            self.logger.logException(message="Could not set action function.")
+            # self.logger.logException(message="Could not set action function.")
             return 1
 
     def performAction(self, *args) -> dict:
         try:
-            if (self.getTick() is False):
-                self.logger.logWarning(message="Tick is FALSE whilst executing.")
+            # if (self.getTick() is False):
+                # self.logger.logWarning(message="Tick is FALSE whilst executing.")
 
             if (self.actionFunction is None):
-                self.logger.logError(message="Could not perform action. Action Function is None.")
                 return {'result' : 'Failure', 'action' : 'E'}
 
             action = self.actionFunction(*args)
 
-            self.logger.logInfo(message=f"Action function description : {str(self.actionDescription)}")
-            self.logger.logInfo(message=f"Action function returned {str(action)}")
+            # self.logger.logInfo(message=f"Action function description : {str(self.actionDescription)}")
+            # self.logger.logInfo(message=f"Action function returned {str(action)}")
             self.setTick(False)
 
             if ( action == 'E' ):
                 return {'result': 'Failure', 'action' : 'E'}
             else :
-                print(self.actionDescription, f"suggestion : {action}")
+                # print(self.actionDescription, f"suggestion : {action}")
                 return {'result': 'Success', 'action' : action}
         except Exception:
-            self.logger.logException(message="Could not perform action.")
+            # self.logger.logException(message="Could not perform action.")
             return {}
 
     def getAction(self) -> Callable:
@@ -241,16 +237,13 @@ class ConditionNode(Node):
     """
 
     def __init__(self, conditionFunction: Callable, parent=None, siblingOrder: int = 0, children=None, description=None,
-                 logger=None) -> None:
+                 ) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'ConditionNode'
         self.conditionFunction = conditionFunction
         if description is None:
             description = str(conditionFunction)
         self.conditionDescription = description
-        if (logger is None):
-            logger = Logger()
-        self.logger = logger
 
     def setCondition(self, conditionFunction: Callable, description="") -> int:
         try:
@@ -258,24 +251,25 @@ class ConditionNode(Node):
             if description == "":
                 description = str(conditionFunction)
             self.conditionDescription = description
-            self.logger.logInfo(message=f"Set condition function. to {str(self.conditionFunction)}")
+            # self.logger.logInfo(message=f"Set condition function. to {str(self.conditionFunction)}")
             return 0
         except Exception:
-            self.logger.logException(message="Could not set condition function.")
+            # self.logger.logException(message="Could not set condition function.")
             return 1
 
     def checkCondition(self, *args) -> dict:
         try:
             if (self.getTick() is False):
-                self.logger.logWarning(message="Tick is FALSE whilst executing.")
+                print("Tick is FALSE whilst executing.")
+                # self.logger.logWarning(message="Tick is FALSE whilst executing.")
 
             if (self.conditionFunction is None):
-                self.logger.logError(message="Could not check condition. Condition Function is None.")
+                # self.logger.logError(message="Could not check condition. Condition Function is None.")
                 return {}
 
-            self.logger.logInfo(message=f"Condition function : Description : {str(self.conditionDescription)}")
+            # self.logger.logInfo(message=f"Condition function : Description : {str(self.conditionDescription)}")
             result = self.conditionFunction(*args)
-            self.logger.logInfo(message=f"Condition function returned {str(result)}")
+            # self.logger.logInfo(message=f"Condition function returned {str(result)}")
 
             if (result is True):
                 self.setState('Success')
@@ -291,7 +285,7 @@ class ConditionNode(Node):
 
             return {'result': result}
         except Exception:
-            self.logger.logException(message="Could not check condition.")
+            # self.logger.logException(message="Could not check condition.")
             self.setTick(False)
             return {}
 
@@ -314,15 +308,12 @@ class SelectorNode(Node):  # '?'
         nodes return False
     """
 
-    def __init__(self, parent=None, siblingOrder: int = 0, children=None, logger=None) -> None:
+    def __init__(self, parent=None, siblingOrder: int = 0, children=None, ) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'SelectorNode'
-        if (logger is None):
-            logger = Logger()
-        self.logger = logger
 
     def makeDescision(self, player) -> dict:
-        self.logger.logInfo(message=f"Iterating over children For {self._name}.")
+        # self.logger.logInfo(message=f"Iterating over children For {self._name}.")
         action = 'E'
 
         for child in self.children:
@@ -348,10 +339,10 @@ class SelectorNode(Node):  # '?'
                 # self.logger.logInfo(message=f"SelectorNode returned {str(childResponse)}")
             
             if ( childResponse is None ):
-                self.logger.logWarning(message=f"Child returned None.")
+                # self.logger.logWarning(message=f"Child returned None.")
                 continue
 
-            self.logger.logInfo(message=f"Obtained Child Response : {str(childResponse)}")
+            # self.logger.logInfo(message=f"Obtained Child Response : {str(childResponse)}")
             self.setTick(True)
             if (childResponse['result'] == 'Running' or childResponse['result'] == 'Success' or childResponse['result'] == 'Error'):
                 self.setState(child.getState())
@@ -361,7 +352,7 @@ class SelectorNode(Node):  # '?'
                 return { 'result' : self.getState(), 'action' : action}
             
         # Code reaching here means that all the children returned Failure.
-        self.logger.logInfo(message="All children returned Failure.")
+        # self.logger.logInfo(message="All children returned Failure.")
         self.setState('Failure')
         self.setTick(False)
         return { 'result' : self.getState(), 'action' : action}
@@ -382,15 +373,11 @@ class SequenceNode(Node):  # '->'
         nodes return True
     """
 
-    def __init__(self, parent=None, siblingOrder: int = 0, children=None, logger=None) -> None:
+    def __init__(self, parent=None, siblingOrder: int = 0, children=None, ) -> None:
         super().__init__(parent, siblingOrder, children)
         self._name = 'SequenceNode'
-        if (logger is None):
-            logger = Logger()
-        self.logger = logger
 
     def makeDescision(self, player) -> dict:
-        self.logger.logInfo(message=f"Iterating over children For {self._name}.")
         action = 'E'
 
         for child in self.children:
@@ -416,10 +403,10 @@ class SequenceNode(Node):  # '->'
                 # self.logger.logInfo(message=f"SelectorNode returned {str(childResponse)}")
 
             if ( childResponse is None ):
-                self.logger.logWarning(message=f"Child returned None.")
+                # self.logger.logWarning(message=f"Child returned None.")
                 continue
             
-            self.logger.logInfo(message=f"Obtained Child Response : {str(childResponse)}")
+            # self.logger.logInfo(message=f"Obtained Child Response : {str(childResponse)}")
             self.setTick(True)
 
             if ( 'action' in childResponse.keys() ):
@@ -433,7 +420,7 @@ class SequenceNode(Node):  # '->'
                 return { 'result' : self.getState(), 'action' : 'E'}
             
         # Code reaching here means that all the children returned Success.
-        self.logger.logInfo(message="All children returned Success.")
+        # self.logger.logInfo(message="All children returned Success.")
         self.setState('Success')
         self.setTick(False)
         return { 'result' : self.getState(), 'action' : action}

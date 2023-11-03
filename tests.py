@@ -7,9 +7,6 @@ from pythonPacMan.runGame import runGame
 from utils.actions import *
 from utils.conditions import *
 
-universalLogger = Logger()
-
-
 def dummyCondition(a: int, b: int) -> bool:
     print(a, b)
     if (a > 2 * b + 1):
@@ -24,39 +21,35 @@ def dummyAction(a: int, b: int) -> bool:
 
 
 def testActionNode():
-    global universalLogger
-    actionNode = ActionNode(actionFunction=dummyAction, logger=universalLogger)
+    actionNode = ActionNode(actionFunction=dummyAction, )
     actionNode.performAction(5, 6)
 
 
 def testConditionNode():
-    global universalLogger
     conditionNode = ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.",
-                                  logger=universalLogger)
+                                  )
     conditionNode.setTick(True)
     conditionNode.checkCondition(5, 6)
     print(conditionNode.getTick())
 
 
 def testSequenceNode():
-    global universalLogger
-    sequenceNode = SequenceNode(logger=universalLogger)
+    sequenceNode = SequenceNode()
     print(sequenceNode)
 
 def testTreeExectionOrder():
-    global universalLogger
 
-    sequenceNode = SequenceNode(logger=universalLogger)
-    sequenceNode.addChild(SelectorNode(logger=universalLogger))
+    sequenceNode = SequenceNode()
+    sequenceNode.addChild(SelectorNode())
 
     for _ in range(3):
         sequenceNode.addChild(ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.",
-                                            logger=universalLogger))
+                                            ))
 
     for _ in range(2):
-        sequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, logger=universalLogger))
+        sequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, ))
 
-    thisTree = Tree(root=sequenceNode, logger=universalLogger)
+    thisTree = Tree(root=sequenceNode, )
 
     thisTree.updateExecutionOrder(backtrack=True)
 
@@ -77,26 +70,25 @@ def testTreeExectionOrder():
 
 
 def testTreeAddNode():
-    global universalLogger
 
-    newSequenceNode = SequenceNode(logger=universalLogger)
-    newSequenceNode.addChild(SelectorNode(logger=universalLogger))
+    newSequenceNode = SequenceNode()
+    newSequenceNode.addChild(SelectorNode())
 
     for _ in range(3):
         newSequenceNode.addChild(
             ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.",
-                          logger=universalLogger))
+                          ))
 
     for _ in range(2):
-        newSequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, logger=universalLogger))
+        newSequenceNode.getChildren()[0].addChild(ActionNode(actionFunction=dummyAction, ))
 
-    newTree = Tree(root=newSequenceNode, logger=universalLogger)
+    newTree = Tree(root=newSequenceNode, )
 
     newTree.addNode(node=ConditionNode(conditionFunction=dummyCondition, description="Checks whether a > 2b + 1.",
-                                       logger=universalLogger), parentNode=newSequenceNode.getChildren()[0],
+                                       ), parentNode=newSequenceNode.getChildren()[0],
                     elderBrother=newSequenceNode.getChildren()[0].getChildren()[0])
     newTree.addNode(
-        node=ConditionNode(conditionFunction=dummyCondition, description="Checks Something.", logger=universalLogger),
+        node=ConditionNode(conditionFunction=dummyCondition, description="Checks Something.", ),
         parentNode=newSequenceNode)
 
     newTree.updateExecutionOrder()
@@ -118,26 +110,25 @@ def testTreeAddNode():
 
 
 def createSampleTree():
-    global universalLogger
 
-    newSelectorNode = SelectorNode(logger=universalLogger)
+    newSelectorNode = SelectorNode()
     
     for _ in range(3):
-        newSelectorNode.addChild(SequenceNode(logger=universalLogger))
+        newSelectorNode.addChild(SequenceNode())
 
-    newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="Move to eat any pill", logger=universalLogger))
+    newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="Move to eat any pill", ))
 
-    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryLow, logger=universalLogger))
-    newSelectorNode.getChildren()[0].addChild(ActionNode(actionFunction=moveAwayFromGhost, logger=universalLogger))
+    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryLow, parent=newSelectorNode.getChildren()[0]))
+    newSelectorNode.getChildren()[0].addChild(ActionNode(actionFunction=moveAwayFromGhost, parent=newSelectorNode.getChildren()[0])) 
     
-    newSelectorNode.getChildren()[1].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryHigh, logger=universalLogger))
-    newSelectorNode.getChildren()[1].addChild(ActionNode(actionFunction=moveToEatPowerPill, logger=universalLogger))
+    newSelectorNode.getChildren()[1].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryHigh, parent=newSelectorNode.getChildren()[1]))
+    newSelectorNode.getChildren()[1].addChild(ActionNode(actionFunction=moveToEatPowerPill, parent=newSelectorNode.getChildren()[1]))
 
-    newSelectorNode.getChildren()[2].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseMedium, logger=universalLogger))
-    newSelectorNode.getChildren()[2].addChild(ActionNode(actionFunction=moveToEatPowerPill, logger=universalLogger))
+    newSelectorNode.getChildren()[2].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseMedium, parent=newSelectorNode.getChildren()[2]))
+    newSelectorNode.getChildren()[2].addChild(ActionNode(actionFunction=moveToEatPowerPill, parent=newSelectorNode.getChildren()[2]))
 
 
-    newTree = Tree(root=newSelectorNode, logger=universalLogger)
+    newTree = Tree(root=newSelectorNode, )
     newTree.updateExecutionOrder()
 
     recieved = []
@@ -151,7 +142,7 @@ def createSampleTree():
 def somewhatSmartTree():
     global universalLogger
 
-    newSelectorNode = SelectorNode(logger=universalLogger)
+    newSelectorNode = SelectorNode()
 
     
     conditions = [isInedibleGhostCloseVeryLow, 
@@ -172,15 +163,15 @@ def somewhatSmartTree():
 
 
     for _ in range( len(conditions) ):
-        newSelectorNode.addChild(SequenceNode(logger=universalLogger))
+        newSelectorNode.addChild(SequenceNode(parent=newSelectorNode))
     for _ in range( 1 ):
-        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", logger=universalLogger))
+        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode))
     
     for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
-        node.addChild(ConditionNode(conditionFunction=conditionFunction, logger=universalLogger))
-        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, logger=universalLogger))
+        node.addChild(ConditionNode(conditionFunction=conditionFunction,parent=node ))
+        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, parent=node ))
 
-    newTree = Tree(root=newSelectorNode, logger=universalLogger)
+    newTree = Tree(root=newSelectorNode, )
 
     newTree.updateExecutionOrder()
     
@@ -189,7 +180,7 @@ def somewhatSmartTree():
 def somewhatDumbTree():
     global universalLogger
 
-    newSelectorNode = SelectorNode(logger=universalLogger)
+    newSelectorNode = SelectorNode()
 
     
     conditions = [isInedibleGhostCloseVeryLow, 
@@ -202,15 +193,15 @@ def somewhatDumbTree():
                 "moveTowardsGhost"]
 
     for _ in range( len(conditions) ):
-        newSelectorNode.addChild(SequenceNode(logger=universalLogger))
+        newSelectorNode.addChild(SequenceNode( parent=newSelectorNode))
     for _ in range( 1 ):
-        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", logger=universalLogger))
+        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode ))
     
     for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
-        node.addChild(ConditionNode(conditionFunction=conditionFunction, logger=universalLogger))
-        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, logger=universalLogger))
+        node.addChild(ConditionNode(conditionFunction=conditionFunction,parent=node ))
+        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription,parent=node ))
 
-    newTree = Tree(root=newSelectorNode, logger=universalLogger)
+    newTree = Tree(root=newSelectorNode, )
 
     newTree.updateExecutionOrder()
     
@@ -220,8 +211,7 @@ def somewhatDumbTree():
 def anotherTree():
     global universalLogger
 
-    newSelectorNode = SelectorNode(logger=universalLogger)
-
+    newSelectorNode = SelectorNode()
     
     conditions = [isInedibleGhostCloseVeryLow]
     
@@ -230,15 +220,15 @@ def anotherTree():
     description = ["moveAwayFromGhost"]
 
     for _ in range( len(conditions) ):
-        newSelectorNode.addChild(SequenceNode(logger=universalLogger))
+        newSelectorNode.addChild( SequenceNode(parent=newSelectorNode))
     for _ in range( 1 ):
-        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", logger=universalLogger))
+        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode ))
     
     for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
-        node.addChild(ConditionNode(conditionFunction=conditionFunction, logger=universalLogger))
-        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, logger=universalLogger))
+        node.addChild(ConditionNode(conditionFunction=conditionFunction, parent = node))
+        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, parent=node))
 
-    newTree = Tree(root=newSelectorNode, logger=universalLogger)
+    newTree = Tree(root=newSelectorNode, )
 
     newTree.updateExecutionOrder()
     

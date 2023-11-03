@@ -1,4 +1,3 @@
-from logs.logger import Logger
 from .normalised_tree import NormalisedTree
 from .nodes import ActionNode, ConditionNode
 from math import ceil
@@ -11,16 +10,15 @@ from utils.actions import ActionFunctions
 
 
 class Generation:
-    def __init__(self, trees=None, logger=None) -> None:
+    def __init__(self, trees=None) -> None:
         self.trees = trees if trees is not None else [];
         self.tree_scores = [fitness(tree) for tree in self.trees]
-        self.logger = logger if logger is not None else Logger()
 
         # GP constants
         self.mutation_prob = 0.1
         self.cross_prob = 0.8
         self.pop = 100
-        self.tourn_size = 5
+        self.tourn_size = 2
         self.gamma = 0.9
 
         # FREQT constants, apart from topCount
@@ -37,10 +35,14 @@ class Generation:
 
     def getTopTrees(self, k) -> list:
         # Get the top k trees
-        return [tree for _, tree in sorted(zip(self.tree_scores, self.trees), reverse=True)][:k]
+        tree_idxes = list(range(len(self.trees)))
+        tree_idxes.sort(key=lambda x: self.tree_scores[x])
+        selected_trees = [self.trees[x] for x in tree_idxes[:k]]
+        return selected_trees
+
 
     def tournamentSelect(self) -> list:
-        # pick k random trees, and return the best one
+        # pick k random trees, and return the best one
         pool = random.sample(range(len(self.trees)), self.tourn_size)
         return self.trees[max(pool, key=lambda x: self.tree_scores[x])]
 
@@ -139,7 +141,7 @@ class Generation:
             if random.random() < self.mutation_prob:
                 next_gen[i] = self.performMutation(next_gen[i])
 
-        return Generation(next_gen, self.logger)
+        return Generation(next_gen)
 
     def isValidPattern(self, pat):
         nodes, terminals = len(pat.getParentArray()), pat.countTerminals()

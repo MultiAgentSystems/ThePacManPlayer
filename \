@@ -120,26 +120,19 @@ class Tree:
         # Returns a copy of the tree after swapping the passed nodes.
         if (nodeToBeSwapped is None or nodeToBeSwappedWith is None):
             # self.logger.logError(message=f"NodeToBeSwapped or NodeToBeSwappedWith is None.")
-            print("Given string is None")
             return None
         
-        # print(nodeToBeSwapped.getParent())
+        print(nodeToBeSwapped.getParent())
 
         Tree = copy.deepcopy(self)
-        
-        if ( not self.isTreeFit() or not Tree.isTreeFit() ):
-            print("Tree is not fit.")
-            return None
-        else :
-            print("Tree is fit. Proceeding to replace Node")
 
         ## If the root is passed, just swap the root.
-        if (nodeToBeSwapped == self.getRoot()):
+        if (nodeToBeSwapped == Tree.getRoot()):
             # Tree.logger.logWarning(message=f"Swapping the root node with {nodeToBeSwappedWith._name}.")
             Tree.setRoot(nodeToBeSwappedWith)
             Tree.updateExecutionOrder()
             return Tree
-        
+
         ## Get the execution Order and find the node.
         executionOrderCopy = Tree.getExecutionOrder()
         executionOrder = self.getExecutionOrder()
@@ -149,7 +142,6 @@ class Tree:
             if (node == nodeToBeSwapped):
                 ## Change the parent.
                 ## Change the node's order in parent.
-                # print( executionOrderCopy[nodeIndex].getParent() )
 
                 nodeToBeSwappedWith.setParent(executionOrderCopy[nodeIndex].getParent())
                 nodeToBeSwappedWith.setSiblingOrder(executionOrderCopy[nodeIndex].getSiblingOrder())
@@ -162,32 +154,6 @@ class Tree:
         treeAsString = f"Tree with root {self.getRoot()._name}"
         return treeAsString
 
-    def isTreeFit(self):
-        #Ensures that the tree is consistent.
-        if ( self.getRoot() is None ):
-            print("Root is None")
-            return False
-
-        if ( self.getRoot().getParent() is not None ):
-            print("Root has a parent")
-            return False
-
-        executionOrder = self.getRoot().getExecutionOrder()
-
-        for node in executionOrder:
-            if ( node == self.getRoot() ):
-                continue
-            elif ( node.getParent() is None ):
-                print(f"{node._name} has no parent")
-                return False
-            elif ( node.getParent().getChildren() is None or node.getParent().getChildren() == [] ):
-                print(f"{node.getParent()._name} has no children")
-                return False
-            elif ( node not in node.getParent().getChildren() ):
-                print(f"{node._name} is not a child of {node.getParent()._name}")
-                return False
-
-        return True
 
 class BehaviourTree(Tree):
     def __init__(self, root=None) -> None:
