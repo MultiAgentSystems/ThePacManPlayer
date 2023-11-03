@@ -29,7 +29,7 @@ class Generation:
         self.averageTreeScore = sum(self.tree_scores) / len(self.tree_scores)
 
         # GP constants
-        self.mutation_prob = 0.1
+        self.mutation_prob = 0.01
         self.cross_prob = 0.8
         self.pop = min(100, len(trees))
         self.tourn_size = 5
@@ -47,6 +47,7 @@ class Generation:
         self.freqt_min_terminals, self.freqt_max_terminals = 2, 15
         self.freqt_min_nodes, self.freqt_max_nodes = 3, 15
 
+        self.topKAverageTreeScore = sum(self.tree_scores[:self.freqt_top_tree_ct]) / self.freqt_top_tree_ct
         self.freq_patterns = self.getFrequentPatterns()
         # sort freq_patterns by size
         self.freq_patterns.sort(key=lambda x: x.getSize(), reverse=True)
@@ -54,7 +55,7 @@ class Generation:
     def getTopTrees(self, k) -> list:
         # Get the top k trees
         tree_idxes = list(range(len(self.trees)))
-        tree_idxes.sort(key=lambda x: self.tree_scores[x])
+        tree_idxes.sort(key=lambda x: self.tree_scores[x], reverse=True)
         selected_trees = [self.trees[x] for x in tree_idxes[:k]]
         return selected_trees
 

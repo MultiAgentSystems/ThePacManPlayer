@@ -78,7 +78,6 @@ def runSingleGame(BT, display=False):
 
         img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "images", "1.gif")).convert()
 
-    pygame.quit()
     score = 0
     player = pacman(display=display)
     ghosts = {}

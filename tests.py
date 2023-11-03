@@ -261,30 +261,54 @@ def generationTest():
 
 def testFirstGeneration():
     firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15)
-
+    
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
             print( "Unfit Tree Generated" )
-
+    
+    bestTree = firstGeneration[0]
     firstGeneration = Generation(firstGeneration, DC=False)
     thisGeneration = firstGeneration
     
     generationScore = [thisGeneration.averageTreeScore]
+    generationBestScore = [ max(thisGeneration.tree_scores) ]
+    treeScores = thisGeneration.tree_scores
+    top10 = treeScores[:10]
+
+    generationTop10AverageScore = [ sum(top10) / 10 ]
 
     print(f"Fitness Score For Generation 0 : {thisGeneration.averageTreeScore}")
     for i in range(100):
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
-        print(f"Fitness Score For Generation {i+1} : {thisGeneration.averageTreeScore}")
+
         generationScore.append(thisGeneration.averageTreeScore)
-    
+        generationBestScore.append(max(thisGeneration.tree_scores))
+        treeScores = thisGeneration.tree_scores
+        treeScores.sort(reverse=True)
+        top10 = treeScores[:10]
+        generationTop10AverageScore.append(sum(top10)/10)
+
+        print("-*"*20)
+        print(f"Fitness Scores For Generation {i+1} : \nAverage Score : {generationScore[-1]} \nBest Score : {generationBestScore[-1]}")
+        if i == 99:
+        # Store the Best Tree
+            bestTree = thisGeneration.getTopTrees(1)[0]
+
+    runGame(BT = bestTree, display=True)
     ## Plotting the Fitness Score
-    plot.plot( list(range(len(generationScore))), generationScore, color='lightblue', label = "Evolution of Scores With Dyanamic Constraints", marker='o' )
+    plot.plot( list(range(len(generationScore))), generationScore, color='blue', label = "Average Fiteness Score", marker='o' )
+    plot.plot( list(range(len(generationBestScore))), generationBestScore, color='lightgreen', label = "Best Fitness Score", marker='o' )
+    plot.plot( list(range(len(generationTop10AverageScore))), generationTop10AverageScore, color='orange', label = "Average Fitness Score For top 10 Trees", marker='o' )
     plot.legend()
     plot.xlabel("Generation")
-    plot.ylabel("Average Fitness Score")
+    plot.ylabel("Fitness Scores")
     plot.show()
-    print(generationScore)
+    print("-*"*20)
+    print("Generation Average :\n", generationScore)
+    print("Generation Best :\n", generationBestScore)
+    print("Generation Top 10 Average :\n", generationTop10AverageScore)
+
 
 if __name__ == "__main__":
     testFirstGeneration()
