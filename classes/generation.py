@@ -1,5 +1,5 @@
 from .normalised_tree import NormalisedTree
-from .nodes import ActionNode, ConditionNode
+from .nodes import ActionNode, ConditionNode, SelectorNode, SequenceNode
 from math import ceil
 from utils.fitness import fitness
 import random
@@ -101,34 +101,17 @@ class Generation:
                 tree2.getCopyAfterReplacing(tree2_node, tree1_node))
 
     def performMutation(self, tree):
-        # Replace a random node with another random node of the same type
-        # That is: Sequence can only be replaced by Selection and vice versa,
-        # Action can only be replaced by another action
-        # Condition can only be replaced by another condition
-
         currentRoot = tree.getRoot()
         # After getting the root, we need to recursively iterate 
         # through the tree and select a particular node for mutation.
         allTheNodes = currentRoot.getExecutionOrder()
 
-        mutableNodes = []
-        for index, node in enumerate(allTheNodes):
-            if node._isMutable():
-                mutableNodes.append(index)
-
-        targetIndex = random.choice(mutableNodes)
-        targetNode = allTheNodes[targetIndex]
-
-        if (isinstance(targetNode, ConditionNode)):
-            allTheNodes[targetIndex].setCondition(random.choice(ConditionFunctions))
-            allTheNodes[targetIndex].getParent().getChildren()[allTheNodes[targetIndex].getSiblingOrder()] = allTheNodes[targetIndex]
-        elif (isinstance(targetNode, ActionNode)):
-            allTheNodes[targetIndex].setAction(random.choice(ActionFunctions))
-            allTheNodes[targetIndex].getParent().getChildren()[allTheNodes[targetIndex].getSiblingOrder()] = allTheNodes[targetIndex]
-        else:
-            print("Kuch to hagga h... Kuch hagg gaya h...")
-
-        return tree
+        targetNode = allTheNodes[random.randint(1, len(allTheNodes) - 1)]    
+        # Root node is not mutated.
+        
+        newNode = generateNodes(limit=1)[0]
+        
+        return tree.performMutation(targetNode, newNode)
 
     def performAddition(self, tree):
         return tree

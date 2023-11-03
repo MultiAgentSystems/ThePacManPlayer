@@ -162,7 +162,7 @@ class Tree:
         Tree.updateExecutionOrder()
         return Tree
                 
-    def getCopyWithoutReplacing( self, nodeToBeSwapped, nodeToBeSwappedWith ):
+    def performMutation( self, nodeToBeSwapped, nodeToBeSwappedWith ):
         # Returns a copy of the tree after swapping the passed nodes.
         if (nodeToBeSwapped is None or nodeToBeSwappedWith is None):
             # self.logger.logError(message=f"NodeToBeSwapped or NodeToBeSwappedWith is None.")
