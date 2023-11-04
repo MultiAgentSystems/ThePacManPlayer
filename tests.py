@@ -1,7 +1,4 @@
 import matplotlib.pyplot as plot
-import pickle
-import time
-
 from classes.nodes import *
 from classes.tree import *
 from classes.generation import *
@@ -12,27 +9,7 @@ from utils.generateTree import generateInitialTrees
 from utils.actions import *
 from utils.conditions import *
 from utils.constraints import StaticConstraints
-
-
-SESSION_ID = str(time.time()).split(".")[0]
-
-def saveTree( behaviourTree, filename, directory ):
-    #Use pickle to save the tree.
-    filename = "./agentEvolution/" + directory + "/" + filename
-    filename += "_" + str( SESSION_ID )
-    filename += ".pickle"
-
-    with open( filename, 'wb' ) as f:
-        pickle.dump( behaviourTree, f , pickle.HIGHEST_PROTOCOL )
-
-def loadTree( filename, directory ):
-    filename = "./agentEvolution/" + directory + "/" + filename
-    filename += "_" + str( SESSION_ID )
-    filename += ".pickle"
-
-    with open( filename, 'rb' ) as f:
-        return pickle.load( f )
-
+from utils.treeManage import *
 
 def dummyCondition(a: int, b: int) -> bool:
     print(a, b)
@@ -284,7 +261,7 @@ def generationTest():
 
 
 def testFirstGeneration(DC=False, SC=True):
-    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
+    firstGeneration = generateInitialTrees(numTrees=50, depth2SizeLimit=5, depth3SizeLimit=12, SC=SC)
  
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
@@ -338,7 +315,7 @@ def testFirstGeneration(DC=False, SC=True):
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
 
-        if ( numGenerations % 10 ):
+        if ( i > 0 and i % 10 == 0 ):
             shouldContinue = input("Do you want to continue? (0/1) : ")
             if ( shouldContinue == 0 ):
                 break

@@ -41,7 +41,7 @@ class Generation:
 
         # FREQT constants, apart from topCount
         self.freqt_top_tree_ct = ceil(0.5 * len(self.trees))
-        self.freqt_min_sup = ceil(0.6 * self.freqt_top_tree_ct)
+        self.freqt_min_sup = ceil(0.3 * self.freqt_top_tree_ct)
         # TODO: Check their Ntptmin vs Ntpmin - do they limit the number of terminals or the number of nodes?
         # Right now, we're limiting the number of nodes.
         self.freqt_min_terminals, self.freqt_max_terminals = 2, 15

@@ -111,7 +111,8 @@ class game():
 
         self.player.velX = 0
         self.player.velY = 0
-        self.player.anim_pacmanCurrent = self.player.anim_pacmanS
+        if self.display:
+            self.player.anim_pacmanCurrent = self.player.anim_pacmanS
 
     def SetMode(self, newMode):
         self.mode = newMode

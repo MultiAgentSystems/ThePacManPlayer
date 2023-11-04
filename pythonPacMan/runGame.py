@@ -14,6 +14,8 @@ from .level import level
 from .game import game
 from .scriptPath import SCRIPT_PATH
 
+from utils.treeManage import saveTree
+
 def CheckIfCloseButton(events):
     for event in events:
         if event.type == QUIT:
@@ -195,6 +197,8 @@ def runSingleGame(BT, display=False):
             # blank screen before changing levels
             thisGame.modeTimer += 1
             if not display or thisGame.modeTimer == 10:
+                # Tree Cleared this level.
+                saveTree(BT, filename=f"ClearedLevel_{thisGame.score}", directory="StaticConstraints")
                 thisGame.SetNextLevel()
                 if display:
                     window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
