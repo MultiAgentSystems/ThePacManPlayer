@@ -347,6 +347,11 @@ def testFirstGeneration(DC=False, SC=True):
     print("Generation Average :\n", generationScore)
     print("Generation Best :\n", generationBestScore)
     print("Generation Top 10 Average :\n", generationTop10AverageScore)
+    
+    seeTreeSimulation = int(input("Do you want to see the tree simulation? (0/1) : "))
+
+    if ( seeTreeSimulation == 0 ):
+        return 
 
     for i in (floor(0.05*numGenerations), floor(0.5*numGenerations), floor(0.75*numGenerations), floor(0.99*numGenerations)):
         getTreeFile = savedTrees[i]
