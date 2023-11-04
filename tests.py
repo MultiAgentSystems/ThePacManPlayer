@@ -1,4 +1,3 @@
-from math import floor
 import matplotlib.pyplot as plot
 import pickle
 import time
@@ -311,6 +310,9 @@ def testFirstGeneration(DC=False, SC=True):
 
     savedTrees = []
 
+    bestOfTheBest = bestTree
+    bestPossibleScore = treeScores[0]
+
     for i in range(numGenerations):
         # Save the important stuff.
         generationScore.append(thisGeneration.averageTreeScore)
@@ -318,19 +320,25 @@ def testFirstGeneration(DC=False, SC=True):
         treeScores = thisGeneration.tree_scores
         treeScores.sort(reverse=True)
         top10 = treeScores[:10]
-        generationTop10AverageScore.append(sum(top10)/10)
+        generationTop10AverageScore.append( sum(top10)/10 )
 
         # Log the important stuff
         print("-*"*20)
-        print(f"Fitness Scores For Generation {i} : \nAverage Score : {generationScore[-1]} \nBest Score : {generationBestScore[-1]} \nTop 10 Average Score : {generationTop10AverageScore[-1]}")
+        print(f"Fitness Scores For Generation {i} : \nAverage Score : {format(generationScore[-1],".2f")} \nBest Score : {format(generationBestScore[-1], ".2f")} \nTop 10 Average Score : {format(generationTop10AverageScore[-1], ".2f")}")
         
         # Save the best tree from this generation as a pickle file.
         bestTree = thisGeneration.getTopTrees(1)[0]
         saveTree(bestTree, filename=f"Gen{i+1}_{int(generationBestScore[-1])}", directory=directory)
+        
+        if ( bestPossibleScore > generationBestScore[-1] ):
+            bestOfTheBest = bestTree
+            bestPossibleScore = generationBestScore[-1]
+         
         savedTrees.append(f"Gen{i+1}_{int(generationBestScore[-1])}")
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
-
+    
+    saveTree(bestOfTheBest, filename="BestOfTheBest", directory=directory)
     plot.plot( list(range(len(generationScore))), generationScore, color='blue', label = "Average Fiteness Score", marker='o' )
     plot.plot( list(range(len(generationBestScore))), generationBestScore, color='lightgreen', label = "Best Fitness Score", marker='o' )
     plot.plot( list(range(len(generationTop10AverageScore))), generationTop10AverageScore, color='orange', label = "Average Fitness Score For top 10 Trees", marker='o' )
@@ -349,10 +357,9 @@ def testFirstGeneration(DC=False, SC=True):
     if ( seeTreeSimulation == 0 ):
         return 
 
-    for i in (floor(0.05*numGenerations), floor(0.5*numGenerations), floor(0.75*numGenerations), floor(0.99*numGenerations)):
-        getTreeFile = savedTrees[i]
-        bestTree = loadTree(getTreeFile, directory=directory)
-        runGame(bestTree, display=True)
+    getTreeFile = "BestOfTheBest"
+    bestTree = loadTree(getTreeFile, directory=directory)
+    runGame(bestTree, display=True)
 
 
 if __name__ == "__main__":
