@@ -16,7 +16,7 @@ class Generation:
         # self.tree_scores = [fitness(tree) for tree in self.trees]
         
         results = [0] * len(self.trees)
-        with ProcessPoolExecutor(max_workers=4) as executor:
+        with ProcessPoolExecutor() as executor:
             futures = {executor.submit(fitness, tree): tree for tree in self.trees}
 
             for future in as_completed(futures):

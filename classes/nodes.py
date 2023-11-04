@@ -77,7 +77,7 @@ class Node:
     
     def setChildren(self, children) -> None:
         self.children = children
-        for order, child in self.children:
+        for order, child in enumerate(self.children):
             child.setParent(self)
             child.setSiblingOrder(order)
 

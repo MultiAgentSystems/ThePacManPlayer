@@ -284,7 +284,7 @@ def generationTest():
 
 
 def testFirstGeneration(DC=False, SC=True):
-    firstGeneration = generateInitialTrees(numTrees=50, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
+    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
  
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
@@ -306,7 +306,7 @@ def testFirstGeneration(DC=False, SC=True):
     
     directory = "StaticConstraints"
     
-    numGenerations = 5
+    numGenerations = 100
 
     savedTrees = []
 
@@ -324,7 +324,7 @@ def testFirstGeneration(DC=False, SC=True):
 
         # Log the important stuff
         print("-*"*20)
-        print(f"Fitness Scores For Generation {i} : \nAverage Score : {':.2f'.format(generationScore[-1])} \nBest Score : {format(generationBestScore[-1], '.2f')} \nTop 10 Average Score : {format(generationTop10AverageScore[-1], '.2f')}")
+        print(f"Fitness Scores For Generation {i} : \nAverage Score : {format(generationScore[-1], '.2f')} \nBest Score : {format(generationBestScore[-1], '.2f')} \nTop 10 Average Score : {format(generationTop10AverageScore[-1], '.2f')}")
         
         # Save the best tree from this generation as a pickle file.
         bestTree = thisGeneration.getTopTrees(1)[0]
@@ -337,6 +337,11 @@ def testFirstGeneration(DC=False, SC=True):
         savedTrees.append(f"Gen{i+1}_{int(generationBestScore[-1])}")
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
+
+        if ( numGenerations % 10 ):
+            shouldContinue = input("Do you want to continue? (0/1) : ")
+            if ( shouldContinue == 0 ):
+                break
     
     saveTree(bestOfTheBest, filename="BestOfTheBest", directory=directory)
     plot.plot( list(range(len(generationScore))), generationScore, color='blue', label = "Average Fiteness Score", marker='o' )
