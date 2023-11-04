@@ -129,9 +129,9 @@ class Generation:
         newNode = None
         if self.SC:
             if targetNode._name == "SelectorNode":
-                newNode = generateNodes(specific=2)[0]
+                newNode = generateNodes(unwanted=[3])[0]
             if targetNode._name == "SequenceNode":
-                newNode = generateNodes(specific=3)[0]
+                newNode = generateNodes(unwanted=[2])[0]
             if targetNode._name == "ConditionNode":
                 newNode = generateNodes(specific=1)[0]
             if targetNode._name == "ActionNode":

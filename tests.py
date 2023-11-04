@@ -1,3 +1,7 @@
+import os
+
+from math import floor
+
 from classes.nodes import *
 from classes.tree import *
 from classes.generation import *
@@ -10,6 +14,29 @@ from utils.conditions import *
 from utils.constraints import StaticConstraints
 
 import matplotlib.pyplot as plot
+import pickle
+
+import time
+
+SESSION_ID = str(time.time()).split(".")[0]
+
+def saveTree( behaviourTree, filename, directory ):
+    #Use pickle to save the tree.
+    filename = "./agentEvolution/" + directory + "/" + filename
+    filename += "_" + str( SESSION_ID )
+    filename += ".pickle"
+
+    with open( filename, 'wb' ) as f:
+        pickle.dump( behaviourTree, f , pickle.HIGHEST_PROTOCOL )
+
+def loadTree( filename, directory ):
+    filename = "./agentEvolution/" + directory + "/" + filename
+    filename += "_" + str( SESSION_ID )
+    filename += ".pickle"
+
+    with open( filename, 'rb' ) as f:
+        return pickle.load( f )
+
 
 def dummyCondition(a: int, b: int) -> bool:
     print(a, b)
@@ -260,8 +287,8 @@ def generationTest():
     return nextGeneration
 
 
-def testFirstGeneration(DC=True, SC=True):
-    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
+def testFirstGeneration(DC=False, SC=True):
+    firstGeneration = generateInitialTrees(numTrees=10, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
     
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
@@ -273,18 +300,23 @@ def testFirstGeneration(DC=True, SC=True):
     firstGeneration = Generation(firstGeneration, DC=DC, SC=SC)
     thisGeneration = firstGeneration
     
-    generationScore = [thisGeneration.averageTreeScore]
-    generationBestScore = [ max(thisGeneration.tree_scores) ]
+    generationScore = []
+    generationBestScore = []
     treeScores = thisGeneration.tree_scores
+    treeScores.sort(reverse=True)
     top10 = treeScores[:10]
 
-    generationTop10AverageScore = [ sum(top10) / 10 ]
+    generationTop10AverageScore = [ ]
+    
+    directory = "StaticConstraints"
+    
+    numGenerations = 3
+
+    savedTrees = []
 
     print(f"Fitness Score For Generation 0 : {thisGeneration.averageTreeScore}")
-    for i in range(100):
-        nextGeneration = thisGeneration.getNextGeneration()
-        thisGeneration = nextGeneration
-
+    for i in range(3):
+        # Save the important stuff.
         generationScore.append(thisGeneration.averageTreeScore)
         generationBestScore.append(max(thisGeneration.tree_scores))
         treeScores = thisGeneration.tree_scores
@@ -292,14 +324,17 @@ def testFirstGeneration(DC=True, SC=True):
         top10 = treeScores[:10]
         generationTop10AverageScore.append(sum(top10)/10)
 
+        # Log the important stuff
         print("-*"*20)
         print(f"Fitness Scores For Generation {i+1} : \nAverage Score : {generationScore[-1]} \nBest Score : {generationBestScore[-1]}")
-        if i == 99:
-        # Store the Best Tree
-            bestTree = thisGeneration.getTopTrees(1)[0]
+        
+        # Save the best tree from this generation as a pickle file.
+        bestTree = thisGeneration.getTopTrees(1)[0]
+        saveTree(bestTree, filename=f"Gen{i+1}_{int(generationBestScore[-1])}", directory=directory)
+        savedTrees.append(f"Gen{i+1}_{int(generationBestScore[-1])}")
+        nextGeneration = thisGeneration.getNextGeneration()
+        thisGeneration = nextGeneration
 
-    runGame(BT = bestTree, display=True)
-    ## Plotting the Fitness Score
     plot.plot( list(range(len(generationScore))), generationScore, color='blue', label = "Average Fiteness Score", marker='o' )
     plot.plot( list(range(len(generationBestScore))), generationBestScore, color='lightgreen', label = "Best Fitness Score", marker='o' )
     plot.plot( list(range(len(generationTop10AverageScore))), generationTop10AverageScore, color='orange', label = "Average Fitness Score For top 10 Trees", marker='o' )
@@ -307,10 +342,16 @@ def testFirstGeneration(DC=True, SC=True):
     plot.xlabel("Generation")
     plot.ylabel("Fitness Scores")
     plot.show()
+    plot.savefig(f"./graphs/sc/Performance.png", dpi=300)
     print("-*"*20)
     print("Generation Average :\n", generationScore)
     print("Generation Best :\n", generationBestScore)
     print("Generation Top 10 Average :\n", generationTop10AverageScore)
+
+    for i in (floor(0.05*numGenerations), floor(0.5*numGenerations), floor(0.75*numGenerations), floor(0.99*numGenerations)):
+        getTreeFile = savedTrees[i]
+        bestTree = loadTree(getTreeFile, directory=directory)
+        runGame(bestTree, display=True)
 
 
 if __name__ == "__main__":
