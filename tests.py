@@ -1,6 +1,7 @@
-import os
-
 from math import floor
+import matplotlib.pyplot as plot
+import pickle
+import time
 
 from classes.nodes import *
 from classes.tree import *
@@ -13,10 +14,6 @@ from utils.actions import *
 from utils.conditions import *
 from utils.constraints import StaticConstraints
 
-import matplotlib.pyplot as plot
-import pickle
-
-import time
 
 SESSION_ID = str(time.time()).split(".")[0]
 
@@ -340,7 +337,7 @@ def testFirstGeneration(DC=False, SC=True):
     plot.plot( list(range(len(generationTop10AverageScore))), generationTop10AverageScore, color='orange', label = "Average Fitness Score For top 10 Trees", marker='o' )
     plot.legend()
     plot.xlabel("Generation")
-    plot.ylabel("Fitness Scores")
+    plot.ylabel("Fitness Score")
     plot.show()
     plot.savefig(f"./graphs/sc/Performance.png", dpi=300)
     print("-*"*20)
