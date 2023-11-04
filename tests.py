@@ -259,15 +259,15 @@ def generationTest():
     return nextGeneration
 
 
-def testFirstGeneration():
-    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15)
+def testFirstGeneration(DC=True, SC=True):
+    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
     
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
             print( "Unfit Tree Generated" )
     
     bestTree = firstGeneration[0]
-    firstGeneration = Generation(firstGeneration, DC=False)
+    firstGeneration = Generation(firstGeneration, DC=DC, SC=SC)
     thisGeneration = firstGeneration
     
     generationScore = [thisGeneration.averageTreeScore]

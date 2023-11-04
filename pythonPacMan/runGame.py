@@ -1,4 +1,6 @@
-import pygame, os, sys
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import pygame, sys
 from concurrent.futures import ProcessPoolExecutor
 
 from pygame.locals import *
@@ -11,8 +13,6 @@ from .tile import *
 from .level import level
 from .game import game
 from .scriptPath import SCRIPT_PATH
-
-print(SCRIPT_PATH)
 
 def CheckIfCloseButton(events):
     for event in events:
