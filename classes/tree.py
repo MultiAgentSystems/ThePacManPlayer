@@ -203,8 +203,9 @@ class Tree:
 
         for node in executionOrder:
             if (node == nodeToDelete):
-                updatedChildren = nodeToDelete.getParent().getChildren().pop(nodeToDelete.getSiblingOrder())
-                nodeToDelete.setChildren(updatedChildren)
+                updatedChildren = nodeToDelete.getParent().getChildren()
+                updatedChildren.remove(nodeToDelete)
+                nodeToDelete.getParent().setChildren(updatedChildren)
         
         self.updateExecutionOrder()
         return self
@@ -230,7 +231,6 @@ class Tree:
         else :
             # Add the newNode as the child of nodeToAddto.
             nodeToAddto.addChild(newNode)
-            
             self.updateExecutionOrder()
             return self
 

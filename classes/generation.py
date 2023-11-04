@@ -147,8 +147,11 @@ class Generation:
         if threeWayToss == 0:
             return tree.performChangeMutation(targetNode, newNode)
         elif threeWayToss == 1:
+            if len(allTheNodes) == 2 :
+                threeWayToss = 2
             return tree.performDeleteMutation(targetNode)
-        else:
+        
+        if threeWayToss == 2:
             # If the new generated node is selector or sequence, 
             # then we add two random children to it, a conidition
             # node and an action node.

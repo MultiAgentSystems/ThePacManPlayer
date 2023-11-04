@@ -285,7 +285,7 @@ def generationTest():
 
 
 def testFirstGeneration(DC=False, SC=True):
-    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
+    firstGeneration = generateInitialTrees(numTrees=50, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
  
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
@@ -307,12 +307,11 @@ def testFirstGeneration(DC=False, SC=True):
     
     directory = "StaticConstraints"
     
-    numGenerations = 100
+    numGenerations = 5
 
     savedTrees = []
 
-    print(f"Fitness Score For Generation 0 : {thisGeneration.averageTreeScore}")
-    for i in range(3):
+    for i in range(numGenerations):
         # Save the important stuff.
         generationScore.append(thisGeneration.averageTreeScore)
         generationBestScore.append(max(thisGeneration.tree_scores))
@@ -323,7 +322,7 @@ def testFirstGeneration(DC=False, SC=True):
 
         # Log the important stuff
         print("-*"*20)
-        print(f"Fitness Scores For Generation {i+1} : \nAverage Score : {generationScore[-1]} \nBest Score : {generationBestScore[-1]}")
+        print(f"Fitness Scores For Generation {i} : \nAverage Score : {generationScore[-1]} \nBest Score : {generationBestScore[-1]} \nTop 10 Average Score : {generationTop10AverageScore[-1]}")
         
         # Save the best tree from this generation as a pickle file.
         bestTree = thisGeneration.getTopTrees(1)[0]
