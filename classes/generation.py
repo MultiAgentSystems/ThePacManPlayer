@@ -32,7 +32,7 @@ class Generation:
         self.mutation_prob = 0.1
         self.cross_prob = 0.8
         self.pop = min(100, len(trees))
-        self.tourn_size = 5
+        self.tourn_size = ceil(0.05 * self.pop)
         self.gamma = 0.9
 
         # Constraints
@@ -50,6 +50,7 @@ class Generation:
         self.freq_patterns = self.getFrequentPatterns()
         # sort freq_patterns by size
         self.freq_patterns.sort(key=lambda x: x.getSize(), reverse=True)
+        print(f"Found {len(self.freq_patterns)} frequent patterns")
 
     def getTopTrees(self, k) -> list:
         # Get the top k trees
@@ -122,7 +123,7 @@ class Generation:
         # Three kinds of mutation.
 
         threeWayToss = random.randint(0,2)
-        
+
         allTheNodes = tree.getExecutionOrder(update = True)
         targetNode = None
         if ( len(allTheNodes) == 2 ):
@@ -143,16 +144,16 @@ class Generation:
                 newNode = generateNodes(specific=0)[0]
         else:
             newNode = generateNodes()[0]
-            
+
         if threeWayToss == 0:
             return tree.performChangeMutation(targetNode, newNode)
         elif threeWayToss == 1:
             if len(allTheNodes) == 2 :
                 threeWayToss = 2
             return tree.performDeleteMutation(targetNode)
-        
+
         if threeWayToss == 2:
-            # If the new generated node is selector or sequence, 
+            # If the new generated node is selector or sequence,
             # then we add two random children to it, a conidition
             # node and an action node.
             if ( isinstance(newNode, SelectorNode) or isinstance(newNode, SequenceNode) ):
@@ -227,7 +228,9 @@ class Generation:
                 # We discard this pattern completely if it:
                 # - doesn't have enough support: support will never increase on expanding
                 # - has too many terminals: terminals will never decrease on expanding
-                if len(bt_rmos) < self.freqt_min_sup or pats.countTerminals() > self.freqt_max_terminals:
+                # trees_with_pat = len(bt_rmos)
+                total_rmos = sum([len(i) for i in bt_rmos.values()])
+                if total_rmos < self.freqt_min_sup or pats.countTerminals() > self.freqt_max_terminals:
                     continue
 
                 if pats not in k_pats and self.isValidPattern(pats):

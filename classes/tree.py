@@ -33,9 +33,9 @@ class Tree:
     def getSize(self):
         return self.size
 
-    def getExecutionOrder(self, update = False):
+    def getExecutionOrder(self, update=False):
         # if (len(self.executionOrder) == 0):
-            # self.logger.logWarning(message=f"Execution Order is empty.")
+        # self.logger.logWarning(message=f"Execution Order is empty.")
         if update:
             self.updateExecutionOrder()
         return self.executionOrder
@@ -117,25 +117,25 @@ class Tree:
 
         preorderTraversal(self.root, -1)
         return NormalisedTree(parents, labels)
-    
-    def getCopyAfterReplacing( self, nodeToBeSwapped, nodeToBeSwappedWith ):
+
+    def getCopyAfterReplacing(self, nodeToBeSwapped, nodeToBeSwappedWith):
         # Returns a copy of the tree after swapping the passed nodes.
         if (nodeToBeSwapped is None or nodeToBeSwappedWith is None):
             # self.logger.logError(message=f"NodeToBeSwapped or NodeToBeSwappedWith is None.")
             print("Given string is None")
             return None
-        
+
         # print(nodeToBeSwapped.getParent())
 
         Tree = copy.deepcopy(self)
         newNode = copy.deepcopy(nodeToBeSwappedWith);
 
-        if ( not self.isTreeFit() ):
+        if (not self.isTreeFit()):
             print("Tree is not fit.")
-            return None #### POTENTIALLY DANGEROUS, THIS SHOULD NOT HAPPEN
-        elif ( not Tree.isTreeFit() ):
+            return None  #### POTENTIALLY DANGEROUS, THIS SHOULD NOT HAPPEN
+        elif (not Tree.isTreeFit()):
             print("Copied Tree is not fit.")
-            return None #### POTENTIALLY DANGEROUS, THIS SHOULD NOT HAPPEN
+            return None  #### POTENTIALLY DANGEROUS, THIS SHOULD NOT HAPPEN
 
         ## If the root is passed, just swap the root.
         if (nodeToBeSwapped == self.getRoot()):
@@ -159,14 +159,15 @@ class Tree:
 
                 newNode.setParent(executionOrderCopy[nodeIndex].getParent())
                 newNode.setSiblingOrder(executionOrderCopy[nodeIndex].getSiblingOrder())
-                executionOrderCopy[nodeIndex].getParent().getChildren()[executionOrderCopy[nodeIndex].getSiblingOrder()] = newNode
-        
+                executionOrderCopy[nodeIndex].getParent().getChildren()[
+                    executionOrderCopy[nodeIndex].getSiblingOrder()] = newNode
+
         Tree.updateExecutionOrder()
         return Tree
                 
     def performChangeMutation( self, nodeToBeSwapped, nodeToBeSwappedWith ):
         # Returns the same tree.
-        
+
         assert(nodeToBeSwappedWith is not None and nodeToBeSwapped is not None)
         assert( self.isTreeFit() )
 
@@ -190,10 +191,10 @@ class Tree:
                 if nodeToBeSwappedWith._name == "SelectorNode" or nodeToBeSwappedWith._name == "SequenceNode":
                     nodeToBeSwappedWith.setChildren(executionOrder[nodeIndex].getChildren())
                 executionOrder[nodeIndex].getParent().getChildren()[executionOrder[nodeIndex].getSiblingOrder()] = nodeToBeSwappedWith
-        
+
         self.updateExecutionOrder()
         return self
-    
+
     def performDeleteMutation(self, nodeToDelete ):
         # Returns the same tree, with the node passed deleted.
         assert(self.isTreeFit())
@@ -206,16 +207,16 @@ class Tree:
                 updatedChildren = nodeToDelete.getParent().getChildren()
                 updatedChildren.remove(nodeToDelete)
                 nodeToDelete.getParent().setChildren(updatedChildren)
-        
+
         self.updateExecutionOrder()
         return self
-    
+
     def performAdditionMutation(self, nodeToAddto, newNode ):
         # Returns the same tree, with the node passed added.
         assert(self.isTreeFit())
         assert(nodeToAddto is not None)
         assert(newNode is not None)
-        
+
         # If the node is Condition node or Action Node :
         # then we add the same node as its next brother and update the children of parent.
         if ( nodeToAddto._name == "ConditionNode" or nodeToAddto._name == "ActionNode" ):
@@ -266,6 +267,14 @@ class Tree:
                 return False
 
         return True
+
+    def displayTree(self):
+        normalised = self.getNormalisedTree()
+        parents, labels = normalised.getParentArray(), normalised.getLabelArray()
+        for i in range(len(parents)):
+            print(f"{i} : {labels[i]} -> {parents[i]}; ", end="")
+        print()
+
 
 class BehaviourTree(Tree):
     def __init__(self, root=None) -> None:

@@ -46,7 +46,7 @@ class NormalisedTree:
         # 'up' steps to take from the rightmost leaf to attach a new node 'label'
         # Returns the new RMOs
         new_rmos = []
-        # assert (rmos == sorted(rmos))
+        assert (rmos == sorted(rmos))
         check = None
         for x in rmos:
             if up == 0:
