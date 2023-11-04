@@ -59,7 +59,7 @@ def generateInitialTreeDepth2( treeSize : int = 5, SC : bool = False ):
             children = generateNodes( limit = numberOfNodes, specific = 0 )
         else:
             numConditions = random.randint(1, numberOfNodes - 1)
-            conditionChildren = generateNodes( limit = numConditions, unwanted = [2,3] )
+            conditionChildren = generateNodes( limit = numConditions, specific = 1 )
             actionChildren = generateNodes( limit = numberOfNodes - numConditions, specific = 0 )
             children = conditionChildren + actionChildren
     else:

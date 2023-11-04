@@ -7,6 +7,7 @@ from pythonPacMan.runGame import runGame
 from utils.generateTree import generateInitialTrees
 from utils.actions import *
 from utils.conditions import *
+from utils.constraints import StaticConstraints
 
 import matplotlib.pyplot as plot
 
@@ -265,6 +266,8 @@ def testFirstGeneration(DC=True, SC=True):
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
             print( "Unfit Tree Generated" )
+        if not StaticConstraints(tree) and SC:
+            print( "Unsatisfying Tree Generated" )
     
     bestTree = firstGeneration[0]
     firstGeneration = Generation(firstGeneration, DC=DC, SC=SC)
