@@ -164,31 +164,20 @@ class Tree:
         Tree.updateExecutionOrder()
         return Tree
                 
-    def performMutation( self, nodeToBeSwapped, nodeToBeSwappedWith ):
-        # Returns a copy of the tree after swapping the passed nodes.
-        if (nodeToBeSwapped is None or nodeToBeSwappedWith is None):
-            # self.logger.logError(message=f"NodeToBeSwapped or NodeToBeSwappedWith is None.")
-            print("Given string is None")
-            return None
+    def performChangeMutation( self, nodeToBeSwapped, nodeToBeSwappedWith ):
+        # Returns the same tree.
         
-        # print(nodeToBeSwapped.getParent())
-
-        if ( not self.isTreeFit() ):
-            print("Tree is not fit.")
-            return None
-        # else :
-        #     print("Tree is fit. Proceeding to replace Node")
+        assert(nodeToBeSwappedWith is not None and nodeToBeSwapped is not None)
+        assert( self.isTreeFit() )
 
         ## If the root is passed, just swap the root.
         if (nodeToBeSwapped == self.getRoot()):
-            # Tree.logger.logWarning(message=f"Swapping the root node with {nodeToBeSwappedWith._name}.")
             self.setRoot(nodeToBeSwappedWith)
             self.updateExecutionOrder()
             return self
         
         ## Get the execution Order and find the node.
         executionOrder = self.getExecutionOrder()
-
 
         for nodeIndex, node in enumerate(executionOrder):
             if (node == nodeToBeSwapped):
@@ -204,8 +193,48 @@ class Tree:
         
         self.updateExecutionOrder()
         return self
+    
+    def performDeleteMutation(self, nodeToDelete ):
+        # Returns the same tree, with the node passed deleted.
+        assert(self.isTreeFit())
+        assert(nodeToDelete is not None)
 
+        executionOrder = self.getExecutionOrder()
 
+        for node in executionOrder:
+            if (node == nodeToDelete):
+                updatedChildren = nodeToDelete.getParent().getChildren().pop(nodeToDelete.getSiblingOrder())
+                nodeToDelete.setChildren(updatedChildren)
+        
+        self.updateExecutionOrder()
+        return self
+    
+    def performAdditionMutation(self, nodeToAddto, newNode ):
+        # Returns the same tree, with the node passed added.
+        assert(self.isTreeFit())
+        assert(nodeToAddto is not None)
+        assert(newNode is not None)
+        
+        # If the node is Condition node or Action Node :
+        # then we add the same node as its next brother and update the children of parent.
+        if ( nodeToAddto._name == "ConditionNode" or nodeToAddto._name == "ActionNode" ):
+            updatedChildren = nodeToAddto.getParent().getChildren()
+            updatedChildren.insert(nodeToAddto.getSiblingOrder() + 1, newNode)
+
+            newNode.setParent(nodeToAddto.getParent())
+
+            newNode.getParent().setChildren(updatedChildren)
+
+            self.updateExecutionOrder()
+            return self
+        else :
+            # Add the newNode as the child of nodeToAddto.
+            nodeToAddto.addChild(newNode)
+            
+            self.updateExecutionOrder()
+            return self
+
+        # If the node is Selector Node or Sequence Node:
     def __str__(self):
         # Printing a tree in a nice way
         treeAsString = f"Tree with root {self.getRoot()._name}"

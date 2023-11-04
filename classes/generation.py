@@ -118,6 +118,11 @@ class Generation:
     def performMutation(self, tree):
         # After getting the root, we need to recursively iterate 
         # through the tree and select a particular node for mutation.
+
+        # Three kinds of mutation.
+
+        threeWayToss = random.randint(0,2)
+        
         allTheNodes = tree.getExecutionOrder(update = True)
         targetNode = None
         if ( len(allTheNodes) == 2 ):
@@ -138,11 +143,19 @@ class Generation:
                 newNode = generateNodes(specific=0)[0]
         else:
             newNode = generateNodes()[0]
-        
-        return tree.performMutation(targetNode, newNode)
-
-    def performAddition(self, tree):
-        return tree
+            
+        if threeWayToss == 0:
+            return tree.performChangeMutation(targetNode, newNode)
+        elif threeWayToss == 1:
+            return tree.performDeleteMutation(targetNode)
+        else:
+            # If the new generated node is selector or sequence, 
+            # then we add two random children to it, a conidition
+            # node and an action node.
+            if ( isinstance(newNode, SelectorNode) or isinstance(newNode, SequenceNode) ):
+                children = generateNodes(specific=1) + generateNodes(specific=0)
+                newNode.addChild(children[0])
+            return tree.performAdditionMutation(targetNode, newNode)
 
     def getNextGeneration(self):
         cross_ct = int(self.cross_prob * self.pop)

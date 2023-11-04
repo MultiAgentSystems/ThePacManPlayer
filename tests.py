@@ -285,8 +285,8 @@ def generationTest():
 
 
 def testFirstGeneration(DC=False, SC=True):
-    firstGeneration = generateInitialTrees(numTrees=10, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
-    
+    firstGeneration = generateInitialTrees(numTrees=100, depth2SizeLimit=8, depth3SizeLimit=15, SC=SC)
+ 
     for tree in firstGeneration:
         if not tree.isTreeFit(): 
             print( "Unfit Tree Generated" )
@@ -307,7 +307,7 @@ def testFirstGeneration(DC=False, SC=True):
     
     directory = "StaticConstraints"
     
-    numGenerations = 3
+    numGenerations = 100
 
     savedTrees = []
 
