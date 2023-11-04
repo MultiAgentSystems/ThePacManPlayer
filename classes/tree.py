@@ -159,8 +159,7 @@ class Tree:
 
                 newNode.setParent(executionOrderCopy[nodeIndex].getParent())
                 newNode.setSiblingOrder(executionOrderCopy[nodeIndex].getSiblingOrder())
-                executionOrderCopy[nodeIndex].getParent().getChildren()[
-                    executionOrderCopy[nodeIndex].getSiblingOrder()] = newNode
+                executionOrderCopy[nodeIndex].getParent().getChildren()[executionOrderCopy[nodeIndex].getSiblingOrder()] = newNode
 
         Tree.updateExecutionOrder()
         return Tree

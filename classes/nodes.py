@@ -77,8 +77,9 @@ class Node:
     
     def setChildren(self, children) -> None:
         self.children = children
-        for child in self.children:
+        for order, child in self.children:
             child.setParent(self)
+            child.setSiblingOrder(order)
 
     def getChildren(self) -> list:
         return self.children

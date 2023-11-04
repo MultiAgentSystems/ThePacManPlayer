@@ -324,7 +324,7 @@ def testFirstGeneration(DC=False, SC=True):
 
         # Log the important stuff
         print("-*"*20)
-        print(f"Fitness Scores For Generation {i} : \nAverage Score : {format(generationScore[-1],".2f")} \nBest Score : {format(generationBestScore[-1], ".2f")} \nTop 10 Average Score : {format(generationTop10AverageScore[-1], ".2f")}")
+        print(f"Fitness Scores For Generation {i} : \nAverage Score : {':.2f'.format(generationScore[-1])} \nBest Score : {format(generationBestScore[-1], '.2f')} \nTop 10 Average Score : {format(generationTop10AverageScore[-1], '.2f')}")
         
         # Save the best tree from this generation as a pickle file.
         bestTree = thisGeneration.getTopTrees(1)[0]
