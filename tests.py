@@ -11,6 +11,7 @@ from utils.conditions import *
 from utils.constraints import StaticConstraints
 from utils.treeManage import *
 
+
 def dummyCondition(a: int, b: int) -> bool:
     print(a, b)
     if (a > 2 * b + 1):
@@ -41,8 +42,8 @@ def testSequenceNode():
     sequenceNode = SequenceNode()
     print(sequenceNode)
 
-def testTreeExectionOrder():
 
+def testTreeExectionOrder():
     sequenceNode = SequenceNode()
     sequenceNode.addChild(SelectorNode())
 
@@ -74,7 +75,6 @@ def testTreeExectionOrder():
 
 
 def testTreeAddNode():
-
     newSequenceNode = SequenceNode()
     newSequenceNode.addChild(SelectorNode())
 
@@ -114,23 +114,27 @@ def testTreeAddNode():
 
 
 def createSampleTree():
-
     newSelectorNode = SelectorNode()
-    
+
     for _ in range(3):
         newSelectorNode.addChild(SequenceNode())
 
-    newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="Move to eat any pill", ))
+    newSelectorNode.addChild(ActionNode(actionFunction=moveToEatAnyPill, description="Move to eat any pill", ))
 
-    newSelectorNode.getChildren()[0].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryLow, parent=newSelectorNode.getChildren()[0]))
-    newSelectorNode.getChildren()[0].addChild(ActionNode(actionFunction=moveAwayFromGhost, parent=newSelectorNode.getChildren()[0])) 
-    
-    newSelectorNode.getChildren()[1].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseVeryHigh, parent=newSelectorNode.getChildren()[1]))
-    newSelectorNode.getChildren()[1].addChild(ActionNode(actionFunction=moveToEatPowerPill, parent=newSelectorNode.getChildren()[1]))
+    newSelectorNode.getChildren()[0].addChild(
+        ConditionNode(conditionFunction=isInedibleGhostCloseVeryLow, parent=newSelectorNode.getChildren()[0]))
+    newSelectorNode.getChildren()[0].addChild(
+        ActionNode(actionFunction=moveAwayFromGhost, parent=newSelectorNode.getChildren()[0]))
 
-    newSelectorNode.getChildren()[2].addChild(ConditionNode(conditionFunction=isInedibleGhostCloseMedium, parent=newSelectorNode.getChildren()[2]))
-    newSelectorNode.getChildren()[2].addChild(ActionNode(actionFunction=moveToEatPowerPill, parent=newSelectorNode.getChildren()[2]))
+    newSelectorNode.getChildren()[1].addChild(
+        ConditionNode(conditionFunction=isInedibleGhostCloseVeryHigh, parent=newSelectorNode.getChildren()[1]))
+    newSelectorNode.getChildren()[1].addChild(
+        ActionNode(actionFunction=moveToEatPowerPill, parent=newSelectorNode.getChildren()[1]))
 
+    newSelectorNode.getChildren()[2].addChild(
+        ConditionNode(conditionFunction=isInedibleGhostCloseMedium, parent=newSelectorNode.getChildren()[2]))
+    newSelectorNode.getChildren()[2].addChild(
+        ActionNode(actionFunction=moveToEatPowerPill, parent=newSelectorNode.getChildren()[2]))
 
     newTree = Tree(root=newSelectorNode, )
     newTree.updateExecutionOrder()
@@ -140,75 +144,114 @@ def createSampleTree():
         recieved.append(node._name)
 
     print(recieved)
-    
+
     return newTree
+
 
 def somewhatSmartTree():
     global universalLogger
 
     newSelectorNode = SelectorNode()
 
-    
-    conditions = [isInedibleGhostCloseVeryLow, 
-                isEdibleGhostCloseVeryLow, 
-                isInedibleGhostCloseVeryHigh,
-                isInedibleGhostCloseMedium ]
-    
+    conditions = [isInedibleGhostCloseVeryLow,
+                  isEdibleGhostCloseVeryLow,
+                  isInedibleGhostCloseVeryHigh,
+                  isInedibleGhostCloseMedium]
+
     actions = [moveAwayFromGhost,
                moveTowardsGhost,
                moveToEatPowerPill,
                moveToEatAnyPill]
 
     description = ["moveAwayFromGhost",
-                "moveTowardsGhost",
-                "moveToEatPowerPill",
-                "moveToEatAnyPill"]
+                   "moveTowardsGhost",
+                   "moveToEatPowerPill",
+                   "moveToEatAnyPill"]
 
-
-
-    for _ in range( len(conditions) ):
+    for _ in range(len(conditions)):
         newSelectorNode.addChild(SequenceNode(parent=newSelectorNode))
-    for _ in range( 1 ):
-        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode))
-    
-    for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
-        node.addChild(ConditionNode(conditionFunction=conditionFunction,parent=node ))
-        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, parent=node ))
+    for _ in range(1):
+        newSelectorNode.addChild(
+            ActionNode(actionFunction=moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode))
+
+    for node, conditionFunction, actionFunction, actionDescription in zip(newSelectorNode.getChildren(), conditions,
+                                                                          actions, description):
+        node.addChild(ConditionNode(conditionFunction=conditionFunction, parent=node))
+        node.addChild(ActionNode(actionFunction=actionFunction, description=actionDescription, parent=node))
 
     newTree = Tree(root=newSelectorNode, )
 
     newTree.updateExecutionOrder()
-    
+
     return newTree
+
+
+def paperTree():
+    global universalLogger
+
+    newSelectorNode = SelectorNode()
+
+    conditions = [isInedibleGhostCloseVeryLow,
+                  isInedibleGhostCloseVeryHigh,
+                  isInedibleGhostCloseMedium]
+
+    actions = [moveAwayFromGhost,
+               moveToEatPowerPill,
+               moveToEatPowerPill]
+
+    description = ["moveAwayFromGhost",
+                   "moveTowardsGhost",
+                   "moveToEatPowerPill"]
+
+    for _ in range(len(conditions)):
+        newSelectorNode.addChild(SequenceNode(parent=newSelectorNode))
+    for _ in range(1):
+        newSelectorNode.addChild(
+            ActionNode(actionFunction=moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode))
+
+    for node, conditionFunction, actionFunction, actionDescription in zip(newSelectorNode.getChildren(), conditions,
+                                                                          actions, description):
+        node.addChild(ConditionNode(conditionFunction=conditionFunction, parent=node))
+        node.addChild(ActionNode(actionFunction=actionFunction, description=actionDescription, parent=node))
+
+    newSelectorNode.addChild(
+        ActionNode(actionFunction=moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode))
+    newTree = Tree(root=newSelectorNode, )
+
+    newTree.updateExecutionOrder()
+
+    return newTree
+
 
 def somewhatDumbTree():
     global universalLogger
 
     newSelectorNode = SelectorNode()
 
-    
-    conditions = [isInedibleGhostCloseVeryLow, 
-                isEdibleGhostCloseVeryLow]
-    
+    conditions = [isInedibleGhostCloseVeryLow,
+                  isEdibleGhostCloseVeryLow]
+
     actions = [moveAwayFromGhost,
                moveTowardsGhost]
 
     description = ["moveAwayFromGhost",
-                "moveTowardsGhost"]
+                   "moveTowardsGhost"]
 
-    for _ in range( len(conditions) ):
-        newSelectorNode.addChild(SequenceNode( parent=newSelectorNode))
-    for _ in range( 1 ):
-        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode ))
-    
-    for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
-        node.addChild(ConditionNode(conditionFunction=conditionFunction,parent=node ))
-        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription,parent=node ))
+    for _ in range(len(conditions)):
+        newSelectorNode.addChild(SequenceNode(parent=newSelectorNode))
+    for _ in range(1):
+        newSelectorNode.addChild(
+            ActionNode(actionFunction=moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode))
+
+    for node, conditionFunction, actionFunction, actionDescription in zip(newSelectorNode.getChildren(), conditions,
+                                                                          actions, description):
+        node.addChild(ConditionNode(conditionFunction=conditionFunction, parent=node))
+        node.addChild(ActionNode(actionFunction=actionFunction, description=actionDescription, parent=node))
 
     newTree = Tree(root=newSelectorNode, )
 
     newTree.updateExecutionOrder()
-    
+
     return newTree
 
 
@@ -216,26 +259,28 @@ def anotherTree():
     global universalLogger
 
     newSelectorNode = SelectorNode()
-    
+
     conditions = [isInedibleGhostCloseVeryLow]
-    
+
     actions = [moveAwayFromGhost]
 
     description = ["moveAwayFromGhost"]
 
-    for _ in range( len(conditions) ):
-        newSelectorNode.addChild( SequenceNode(parent=newSelectorNode))
-    for _ in range( 1 ):
-        newSelectorNode.addChild( ActionNode(actionFunction = moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode ))
-    
-    for node,conditionFunction,actionFunction,actionDescription in zip(newSelectorNode.getChildren(),conditions, actions, description):
-        node.addChild(ConditionNode(conditionFunction=conditionFunction, parent = node))
-        node.addChild(ActionNode(actionFunction=actionFunction,description=actionDescription, parent=node))
+    for _ in range(len(conditions)):
+        newSelectorNode.addChild(SequenceNode(parent=newSelectorNode))
+    for _ in range(1):
+        newSelectorNode.addChild(
+            ActionNode(actionFunction=moveToEatAnyPill, description="moveToEatAnyPill", parent=newSelectorNode))
+
+    for node, conditionFunction, actionFunction, actionDescription in zip(newSelectorNode.getChildren(), conditions,
+                                                                          actions, description):
+        node.addChild(ConditionNode(conditionFunction=conditionFunction, parent=node))
+        node.addChild(ActionNode(actionFunction=actionFunction, description=actionDescription, parent=node))
 
     newTree = Tree(root=newSelectorNode, )
 
     newTree.updateExecutionOrder()
-    
+
     return newTree
 
 
@@ -243,12 +288,14 @@ def runTheGame():
     behaviourTree = createSampleTree()
     runGame(behaviourTree, display=True)
 
+
 def runTheSmartGame():
     behaviourTree = somewhatSmartTree()
     runGame(behaviourTree, display=True)
 
+
 def generationTest():
-    trees = [] 
+    trees = []
     trees.append(createSampleTree())
     trees.append(somewhatSmartTree())
     trees.append(somewhatDumbTree())
@@ -256,34 +303,32 @@ def generationTest():
 
     thisGeneration = Generation(trees)
     nextGeneration = thisGeneration.getNextGeneration()
-    
+
     return nextGeneration
 
 
 def testFirstGeneration(DC=False, SC=True):
-    firstGeneration = generateInitialTrees(numTrees=10, depth2SizeLimit=5, depth3SizeLimit=12, SC=SC)
-    print("First Generation Trees Created.")
+    firstGeneration = generateInitialTrees(numTrees=1, depth2SizeLimit=5, depth3SizeLimit=12, SC=SC)
     # for tree in firstGeneration:
     #     if not tree.isTreeFit(): 
     #         print( "Unfit Tree Generated" )
     #     if not StaticConstraints(tree) and SC:
     #         print( "Unsatisfying Tree Generated" )
-    
+
     bestTree = firstGeneration[0]
     firstGeneration = Generation(firstGeneration, DC=DC, SC=SC)
-    print("First Generation Initialized.")
     thisGeneration = firstGeneration
-    
+
     generationScore = []
     generationBestScore = []
     treeScores = thisGeneration.tree_scores
     treeScores.sort(reverse=True)
     top10 = treeScores[:10]
 
-    generationTop10AverageScore = [ ]
-    
+    generationTop10AverageScore = []
+
     directory = "StaticConstraints"
-    
+
     numGenerations = 5
 
     savedTrees = []
@@ -298,52 +343,58 @@ def testFirstGeneration(DC=False, SC=True):
         treeScores = thisGeneration.tree_scores
         treeScores.sort(reverse=True)
         top10 = treeScores[:10]
-        generationTop10AverageScore.append( sum(top10)/10 )
+        generationTop10AverageScore.append(sum(top10) / 10)
 
         # Log the important stuff
-        print("-*"*20)
-        print(f"Fitness Scores For Generation {i} : \nAverage Score : {format(generationScore[-1], '.2f')} \nBest Score : {format(generationBestScore[-1], '.2f')} \nTop 10 Average Score : {format(generationTop10AverageScore[-1], '.2f')}")
-        
+        print("-*" * 20)
+        print(
+            f"Fitness Scores For Generation {i} : \nAverage Score : {format(generationScore[-1], '.2f')} \nBest Score : {format(generationBestScore[-1], '.2f')} \nTop 10 Average Score : {format(generationTop10AverageScore[-1], '.2f')}")
+
         # Save the best tree from this generation as a pickle file.
         bestTree = thisGeneration.getTopTrees(1)[0]
-        saveTree(bestTree, filename=f"Gen{i+1}_{int(generationBestScore[-1])}", directory=directory)
-        
-        if ( bestPossibleScore > generationBestScore[-1] ):
+        saveTree(bestTree, filename=f"Gen{i + 1}_{int(generationBestScore[-1])}", directory=directory)
+
+        if (bestPossibleScore > generationBestScore[-1]):
             bestOfTheBest = bestTree
             bestPossibleScore = generationBestScore[-1]
-         
-        savedTrees.append(f"Gen{i+1}_{int(generationBestScore[-1])}")
+
+        savedTrees.append(f"Gen{i + 1}_{int(generationBestScore[-1])}")
         nextGeneration = thisGeneration.getNextGeneration()
         thisGeneration = nextGeneration
 
-        if ( i > 0 and i % 10 == 0 ):
+        if (i > 0 and i % 10 == 0):
             shouldContinue = int(input("Do you want to continue? (0/1) : "))
-            if ( shouldContinue == 0 ):
+            if (shouldContinue == 0):
                 break
-    
+
     saveTree(bestOfTheBest, filename="BestOfTheBest", directory=directory)
-    plot.plot( list(range(len(generationScore))), generationScore, color='blue', label = "Average Fiteness Score", marker='o' )
-    plot.plot( list(range(len(generationBestScore))), generationBestScore, color='lightgreen', label = "Best Fitness Score", marker='o' )
-    plot.plot( list(range(len(generationTop10AverageScore))), generationTop10AverageScore, color='orange', label = "Average Fitness Score For top 10 Trees", marker='o' )
+    plot.plot(list(range(len(generationScore))), generationScore, color='blue', label="Average Fiteness Score",
+              marker='o')
+    plot.plot(list(range(len(generationBestScore))), generationBestScore, color='lightgreen',
+              label="Best Fitness Score", marker='o')
+    plot.plot(list(range(len(generationTop10AverageScore))), generationTop10AverageScore, color='orange',
+              label="Average Fitness Score For top 10 Trees", marker='o')
     plot.legend()
     plot.xlabel("Generation")
     plot.ylabel("Fitness Score")
     plot.show()
     plot.savefig(f"./graphs/sc/Performance.png", dpi=300)
-    print("-*"*20)
+    print("-*" * 20)
     print("Generation Average :\n", generationScore)
     print("Generation Best :\n", generationBestScore)
     print("Generation Top 10 Average :\n", generationTop10AverageScore)
-    
+
     seeTreeSimulation = int(input("Do you want to see the tree simulation? (0/1) : "))
 
-    if ( seeTreeSimulation == 0 ):
-        return 
+    if (seeTreeSimulation == 0):
+        return
 
     getTreeFile = "BestOfTheBest"
     bestTree = loadTree(getTreeFile, directory=directory)
     runGame(bestTree, display=True)
 
 
-if __name__ == "__main__":
-    testFirstGeneration()
+runGame(paperTree(), display=True)
+
+# if __name__ == "__main__"
+#     testFirstGeneration()
