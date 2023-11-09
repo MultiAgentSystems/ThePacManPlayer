@@ -196,7 +196,7 @@ class ghost():
 
                 randNum = random.random()
 
-                if self.state == 1 and randNum < 0.5:
+                if self.state == 1 and randNum < 0.2:
                     # chase pac-man
                     self.currentPath = path.FindPath((self.nearestRow, self.nearestCol),
                                                      (self.player.nearestRow, self.player.nearestCol))

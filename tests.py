@@ -261,16 +261,17 @@ def generationTest():
 
 
 def testFirstGeneration(DC=False, SC=True):
-    firstGeneration = generateInitialTrees(numTrees=50, depth2SizeLimit=5, depth3SizeLimit=12, SC=SC)
- 
-    for tree in firstGeneration:
-        if not tree.isTreeFit(): 
-            print( "Unfit Tree Generated" )
-        if not StaticConstraints(tree) and SC:
-            print( "Unsatisfying Tree Generated" )
+    firstGeneration = generateInitialTrees(numTrees=10, depth2SizeLimit=5, depth3SizeLimit=12, SC=SC)
+    print("First Generation Trees Created.")
+    # for tree in firstGeneration:
+    #     if not tree.isTreeFit(): 
+    #         print( "Unfit Tree Generated" )
+    #     if not StaticConstraints(tree) and SC:
+    #         print( "Unsatisfying Tree Generated" )
     
     bestTree = firstGeneration[0]
     firstGeneration = Generation(firstGeneration, DC=DC, SC=SC)
+    print("First Generation Initialized.")
     thisGeneration = firstGeneration
     
     generationScore = []
@@ -283,7 +284,7 @@ def testFirstGeneration(DC=False, SC=True):
     
     directory = "StaticConstraints"
     
-    numGenerations = 100
+    numGenerations = 5
 
     savedTrees = []
 
@@ -316,7 +317,7 @@ def testFirstGeneration(DC=False, SC=True):
         thisGeneration = nextGeneration
 
         if ( i > 0 and i % 10 == 0 ):
-            shouldContinue = input("Do you want to continue? (0/1) : ")
+            shouldContinue = int(input("Do you want to continue? (0/1) : "))
             if ( shouldContinue == 0 ):
                 break
     

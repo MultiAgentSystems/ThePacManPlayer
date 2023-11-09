@@ -13,16 +13,16 @@ from utils.actions import ActionFunctions
 class Generation:
     def __init__(self, trees=None, DC=True, SC=True) -> None:
         self.trees = trees if trees is not None else [];
-        # self.tree_scores = [fitness(tree) for tree in self.trees]
+        self.tree_scores = [fitness(tree) for tree in self.trees]
         
-        results = [0] * len(self.trees)
-        with ProcessPoolExecutor() as executor:
-            futures = {executor.submit(fitness, tree): tree for tree in self.trees}
-
-            for future in as_completed(futures):
-                tree = futures[future]
-                index = self.trees.index(tree)
-                results[index] = future.result()
+        # results = [0] * len(self.trees)
+        # with ProcessPoolExecutor(max_workers=3) as executor:
+        #     futures = {executor.submit(fitness, tree): tree for tree in self.trees}
+        #
+        #     for future in as_completed(futures):
+        #         tree = futures[future]
+        #         index = self.trees.index(tree)
+        #         results[index] = future.result()
 
         self.tree_scores = results
         
@@ -46,11 +46,12 @@ class Generation:
         # Right now, we're limiting the number of nodes.
         self.freqt_min_terminals, self.freqt_max_terminals = 2, 15
         self.freqt_min_nodes, self.freqt_max_nodes = 3, 15
-
-        self.freq_patterns = self.getFrequentPatterns()
-        # sort freq_patterns by size
-        self.freq_patterns.sort(key=lambda x: x.getSize(), reverse=True)
-        print(f"Found {len(self.freq_patterns)} frequent patterns")
+        
+        if ( self.DC ):
+            self.freq_patterns = self.getFrequentPatterns()
+            # sort freq_patterns by size
+            self.freq_patterns.sort(key=lambda x: x.getSize(), reverse=True)
+            print(f"Found {len(self.freq_patterns)} frequent patterns")
 
     def getTopTrees(self, k) -> list:
         # Get the top k trees
